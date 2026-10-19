@@ -5,19 +5,21 @@ import { Fraunces, Geist, Geist_Mono, IBM_Plex_Sans_Thai } from "next/font/googl
 
 export const fontDisplay = Fraunces({
   variable: "--font-fraunces",
-  subsets: ["latin", "latin-ext"],
+  // Latin only, no extra axes: the variable files with opsz/SOFT + latin-ext were ~500 KB and
+  // delayed LCP on mobile (Lighthouse). Thai falls through to Plex anyway.
+  subsets: ["latin"],
   style: ["normal", "italic"],
-  axes: ["opsz", "SOFT"],
 });
 
 export const fontSans = Geist({
   variable: "--font-geist",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
 });
 
 export const fontMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false, // only scores use it; not needed for first paint
 });
 
 // Second in every font stack (see globals.css): Latin text uses the face before it, Thai glyphs
@@ -25,7 +27,7 @@ export const fontMono = Geist_Mono({
 export const fontThai = IBM_Plex_Sans_Thai({
   variable: "--font-plex-thai",
   subsets: ["thai"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
 export const fontVariables = [fontDisplay, fontSans, fontMono, fontThai]
