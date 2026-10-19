@@ -82,6 +82,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Thai UI: the wide-tracked uppercase kickers have no Thai equivalent (no capitals), and spacing
+   pulls stacked vowels and tone marks away from their consonant. Unlayered, so it beats utilities. */
+:lang(th) [class*="tracking-[0."],
+:lang(th) .tracking-wider {
+  letter-spacing: 0.02em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

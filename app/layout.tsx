@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { ViewTransition } from "react";
 import { SiteFooter } from "@/components/ui/site-footer";
 import { SiteHeader } from "@/components/ui/site-header";
+import { LocaleProvider } from "@/components/i18n/locale-provider";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { fontVariables } from "./fonts";
 import "./globals.css";
 
@@ -14,37 +16,39 @@ function siteUrl(): URL {
   return new URL(`http://localhost:${process.env.PORT ?? 3000}`);
 }
 
-export const metadata: Metadata = {
-  metadataBase: siteUrl(),
-  title: {
-    default: "musicaso — rate albums track by track",
-    template: "%s · musicaso",
-  },
-  description:
-    "Rate every track, get the album score, and share your review as a link or an image card. No sign-up.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return {
+    metadataBase: siteUrl(),
+    title: { default: t.meta.title, template: "%s · musicaso" },
+    description: t.meta.description,
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0c0b0a",
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const [locale, t] = await Promise.all([getLocale(), getT()]);
   return (
-    <html lang="en" className={`${fontVariables} h-full`}>
+    <html lang={locale} className={`${fontVariables} h-full`}>
       <body className="flex min-h-full flex-col">
-        <a
-          href="#main"
-          className="sr-only rounded-full bg-accent px-4 py-2 text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
-        >
-          Skip to content
-        </a>
-        <SiteHeader />
-        <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-8">
-          {/* Route changes crossfade (see ::view-transition rules in globals.css). */}
-          <ViewTransition>{children}</ViewTransition>
-        </main>
-        <SiteFooter />
+        <LocaleProvider locale={locale}>
+          <a
+            href="#main"
+            className="sr-only rounded-full bg-accent px-4 py-2 text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
+          >
+            {t.nav.skipToContent}
+          </a>
+          <SiteHeader />
+          <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-8">
+            {/* Route changes crossfade (see ::view-transition rules in globals.css). */}
+            <ViewTransition>{children}</ViewTransition>
+          </main>
+          <SiteFooter />
+        </LocaleProvider>
       </body>
     </html>
   );
