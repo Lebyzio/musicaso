@@ -1,7 +1,8 @@
-import { ProviderError } from "./errors";
+import { cache } from "react";
+import { type ProviderErrorCode, ProviderError } from "./errors";
 import { deezer } from "./providers/deezer";
 import { itunes } from "./providers/itunes";
-import type { AlbumSummary, MusicProvider } from "./types";
+import type { Album, AlbumSummary, MusicProvider } from "./types";
 
 const providers = { dz: deezer, it: itunes } satisfies Record<string, MusicProvider>;
 
@@ -14,6 +15,22 @@ export function isActiveSource(source: string): source is ActiveSourceId {
 export function getProvider(source: ActiveSourceId): MusicProvider {
   return providers[source];
 }
+
+export type AlbumResult = { ok: true; album: Album } | { ok: false; code: ProviderErrorCode };
+
+/**
+ * Load an album for a page render. Memoised per request (generateMetadata + page share one fetch)
+ * and never throws for provider failures, so pages can show a specific message.
+ */
+export const loadAlbum = cache(async (source: string, id: string): Promise<AlbumResult> => {
+  if (!isActiveSource(source)) return { ok: false, code: "not_found" };
+  try {
+    return { ok: true, album: await providers[source].getAlbum(id) };
+  } catch (err) {
+    if (err instanceof ProviderError) return { ok: false, code: err.code };
+    throw err;
+  }
+});
 
 export interface SearchResult {
   source: ActiveSourceId;
