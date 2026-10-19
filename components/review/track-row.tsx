@@ -1,6 +1,8 @@
 "use client";
 
 import { type KeyboardEvent, memo } from "react";
+import { useT } from "@/components/i18n/locale-provider";
+import type { Dictionary } from "@/lib/i18n";
 import type { Track } from "@/lib/music/types";
 import { formatScore, type Rating, toScore } from "@/lib/score";
 import { formatDuration } from "@/lib/text";
@@ -11,15 +13,15 @@ import { scoreTone } from "./score-tone";
 const QUICK_PICKS = Array.from({ length: 11 }, (_, i) => i);
 const UNRATED_POSITION = 10;
 
-function valueText(rating: Rating): string {
-  if (rating === null) return "Not rated";
-  if (rating === "skip") return "Skipped";
-  return `${formatScore(toScore(rating))} out of 10`;
+function valueText(rating: Rating, t: Dictionary): string {
+  if (rating === null) return t.editor.notRated;
+  if (rating === "skip") return t.editor.skipped;
+  return t.editor.outOf10(formatScore(toScore(rating)));
 }
 
-function shortScore(rating: Rating): string {
+function shortScore(rating: Rating, t: Dictionary): string {
   if (rating === null) return "–";
-  if (rating === "skip") return "skip";
+  if (rating === "skip") return t.editor.skipShort;
   return formatScore(toScore(rating));
 }
 
@@ -49,6 +51,7 @@ export const TrackRow = memo(function TrackRow({
   refRating,
   refName,
 }: TrackRowProps) {
+  const t = useT();
   const skipped = rating === "skip";
   const scored = typeof rating === "number";
   const inner = active ? 0 : -1; // roving focus: only the active row is in the tab order
@@ -82,11 +85,11 @@ export const TrackRow = memo(function TrackRow({
               scored ? scoreTone(toScore(rating)) : "text-paper-mute"
             }`}
           >
-            {skipped ? "skip" : scored ? formatScore(toScore(rating)) : "–"}
+            {skipped ? t.editor.skipShort : scored ? formatScore(toScore(rating)) : "–"}
           </span>
           {refRating !== undefined && (
             <span className="max-w-full truncate text-[0.65rem] text-paper-mute tabular">
-              {refName} {shortScore(refRating)}
+              {refName} {shortScore(refRating, t)}
             </span>
           )}
         </span>
@@ -97,7 +100,7 @@ export const TrackRow = memo(function TrackRow({
           {typeof refRating === "number" && (
             <span
               aria-hidden
-              title={`${refName}: ${valueText(refRating)}`}
+              title={`${refName}: ${valueText(refRating, t)}`}
               className="pointer-events-none absolute top-0 h-1.5 w-0.5 -translate-x-1/2 rounded-full bg-paper-mute"
               // Native range thumbs are ~16px wide: map 0–20 onto the thumb-centre track.
               style={{ left: `calc(8px + (100% - 16px) * ${refRating / 20})` }}
@@ -111,8 +114,8 @@ export const TrackRow = memo(function TrackRow({
             step={1}
             value={scored ? rating : UNRATED_POSITION}
             tabIndex={inner}
-            aria-label={`Rating for ${track.title}`}
-            aria-valuetext={valueText(rating)}
+            aria-label={t.editor.ratingFor(track.title)}
+            aria-valuetext={valueText(rating, t)}
             aria-disabled={skipped}
             data-track-index={index}
             onFocus={() => dispatch({ type: "focus", index })}
@@ -138,12 +141,16 @@ export const TrackRow = memo(function TrackRow({
           onClick={() => dispatch({ type: "toggleSkip", index })}
           className="shrink-0 rounded-full border border-ink-600 px-3 py-1 text-xs text-paper-mute transition-colors hover:border-accent hover:text-paper aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-accent-ink"
         >
-          {skipped ? "Skipped" : "Skip"}
+          {skipped ? t.editor.skipped : t.editor.skip}
         </button>
       </div>
 
       {active && !skipped && (
-        <div className="flex justify-between gap-1 pl-9" role="group" aria-label="Quick score">
+        <div
+          className="flex justify-between gap-1 pl-9"
+          role="group"
+          aria-label={t.editor.quickScore}
+        >
           {QUICK_PICKS.map((n) => {
             const pressed = scored && rating === n * 2;
             return (
@@ -151,7 +158,7 @@ export const TrackRow = memo(function TrackRow({
                 key={n}
                 type="button"
                 aria-pressed={pressed}
-                aria-label={`Score ${n}`}
+                aria-label={t.editor.scoreN(n)}
                 onClick={() => onQuickPick(index, n)}
                 className="flex h-8 min-w-0 flex-1 items-center justify-center rounded-md bg-ink-800 font-mono text-sm text-paper-dim transition-colors hover:bg-ink-700 hover:text-paper aria-pressed:bg-accent aria-pressed:text-accent-ink"
               >

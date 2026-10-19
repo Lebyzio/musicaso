@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useT } from "@/components/i18n/locale-provider";
 import { loadDraft, loadReviewerName, saveDraft, saveReviewerName } from "@/lib/draft";
 import type { Album } from "@/lib/music/types";
 import { albumScore, albumStats, verdict } from "@/lib/score";
@@ -12,13 +13,13 @@ import { TrackList } from "./track-list";
 
 const AUTOSAVE_MS = 400;
 
-const SHORTCUTS: [string, string][] = [
-  ["← →", "±0.5"],
+const SHORTCUTS = [
+  ["← →", "adjust"],
   ["0–9", "score"],
   ["S", "skip"],
   ["P", "preview"],
   ["↑ ↓", "track"],
-];
+] as const;
 
 export function ReviewEditor({
   album,
@@ -30,6 +31,7 @@ export function ReviewEditor({
   /** Album accent (hex) from the server, for the card theme swatches. */
   accent: string;
 }) {
+  const t = useT();
   const { source, id, tracks } = album;
   const [state, dispatch] = useReducer(editorReducer, tracks.length, initEditor);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -85,7 +87,7 @@ export function ReviewEditor({
     () => (reference ? albumScore(reference.ratings) : null),
     [reference],
   );
-  const referenceName = reference?.name ?? "The original reviewer";
+  const referenceName = reference?.name ?? t.editor.originalReviewer;
 
   // Hide the pinned mobile bar while the full panel is on screen.
   const panelRef = useRef<HTMLDivElement>(null);
@@ -107,18 +109,18 @@ export function ReviewEditor({
               id="tracklist-heading"
               className="text-xs tracking-[0.25em] text-paper-mute uppercase"
             >
-              Tracklist
+              {t.editor.tracklist}
             </h2>
             <ul
               className="hidden flex-wrap gap-x-4 gap-y-1 text-xs text-paper-mute sm:flex"
-              aria-label="Keyboard shortcuts"
+              aria-label={t.editor.shortcuts}
             >
               {SHORTCUTS.map(([keys, action]) => (
                 <li key={keys}>
                   <kbd className="rounded border border-ink-600 px-1.5 py-0.5 font-mono text-[0.7rem] text-paper-dim">
                     {keys}
                   </kbd>{" "}
-                  {action}
+                  {t.editor.shortcut[action]}
                 </li>
               ))}
             </ul>
@@ -129,8 +131,9 @@ export function ReviewEditor({
               role="status"
               className="mx-3 rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm text-paper-dim sm:mx-4"
             >
-              Reviewing alongside <span className="text-paper">{referenceName}</span>. Their scores
-              show as faint marks — your link will include a side-by-side comparison.
+              {t.editor.alongside.before}
+              <span className="text-paper">{referenceName}</span>
+              {t.editor.alongside.after}
             </p>
           )}
 
@@ -139,15 +142,12 @@ export function ReviewEditor({
               role="status"
               className="mx-3 flex items-start justify-between gap-4 rounded-xl border border-score-mid/40 bg-score-mid/10 p-4 text-sm text-paper-dim sm:mx-4"
             >
-              <p>
-                This album’s tracklist changed since you started rating it. Your scores were matched
-                by track order — give them a quick check.
-              </p>
+              <p>{t.editor.mismatch}</p>
               <button
                 type="button"
                 onClick={() => dispatch({ type: "dismissMismatch" })}
                 className="shrink-0 text-paper-mute hover:text-paper"
-                aria-label="Dismiss"
+                aria-label={t.editor.dismiss}
               >
                 ×
               </button>

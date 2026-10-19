@@ -1,6 +1,13 @@
-export default function Loading() {
+import { getT } from "@/lib/i18n/server";
+
+export default async function Loading() {
+  const t = await getT();
   return (
-    <div className="flex animate-pulse flex-col gap-10 pb-24" aria-busy aria-label="Loading album">
+    <div
+      className="flex animate-pulse flex-col gap-10 pb-24"
+      aria-busy
+      aria-label={t.status.loadingAlbum}
+    >
       <div className="grid items-end gap-6 pt-6 sm:grid-cols-[minmax(0,17rem)_1fr] sm:gap-10 sm:pt-10">
         <div className="aspect-square w-56 rounded-2xl bg-ink-800 sm:w-full" />
         <div className="flex flex-col gap-4">

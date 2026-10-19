@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useT } from "@/components/i18n/locale-provider";
 
 const subscribeNever = () => () => {};
 
@@ -28,6 +29,7 @@ export function CopyLinkButton({
   getUrl: () => string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const [state, setState] = useState<"idle" | "copied" | "manual">("idle");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +58,11 @@ export function CopyLinkButton({
   return (
     <>
       <button type="button" onClick={copy} disabled={disabled} className={BUTTON_SECONDARY}>
-        {state === "copied" ? "Copied!" : state === "manual" ? "Press Ctrl+C to copy" : "Copy link"}
+        {state === "copied"
+          ? t.share.copied
+          : state === "manual"
+            ? t.share.pressToCopy
+            : t.share.copyLink}
       </button>
       <input
         ref={inputRef}
@@ -67,7 +73,7 @@ export function CopyLinkButton({
         className="sr-only"
       />
       <span aria-live="polite" className="sr-only">
-        {state === "copied" ? "Link copied" : ""}
+        {state === "copied" ? t.share.linkCopied : ""}
       </span>
     </>
   );
@@ -84,6 +90,7 @@ export function NativeShareButton({
   text?: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const canShare = useCanShare();
   if (!canShare) return null;
   return (
@@ -99,13 +106,14 @@ export function NativeShareButton({
       }}
       className={BUTTON_SECONDARY}
     >
-      Share…
+      {t.share.share}
     </button>
   );
 }
 
 /** Actions on a shared review: answer it with your own review, or pass the link on. */
 export function ShareActions({ reviewItHref, title }: { reviewItHref: string; title: string }) {
+  const t = useT();
   const currentUrl = () => window.location.href;
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -113,7 +121,7 @@ export function ShareActions({ reviewItHref, title }: { reviewItHref: string; ti
         href={reviewItHref}
         className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink"
       >
-        Review it yourself
+        {t.share.reviewIt}
       </Link>
       <CopyLinkButton getUrl={currentUrl} />
       <NativeShareButton getUrl={currentUrl} title={title} />

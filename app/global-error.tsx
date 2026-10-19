@@ -4,7 +4,8 @@ import "./globals.css";
 
 /**
  * Last-resort boundary: replaces the root layout when it fails, so it brings its own <html>
- * and only relies on the global stylesheet (no web fonts, no layout components).
+ * and only relies on the global stylesheet (no web fonts, no layout components). Without the
+ * layout there is no locale either, so the message is in both languages.
  */
 export default function GlobalError({ retry }: { error: unknown; retry: () => void }) {
   return (
@@ -15,12 +16,15 @@ export default function GlobalError({ retry }: { error: unknown; retry: () => vo
         <p className="max-w-md text-paper-dim">
           The app couldn’t load. Your ratings are saved in this browser — try again in a moment.
         </p>
+        <p lang="th" className="max-w-md text-paper-dim">
+          แอปโหลดไม่สำเร็จ คะแนนของคุณยังบันทึกอยู่ในเบราว์เซอร์นี้ ลองใหม่อีกครั้งในอีกสักครู่
+        </p>
         <button
           type="button"
           onClick={() => retry()}
           className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink"
         >
-          Try again
+          Try again · ลองอีกครั้ง
         </button>
       </body>
     </html>

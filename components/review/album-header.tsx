@@ -1,26 +1,21 @@
 import Image from "next/image";
 import { ViewTransition } from "react";
 import { coverTransitionName } from "@/lib/music/cover";
-import type { Album, RecordType } from "@/lib/music/types";
+import { getT } from "@/lib/i18n/server";
+import type { Album } from "@/lib/music/types";
 import { SOURCE_LABEL } from "@/lib/music/types";
-import { formatLength, hasThai } from "@/lib/text";
+import { hasThai, splitLength } from "@/lib/text";
 
-const KICKER: Record<RecordType, string> = {
-  album: "Album",
-  ep: "EP",
-  single: "Single",
-  compilation: "Compilation",
-};
-
-export function AlbumHeader({ album }: { album: Album }) {
+export async function AlbumHeader({ album }: { album: Album }) {
+  const t = await getT();
   const totalSec = album.tracks.reduce((s, t) => s + t.durationSec, 0);
   const discs = new Set(album.tracks.map((t) => t.disc)).size;
   const meta = [
     album.year,
     album.genre,
-    `${album.tracks.length} ${album.tracks.length === 1 ? "track" : "tracks"}`,
-    discs > 1 ? `${discs} discs` : null,
-    totalSec > 0 ? formatLength(totalSec) : null,
+    t.album.tracks(album.tracks.length),
+    discs > 1 ? t.album.discs(discs) : null,
+    totalSec > 0 ? t.album.length(splitLength(totalSec)) : null,
   ].filter(Boolean);
 
   return (
@@ -32,7 +27,7 @@ export function AlbumHeader({ album }: { album: Album }) {
             {album.coverUrl && (
               <Image
                 src={album.coverUrl}
-                alt={`Cover of ${album.title}`}
+                alt={t.album.coverOf(album.title)}
                 fill
                 // LCP on album and review pages: start the download from <head>, not mid-body.
                 preload
@@ -46,7 +41,7 @@ export function AlbumHeader({ album }: { album: Album }) {
 
       <div className="flex min-w-0 flex-col gap-3">
         <p className="text-xs tracking-[0.25em] text-accent uppercase">
-          {album.recordType ? KICKER[album.recordType] : "Album"}
+          {t.album.recordType[album.recordType ?? "album"]}
         </p>
         <h1
           className={`font-display text-4xl tracking-tight text-balance break-words sm:text-6xl ${
@@ -64,7 +59,7 @@ export function AlbumHeader({ album }: { album: Album }) {
             rel="noopener noreferrer"
             className="w-fit text-xs text-paper-mute underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
           >
-            Data from {SOURCE_LABEL[album.source]} ↗
+            {t.album.dataFrom(SOURCE_LABEL[album.source])} ↗
           </a>
         )}
       </div>

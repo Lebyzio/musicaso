@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DICTIONARIES, isLocale, pickLocale } from "@/lib/i18n";
+import { splitLength } from "@/lib/text";
 
 describe("pickLocale", () => {
   it("uses a valid cookie first", () => {
@@ -42,6 +43,15 @@ function shape(value: unknown, path = ""): string[] {
     shape(v, `${path}.${k}`),
   );
 }
+
+describe("album length", () => {
+  it("rounds to minutes and adds hours past 60", () => {
+    expect(splitLength(47 * 60 + 20)).toEqual({ hours: 0, minutes: 47 });
+    expect(splitLength(65 * 60)).toEqual({ hours: 1, minutes: 5 });
+    expect(DICTIONARIES.en.album.length(splitLength(65 * 60))).toBe("1 hr 5 min");
+    expect(DICTIONARIES.th.album.length(splitLength(47 * 60))).toBe("47 นาที");
+  });
+});
 
 describe("dictionaries", () => {
   it("have the same keys and kinds in every language", () => {

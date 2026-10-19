@@ -1,8 +1,10 @@
 import { CoverArt } from "@/components/card/cover-art";
+import { displayStyle, VerdictKicker } from "@/components/card/review-card";
 import { getAlbumAccent } from "@/lib/accent";
 import { coverDataUri } from "@/lib/cover-image";
 import { CARD_FONT } from "@/lib/fonts";
 import { loadAlbum } from "@/lib/music";
+import { getDictionary, isLocale } from "@/lib/i18n";
 import { formatScore } from "@/lib/score";
 import { decodePayload } from "@/lib/share/codec";
 import { pngResponse, renderPng } from "@/lib/render-image";
@@ -63,6 +65,9 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
 
   const { album } = result;
   const view = reviewView(album, decoded.payload);
+  // Link previews are drawn in the reviewer's language.
+  const t = getDictionary(isLocale(decoded.payload.l) ? decoded.payload.l : "en");
+  const verdictLabel = view.verdict ? t.verdict[view.verdict] : t.score.unrated;
   const [{ accent }, cover] = await Promise.all([
     getAlbumAccent(album.coverUrl),
     coverDataUri(album.coverUrl, 470),
@@ -99,17 +104,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
         }}
       >
         <div style={{ display: "flex", fontSize: 24, color: accent }}>
-          {/* Letter-spacing pulls Thai tone marks off their base letters in Satori. */}
-          {view.name && (
-            <span
-              style={hasThai(view.name) ? {} : { letterSpacing: 6, textTransform: "uppercase" }}
-            >
-              {view.name}
-            </span>
-          )}
-          <span style={{ letterSpacing: 6, textTransform: "uppercase" }}>
-            {view.name ? "’s verdict" : "Album review"}
-          </span>
+          <VerdictKicker who={view.name} t={t} />
         </div>
         <div
           style={{
@@ -136,23 +131,16 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
           >
             {formatScore(view.score)}
           </div>
-          <div
-            style={{
-              fontFamily: CARD_FONT.display,
-              fontStyle: "italic",
-              fontSize: 48,
-              color: C.dim,
-            }}
-          >
-            {view.verdict ?? "Unrated"}
+          <div style={{ ...displayStyle(verdictLabel), fontSize: 48, color: C.dim }}>
+            {verdictLabel}
           </div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
           <div style={{ fontSize: 26, color: C.mute, display: "flex" }}>
             {view.reference
-              ? `vs ${view.reference.name ?? "original"} · ${formatScore(refScore)}`
-              : `${view.stats.scored} of ${view.stats.total} tracks rated`}
+              ? t.image.vs(view.reference.name ?? t.image.original, formatScore(refScore))
+              : t.image.tracksRated(view.stats.scored, view.stats.total)}
           </div>
           <div
             style={{

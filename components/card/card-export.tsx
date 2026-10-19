@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { useLocale, useT } from "@/components/i18n/locale-provider";
 import { BUTTON_SECONDARY } from "@/components/share/share-actions";
 import { cardFilename } from "@/lib/card/filename";
 import {
@@ -9,7 +10,6 @@ import {
   type CardFormat,
   type CardTheme,
   cardPalette,
-  THEME_LABEL,
 } from "@/lib/card/themes";
 
 const subscribeNever = () => () => {};
@@ -55,15 +55,20 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
   const [loadedUrl, setLoadedUrl] = useState<string | null>(null);
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const canShareFiles = useCanShareFiles();
+  const t = useT();
+  // The card is drawn in the viewer's language, whatever language the review was written in.
+  const locale = useLocale();
 
-  const cardUrl = reviewPath ? `${reviewPath}/card?format=${format}&theme=${theme}` : null;
+  const cardUrl = reviewPath
+    ? `${reviewPath}/card?format=${format}&theme=${theme}&lang=${locale}`
+    : null;
   const filename = cardFilename(album, format);
   const busy = status.kind === "busy";
   const { width, height } = CARD_FORMATS[format];
 
   async function download() {
     if (!cardUrl) return;
-    setStatus({ kind: "busy", label: "Preparing image…" });
+    setStatus({ kind: "busy", label: t.card.preparing });
     try {
       const blob = await fetchCard(cardUrl);
       const href = URL.createObjectURL(blob);
@@ -72,15 +77,15 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
       a.download = filename;
       a.click();
       setTimeout(() => URL.revokeObjectURL(href), 10_000);
-      setStatus({ kind: "done", label: "Card downloaded" });
+      setStatus({ kind: "done", label: t.card.downloaded });
     } catch {
-      setStatus({ kind: "error", label: "Couldn’t create the card. Try again." });
+      setStatus({ kind: "error", label: t.card.failed });
     }
   }
 
   async function share() {
     if (!cardUrl) return;
-    setStatus({ kind: "busy", label: "Preparing image…" });
+    setStatus({ kind: "busy", label: t.card.preparing });
     try {
       const file = new File([await fetchCard(cardUrl)], filename, { type: "image/png" });
       await navigator.share({ files: [file], title: `${album.title} — ${album.artist}` });
@@ -88,7 +93,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
     } catch (err) {
       // AbortError = the user closed the share sheet.
       if (err instanceof DOMException && err.name === "AbortError") setStatus({ kind: "idle" });
-      else setStatus({ kind: "error", label: "Sharing didn’t work — try Download instead." });
+      else setStatus({ kind: "error", label: t.card.shareFailed });
     }
   }
 
@@ -97,7 +102,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div
           role="radiogroup"
-          aria-label="Card format"
+          aria-label={t.card.format}
           className="flex rounded-full bg-ink-800 p-1"
         >
           {(Object.keys(CARD_FORMATS) as CardFormat[]).map((f) => (
@@ -107,25 +112,25 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
               role="radio"
               aria-checked={format === f}
               onClick={() => setFormat(f)}
-              className="rounded-full px-4 py-1.5 text-sm text-paper-dim capitalize transition-colors aria-checked:bg-accent aria-checked:text-accent-ink"
+              className="rounded-full px-4 py-1.5 text-sm text-paper-dim transition-colors aria-checked:bg-accent aria-checked:text-accent-ink"
             >
-              {f}
+              {t.card.formats[f]}
             </button>
           ))}
         </div>
 
-        <div role="radiogroup" aria-label="Card theme" className="flex gap-2">
-          {CARD_THEMES.map((t) => {
-            const p = cardPalette(t, accent);
+        <div role="radiogroup" aria-label={t.card.theme} className="flex gap-2">
+          {CARD_THEMES.map((option) => {
+            const p = cardPalette(option, accent);
             return (
               <button
-                key={t}
+                key={option}
                 type="button"
                 role="radio"
-                aria-checked={theme === t}
-                aria-label={THEME_LABEL[t]}
-                title={THEME_LABEL[t]}
-                onClick={() => onThemeChange(t)}
+                aria-checked={theme === option}
+                aria-label={t.card.themes[option]}
+                title={t.card.themes[option]}
+                onClick={() => onThemeChange(option)}
                 className="flex size-9 items-center justify-center rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-ink-900 transition-shadow aria-checked:ring-accent"
                 style={{ background: p.bg, boxShadow: `inset 0 0 0 1px ${p.mute}55` }}
               >
@@ -145,7 +150,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
           <img
             key={cardUrl}
             src={cardUrl}
-            alt={`Preview of the ${format} card`}
+            alt={t.card.previewAlt(t.card.formats[format])}
             onLoad={() => setLoadedUrl(cardUrl)}
             onError={() => setFailedUrl(cardUrl)}
             className={`absolute inset-0 size-full object-cover transition-opacity duration-300 ${
@@ -158,7 +163,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
         )}
         {(!cardUrl || failedUrl === cardUrl) && (
           <p className="absolute inset-0 flex items-center justify-center p-4 text-center text-xs text-paper-mute">
-            {cardUrl ? "Preview unavailable" : "Rate a track to see your card"}
+            {cardUrl ? t.card.unavailable : t.card.rateToSee}
           </p>
         )}
       </div>
@@ -170,7 +175,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
           disabled={!cardUrl || busy}
           className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink disabled:opacity-50"
         >
-          Download PNG
+          {t.card.download}
         </button>
         {canShareFiles && (
           <button
@@ -179,7 +184,7 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
             disabled={!cardUrl || busy}
             className={BUTTON_SECONDARY}
           >
-            Share image…
+            {t.card.shareImage}
           </button>
         )}
       </div>

@@ -3,6 +3,7 @@
 import { MotionConfig } from "motion/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useT } from "@/components/i18n/locale-provider";
 import type { ApiErrorBody, ApiErrorCode } from "@/lib/api-response";
 import type { ArtistAlbums, SearchResult } from "@/lib/music";
 import { SOURCE_LABEL } from "@/lib/music/types";
@@ -20,12 +21,8 @@ const SUGGESTIONS = ["In Rainbows", "Blonde", "คราม", "Abbey Road", "Bod
 /** Order of the "Try …" links; the source that answered is left out. */
 const SOURCES: Source[] = ["dz", "it", "mb"];
 
-const ERROR_MESSAGE: Partial<Record<ApiErrorCode | "network", string>> = {
-  rate_limited: "The music catalogue is busy right now — give it a few seconds.",
-  network: "Couldn’t connect. Check your connection and try again.",
-};
-
 export function AlbumSearch() {
+  const t = useT();
   const searchParams = useSearchParams();
   const [input, setInput] = useState(() => searchParams.get("q") ?? "");
   // Enter / suggestion clicks skip the debounce.
@@ -91,15 +88,21 @@ export function AlbumSearch() {
   const status = !key
     ? ""
     : loading
-      ? "Searching…"
+      ? t.search.searching
       : current?.ok
-        ? plural(current.data.results.length + (current.data.artist?.albums.length ?? 0), "album") +
-          " found"
-        : "Search failed";
+        ? t.search.found(current.data.results.length + (current.data.artist?.albums.length ?? 0))
+        : t.search.failed;
+
+  const errorMessage = (code: ApiErrorCode | "network") =>
+    code === "rate_limited"
+      ? t.search.busy
+      : code === "network"
+        ? t.search.offline
+        : t.search.unreachable;
 
   return (
     <MotionConfig reducedMotion="user">
-      <section className="flex flex-col gap-8" aria-label="Album search">
+      <section className="flex flex-col gap-8" aria-label={t.search.region}>
         <form
           role="search"
           onSubmit={(e) => {
@@ -108,7 +111,7 @@ export function AlbumSearch() {
           }}
         >
           <label htmlFor="album-search" className="sr-only">
-            Search albums
+            {t.search.label}
           </label>
           <div className="relative">
             <SearchIcon className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-paper-mute" />
@@ -118,7 +121,7 @@ export function AlbumSearch() {
               type="search"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Search an album or artist"
+              placeholder={t.search.placeholder}
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
@@ -136,7 +139,7 @@ export function AlbumSearch() {
                 <button
                   type="button"
                   onClick={() => runNow("")}
-                  aria-label="Clear search"
+                  aria-label={t.search.clear}
                   className="absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-paper-mute hover:bg-ink-800 hover:text-paper"
                 >
                   <span aria-hidden className="text-xl leading-none">
@@ -154,7 +157,7 @@ export function AlbumSearch() {
 
         {!key && (
           <div className="flex flex-wrap items-center gap-2 text-sm text-paper-mute">
-            <span>Try</span>
+            <span>{t.search.try}</span>
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
@@ -170,9 +173,7 @@ export function AlbumSearch() {
 
         {current && !current.ok && (
           <div className="flex flex-col items-start gap-4 rounded-card border border-ink-700 bg-ink-900 p-6">
-            <p className="text-paper-dim">
-              {ERROR_MESSAGE[current.code] ?? "We couldn’t reach the music catalogue."}
-            </p>
+            <p className="text-paper-dim">{errorMessage(current.code)}</p>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
@@ -182,7 +183,7 @@ export function AlbumSearch() {
                 }}
                 className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink"
               >
-                Try again
+                {t.search.tryAgain}
               </button>
               {/* "auto" starts at Deezer, so offer the others. */}
               {SOURCES.filter((s) => s !== (source ?? "dz")).map((s) => (
@@ -192,7 +193,7 @@ export function AlbumSearch() {
                   onClick={() => switchSource(s)}
                   className="rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
                 >
-                  Search {SOURCE_LABEL[s]} instead
+                  {t.search.searchInstead(SOURCE_LABEL[s])}
                 </button>
               ))}
             </div>
@@ -211,14 +212,14 @@ export function AlbumSearch() {
               <ArtistSection key={shown.query} artist={shown.data.artist} />
             )}
             {shown.data.results.length > 0 ? (
-              <section className="flex flex-col gap-6" aria-label="Search results">
+              <section className="flex flex-col gap-6" aria-label={t.search.resultsRegion}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs tracking-[0.15em] text-paper-mute uppercase">
                   <span className="tabular">
-                    {shown.data.artist ? "More results · " : ""}
-                    {plural(shown.data.results.length, "result")}
+                    {shown.data.artist ? `${t.search.moreResults} · ` : ""}
+                    {t.search.results(shown.data.results.length)}
                   </span>
                   <span className="flex items-baseline gap-3">
-                    <span>Data from {SOURCE_LABEL[shown.data.source]}</span>
+                    <span>{t.search.dataFrom(SOURCE_LABEL[shown.data.source])}</span>
                     {SOURCES.filter((s) => s !== shown.data.source).map((s) => (
                       <button
                         key={s}
@@ -226,7 +227,7 @@ export function AlbumSearch() {
                         onClick={() => switchSource(s)}
                         className="tracking-normal text-paper-dim normal-case underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
                       >
-                        Try {SOURCE_LABEL[s]}
+                        {t.search.tryOther(SOURCE_LABEL[s])}
                       </button>
                     ))}
                   </span>
@@ -253,6 +254,7 @@ export function AlbumSearch() {
 const ARTIST_PREVIEW = 10;
 
 function ArtistSection({ artist }: { artist: ArtistAlbums }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   const hidden = artist.albums.length - ARTIST_PREVIEW;
   const albums = expanded ? artist.albums : artist.albums.slice(0, ARTIST_PREVIEW);
@@ -260,10 +262,10 @@ function ArtistSection({ artist }: { artist: ArtistAlbums }) {
     <section className="flex flex-col gap-6" aria-labelledby="artist-albums">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="artist-albums" className="font-display text-2xl text-paper">
-          Albums by {artist.name}
+          {t.search.albumsBy(artist.name)}
         </h2>
         <span className="text-xs tracking-[0.15em] text-paper-mute uppercase">
-          Data from {SOURCE_LABEL.dz}
+          {t.search.dataFrom(SOURCE_LABEL.dz)}
         </span>
       </div>
       <AlbumGrid albums={albums} />
@@ -274,7 +276,7 @@ function ArtistSection({ artist }: { artist: ArtistAlbums }) {
           aria-expanded={expanded}
           className="self-start rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
         >
-          {expanded ? "Show fewer" : `Show all ${artist.albums.length}`}
+          {expanded ? t.search.showFewer : t.search.showAll(artist.albums.length)}
         </button>
       )}
     </section>
@@ -290,12 +292,16 @@ function EmptyState({
   others: Source[];
   onSwitch: (source: Source) => void;
 }) {
+  const t = useT();
+  const nothing = t.search.nothingFor(query);
   return (
     <div className="flex flex-col items-start gap-3 py-8">
       <p className="font-display text-2xl text-paper-dim italic">
-        Nothing for “<span className="not-italic">{query}</span>”.
+        {nothing.before}
+        <span className="not-italic">{nothing.query}</span>
+        {nothing.after}
       </p>
-      <p className="text-sm text-paper-mute">Check the spelling, or search by artist name.</p>
+      <p className="text-sm text-paper-mute">{t.search.hint}</p>
       <div className="flex flex-wrap gap-2">
         {others.map((s) => (
           <button
@@ -304,7 +310,7 @@ function EmptyState({
             onClick={() => onSwitch(s)}
             className="rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
           >
-            Search {SOURCE_LABEL[s]} instead
+            {t.search.searchInstead(SOURCE_LABEL[s])}
           </button>
         ))}
       </div>
@@ -326,8 +332,4 @@ function SearchIcon({ className }: { className?: string }) {
       <path d="m20 20-3.5-3.5" strokeLinecap="round" />
     </svg>
   );
-}
-
-function plural(n: number, word: string): string {
-  return `${n} ${word}${n === 1 ? "" : "s"}`;
 }

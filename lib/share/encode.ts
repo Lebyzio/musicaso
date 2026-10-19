@@ -32,6 +32,7 @@ function normalize(p: ReviewPayload): ReviewPayload {
     ...(p.f !== undefined && { f: p.f }),
     ...(p.w && { w: 1 as const }),
     ...(p.th && { th: p.th }),
+    ...(p.l && { l: p.l }),
     ...(p.ref && { ref: { ...(refName && { n: refName }), r: p.ref.r } }),
   };
 }
@@ -52,6 +53,7 @@ function assertEncodable(p: ReviewPayload): ReviewPayload {
     ratingsOk(p.r) &&
     (p.f === undefined || (Number.isInteger(p.f) && p.f >= 0)) &&
     (p.th === undefined || /^[a-z0-9-]{1,20}$/.test(p.th)) &&
+    (p.l === undefined || /^[a-z]{2}$/.test(p.l)) &&
     (p.ref === undefined || ratingsOk(p.ref.r));
   if (!ok) throw new RangeError("Invalid review payload");
   return p;
@@ -117,6 +119,8 @@ export interface PayloadInput {
   weighted?: boolean;
   /** Card theme id; the default ("sleeve") is left out to keep links short. */
   theme?: string;
+  /** UI language of the reviewer, used for the card and OG image; English is left out. */
+  locale?: string;
   /** The review this one answers ("Review it yourself"). Its own reference is never carried over. */
   reference?: { name?: string; ratings: readonly Rating[] };
 }
@@ -134,6 +138,7 @@ export function buildPayload(input: PayloadInput): ReviewPayload {
     f: input.favorite,
     w: input.weighted ? 1 : undefined,
     th: input.theme && input.theme !== "sleeve" ? input.theme : undefined,
+    l: input.locale && input.locale !== "en" ? input.locale : undefined,
     ref: input.reference && {
       n: input.reference.name,
       r: encodeRatings(fitRatings(input.reference.ratings, k)),

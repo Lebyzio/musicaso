@@ -6,6 +6,7 @@ import { AlbumLoadError } from "@/components/review/album-load-error";
 import { EmptyTracklist } from "@/components/review/empty-tracklist";
 import { ReviewEditor } from "@/components/review/review-editor";
 import { accentStyle, getPageAccent } from "@/lib/accent";
+import { getT } from "@/lib/i18n/server";
 import { loadAlbum } from "@/lib/music";
 import { decodePayload } from "@/lib/share/codec";
 import { decodeRatings, fitRatings } from "@/lib/share/ratings";
@@ -13,13 +14,13 @@ import { decodeRatings, fitRatings } from "@/lib/share/ratings";
 export async function generateMetadata({
   params,
 }: PageProps<"/album/[source]/[id]">): Promise<Metadata> {
-  const { source, id } = await params;
+  const [{ source, id }, t] = await Promise.all([params, getT()]);
   const result = await loadAlbum(source, id);
-  if (!result.ok) return { title: "Album" };
+  if (!result.ok) return { title: t.meta.albumFallback };
   const { title, artist } = result.album;
   return {
     title: `${title} — ${artist}`,
-    description: `Rate ${title} by ${artist} track by track and share your verdict.`,
+    description: t.meta.albumDescription(title, artist),
   };
 }
 

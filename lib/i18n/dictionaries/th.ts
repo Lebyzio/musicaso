@@ -15,7 +15,6 @@ export const th: Dictionary = {
       `${name ?? "มีคน"}ให้คะแนน ${album} ของ ${artist} ทีละเพลง: ${score}/10`,
     brokenTitle: "ลิงก์รีวิวเสีย",
     reviewFallback: "รีวิวอัลบั้ม",
-    imageAlt: "รีวิวอัลบั้มบน musicaso",
   },
 
   nav: {
@@ -66,6 +65,8 @@ export const th: Dictionary = {
     recordType: { album: "อัลบั้ม", ep: "EP", single: "ซิงเกิล", compilation: "รวมเพลง" },
     tracks: (n) => `${n} เพลง`,
     discs: (n) => `${n} แผ่น`,
+    length: ({ hours, minutes }) =>
+      hours > 0 ? `${hours} ชม. ${minutes} นาที` : `${minutes} นาที`,
     disc: (n) => `แผ่นที่ ${n}`,
     dataFrom: (source) => `ข้อมูลจาก ${source}`,
     coverOf: (title) => `ปกอัลบั้ม ${title}`,

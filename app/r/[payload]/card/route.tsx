@@ -4,6 +4,7 @@ import { getAlbumAccent } from "@/lib/accent";
 import { jsonError } from "@/lib/api-response";
 import { coverDataUri } from "@/lib/cover-image";
 import { CARD_FORMATS, CARD_THEMES, cardPalette, isCardTheme } from "@/lib/card/themes";
+import { getDictionary, isLocale, LOCALES } from "@/lib/i18n";
 import { cardTracks } from "@/lib/card/tracks";
 import { loadAlbum } from "@/lib/music";
 import { decodePayload } from "@/lib/share/codec";
@@ -13,19 +14,24 @@ import { reviewView } from "@/lib/share/review-view";
 const Query = z.object({
   format: z.enum(["square", "story"]).default("square"),
   theme: z.enum(CARD_THEMES).optional(),
+  lang: z.enum(LOCALES).optional(),
 });
 
-/** PNG card for a shared review: /r/{payload}/card?format=square|story&theme=sleeve|paper|vivid */
+/**
+ * PNG card for a shared review: /r/{payload}/card?format=square|story&theme=sleeve|paper|vivid&lang=en|th
+ * Without ?lang= the card uses the review's own language (payload `l`).
+ */
 export async function GET(request: Request, ctx: RouteContext<"/r/[payload]/card">) {
   const params = new URL(request.url).searchParams;
   const query = Query.safeParse({
     format: params.get("format") ?? undefined,
     theme: params.get("theme") ?? undefined,
+    lang: params.get("lang") ?? undefined,
   });
   if (!query.success) {
     return jsonError(
       "bad_request",
-      "Use ?format=square|story and ?theme=" + CARD_THEMES.join("|"),
+      `Use ?format=square|story, ?theme=${CARD_THEMES.join("|")} and ?lang=${LOCALES.join("|")}`,
       400,
     );
   }
@@ -50,6 +56,7 @@ export async function GET(request: Request, ctx: RouteContext<"/r/[payload]/card
     coverDataUri(album.coverUrl, format === "story" ? 400 : 300), // drawn size, see ReviewCard
   ]);
   const view = reviewView(album, decoded.payload);
+  const locale = query.data.lang ?? (isLocale(decoded.payload.l) ? decoded.payload.l : "en");
 
   const png = await renderPng(
     <ReviewCard
@@ -59,6 +66,7 @@ export async function GET(request: Request, ctx: RouteContext<"/r/[payload]/card
       palette={cardPalette(theme, accent)}
       cover={cover}
       tracks={cardTracks(album.tracks, view.ratings, format, view.reference?.ratings)}
+      t={getDictionary(locale)}
     />,
     CARD_FORMATS[format],
   );

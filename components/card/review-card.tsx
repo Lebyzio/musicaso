@@ -3,6 +3,7 @@ import type { CardPalette, CardFormat } from "@/lib/card/themes";
 import type { CardTrackList } from "@/lib/card/tracks";
 import { CoverArt } from "./cover-art";
 import { CARD_FONT } from "@/lib/fonts";
+import type { Dictionary } from "@/lib/i18n";
 import { type Album, SOURCE_LABEL } from "@/lib/music/types";
 import { formatScore, isScored, type Rating, toScore } from "@/lib/score";
 import type { ReviewView } from "@/lib/share/review-view";
@@ -18,10 +19,11 @@ interface ReviewCardProps {
   palette: CardPalette;
   /** Cover as a data URI (lib/cover-image.ts), or null for a blank tile. */
   cover: string | null;
+  t: Dictionary;
 }
 
-function scoreText(rating: Rating | undefined): string {
-  if (rating === "skip") return "skip";
+function scoreText(rating: Rating | undefined, t: Dictionary): string {
+  if (rating === "skip") return t.image.skip;
   if (rating === null || rating === undefined) return "–";
   return formatScore(toScore(rating));
 }
@@ -29,6 +31,24 @@ function scoreText(rating: Rating | undefined): string {
 /** Uppercase + tracking for Latin only — Satori misplaces Thai tone marks when letter-spaced. */
 function kicker(text: string): CSSProperties {
   return hasThai(text) ? {} : { letterSpacing: 6, textTransform: "uppercase" };
+}
+
+/** Display italic for Latin; Thai has no italic face, so it stays upright. */
+export function displayStyle(text: string): CSSProperties {
+  return { fontFamily: CARD_FONT.display, fontStyle: hasThai(text) ? "normal" : "italic" };
+}
+
+/** "Alex’s verdict" / "คำตัดสินของ Alex" — each part keeps its own script's styling. */
+export function VerdictKicker({ who, t }: { who: string | undefined; t: Dictionary }) {
+  if (!who) return <span style={kicker(t.image.albumReview)}>{t.image.albumReview}</span>;
+  const { before, after } = t.image.verdictOf;
+  return (
+    <>
+      {before && <span style={{ ...kicker(before), marginRight: 10 }}>{before.trim()}</span>}
+      <span style={kicker(who)}>{who}</span>
+      {after && <span style={kicker(after)}>{after}</span>}
+    </>
+  );
 }
 
 function titleSize(title: string, format: CardFormat): number {
@@ -75,14 +95,20 @@ function Brand({ palette, size }: { palette: CardPalette; size: number }) {
   );
 }
 
-export function ReviewCard({ album, view, tracks, format, palette, cover }: ReviewCardProps) {
+export function ReviewCard({ album, view, tracks, format, palette, cover, t }: ReviewCardProps) {
   const story = format === "story";
   const pad = story ? 96 : 80;
   const coverSize = story ? 400 : 300;
   const who = view.name;
   const thaiTitle = hasThai(album.title);
-  const refName = view.reference?.name ?? "Original";
+  const refName = view.reference?.name ?? t.image.original;
   const rowHeight = story ? 46 : 56;
+  const verdictLabel = view.verdict ? t.verdict[view.verdict] : t.score.unrated;
+  const listLabel = tracks.highlights
+    ? story
+      ? t.image.highlights
+      : t.image.topTracks
+    : t.image.trackByTrack;
 
   const header = (
     <div style={{ display: "flex", gap: 48, alignItems: "flex-end" }}>
@@ -98,8 +124,7 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
         }}
       >
         <div style={{ display: "flex", fontSize: 26, color: palette.score }}>
-          {who && <span style={kicker(who)}>{who}</span>}
-          <span style={kicker("x")}>{who ? "’s verdict" : "Album review"}</span>
+          <VerdictKicker who={who} t={t} />
         </div>
         <div
           style={{
@@ -134,20 +159,13 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
         {formatScore(view.score)}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <div
-          style={{
-            fontFamily: CARD_FONT.display,
-            fontStyle: "italic",
-            fontSize: 64,
-            color: palette.fg,
-          }}
-        >
-          {view.verdict ?? "Unrated"}
+        <div style={{ ...displayStyle(verdictLabel), fontSize: 64, color: palette.fg }}>
+          {verdictLabel}
         </div>
         <div style={{ fontSize: 26, color: palette.mute }}>
           {view.reference
-            ? `vs ${refName} · ${formatScore(view.comparison?.scoreB ?? null)}`
-            : `${view.stats.scored} of ${view.stats.total} tracks rated`}
+            ? t.image.vs(refName, formatScore(view.comparison?.scoreB ?? null))
+            : t.image.tracksRated(view.stats.scored, view.stats.total)}
         </div>
       </div>
     </div>
@@ -180,9 +198,7 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
           color: palette.mute,
         }}
       >
-        <span style={kicker("x")}>
-          {tracks.highlights ? (story ? "Highlights" : "Top tracks") : "Track by track"}
-        </span>
+        <span style={kicker(listLabel)}>{listLabel}</span>
         {view.reference && (
           // Same widths and order as the score columns below: reference first, reviewer last.
           <span style={{ display: "flex", gap: 16 }}>
@@ -197,14 +213,14 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
                 color: palette.score,
               }}
             >
-              {who ?? "Reviewer"}
+              {who ?? t.image.reviewer}
             </span>
           </span>
         )}
       </div>
-      {tracks.items.map((t) => (
+      {tracks.items.map((item) => (
         <div
-          key={t.index}
+          key={item.index}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -216,7 +232,7 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
           <div
             style={{ display: "flex", alignItems: "center", gap: 16, fontSize: story ? 28 : 32 }}
           >
-            <span style={{ width: 44, color: palette.mute, fontSize: 24 }}>{t.position}</span>
+            <span style={{ width: 44, color: palette.mute, fontSize: 24 }}>{item.position}</span>
             <div
               style={{
                 display: "flex",
@@ -227,7 +243,9 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
                 overflow: "hidden",
               }}
             >
-              {t.index === view.favorite && <Star color={palette.score} size={story ? 24 : 28} />}
+              {item.index === view.favorite && (
+                <Star color={palette.score} size={story ? 24 : 28} />
+              )}
               <span
                 style={{
                   flex: 1,
@@ -235,13 +253,13 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
                   overflow: "hidden",
                   whiteSpace: "nowrap",
                   textOverflow: "ellipsis",
-                  color: t.rating === "skip" ? palette.mute : palette.fg,
+                  color: item.rating === "skip" ? palette.mute : palette.fg,
                 }}
               >
-                {t.title}
+                {item.title}
               </span>
             </div>
-            {t.refRating !== undefined && (
+            {item.refRating !== undefined && (
               <span
                 style={{
                   display: "flex",
@@ -251,7 +269,7 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
                   fontSize: 24,
                 }}
               >
-                {scoreText(t.refRating)}
+                {scoreText(item.refRating, t)}
               </span>
             )}
             <span
@@ -262,10 +280,10 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
                 color: palette.score,
               }}
             >
-              {scoreText(t.rating)}
+              {scoreText(item.rating, t)}
             </span>
           </div>
-          {!story && <Bar rating={t.rating} fill={palette.barFill} track={palette.barTrack} />}
+          {!story && <Bar rating={item.rating} fill={palette.barFill} track={palette.barTrack} />}
         </div>
       ))}
     </div>
@@ -298,7 +316,7 @@ export function ReviewCard({ album, view, tracks, format, palette, cover }: Revi
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <Brand palette={palette} size={story ? 44 : 38} />
         <span style={{ fontSize: 22, color: palette.mute }}>
-          Data from {SOURCE_LABEL[album.source]}
+          {t.image.dataFrom(SOURCE_LABEL[album.source])}
         </span>
       </div>
     </div>

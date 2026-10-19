@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CardExport } from "@/components/card/card-export";
+import { useT } from "@/components/i18n/locale-provider";
 import type { CardTheme } from "@/lib/card/themes";
 
 /** Image-card section on a shared review. The viewer can pick another theme without changing the link. */
@@ -16,6 +17,7 @@ export function SharedCard({
   accent: string;
   initialTheme: CardTheme;
 }) {
+  const t = useT();
   const [theme, setTheme] = useState(initialTheme);
   return (
     <section
@@ -23,7 +25,7 @@ export function SharedCard({
       className="flex flex-col gap-4 rounded-card border border-ink-700 bg-ink-900/70 p-6"
     >
       <h2 id="card-heading" className="text-xs tracking-[0.25em] text-paper-mute uppercase">
-        Image card
+        {t.share.imageCard}
       </h2>
       <CardExport
         reviewPath={reviewPath}

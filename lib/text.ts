@@ -12,8 +12,8 @@ export function formatDuration(totalSec: number): string {
 }
 
 /** 2580 → "43 min", 4380 → "1 hr 13 min" */
-export function formatLength(totalSec: number): string {
+/** Album running time in whole minutes, split for display ("1 hr 5 min" / "1 ชม. 5 นาที"). */
+export function splitLength(totalSec: number): { hours: number; minutes: number } {
   const min = Math.round(totalSec / 60);
-  if (min < 60) return `${min} min`;
-  return `${Math.floor(min / 60)} hr ${min % 60} min`;
+  return { hours: Math.floor(min / 60), minutes: min % 60 };
 }

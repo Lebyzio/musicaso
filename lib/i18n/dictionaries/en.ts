@@ -20,7 +20,6 @@ export const en = {
       `${name ?? "Someone"} rated ${album} by ${artist} track by track: ${score}/10.`,
     brokenTitle: "Broken review link",
     reviewFallback: "Album review",
-    imageAlt: "Album review on musicaso",
   },
 
   nav: {
@@ -71,6 +70,8 @@ export const en = {
     recordType: { album: "Album", ep: "EP", single: "Single", compilation: "Compilation" },
     tracks: (n: number) => plural(n, "track", "tracks"),
     discs: (n: number) => `${n} discs`,
+    length: ({ hours, minutes }: { hours: number; minutes: number }) =>
+      hours > 0 ? `${hours} hr ${minutes} min` : `${minutes} min`,
     disc: (n: number) => `Disc ${n}`,
     dataFrom: (source: string) => `Data from ${source}`,
     coverOf: (title: string) => `Cover of ${title}`,

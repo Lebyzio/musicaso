@@ -2,6 +2,7 @@
 
 import { useMemo, useSyncExternalStore } from "react";
 import { CardExport } from "@/components/card/card-export";
+import { useLocale, useT } from "@/components/i18n/locale-provider";
 import { useDebouncedValue } from "@/components/search/use-debounced-value";
 import { CopyLinkButton, NativeShareButton } from "@/components/share/share-actions";
 import type { CardTheme } from "@/lib/card/themes";
@@ -50,6 +51,8 @@ export function SharePanel({
   reference,
   dispatch,
 }: SharePanelProps) {
+  const t = useT();
+  const locale = useLocale();
   const origin = useSyncExternalStore(
     subscribeNever,
     () => window.location.origin,
@@ -68,10 +71,11 @@ export function SharePanel({
       text,
       weighted,
       theme,
+      locale,
       reference,
     });
     return fitShareUrl(origin, payload);
-  }, [origin, canShare, source, albumId, ratings, name, text, weighted, theme, reference]);
+  }, [origin, canShare, source, albumId, ratings, name, text, weighted, theme, locale, reference]);
 
   // The card preview re-renders on the server, so wait until typing/rating pauses.
   const reviewPath = useDebouncedValue(fit && !fit.tooLong ? new URL(fit.url).pathname : null, 700);
@@ -79,7 +83,7 @@ export function SharePanel({
   const textLength = [...text].length;
   const getUrl = () => fit?.url ?? "";
   const unavailable = !fit || fit.tooLong;
-  const shareTitle = `${name.trim() || "My"} review of ${albumTitle}`;
+  const shareTitle = t.share.shareTitle(name.trim(), albumTitle);
 
   return (
     <section
@@ -88,24 +92,24 @@ export function SharePanel({
       className="flex scroll-mt-6 flex-col gap-4 rounded-card border border-ink-700 bg-ink-900/70 p-6"
     >
       <h2 id="share-heading" className="text-xs tracking-[0.25em] text-paper-mute uppercase">
-        Share your review
+        {t.share.heading}
       </h2>
 
       <label className="flex flex-col gap-1.5 text-sm text-paper-dim">
-        Your name
+        {t.share.yourName}
         <input
           value={name}
           onChange={(e) => dispatch({ type: "setName", value: e.target.value })}
           maxLength={NAME_MAX}
           autoComplete="nickname"
-          placeholder="Optional"
+          placeholder={t.share.optional}
           className={FIELD}
         />
       </label>
 
       <label className="flex flex-col gap-1.5 text-sm text-paper-dim">
         <span className="flex justify-between">
-          Your take
+          {t.share.yourTake}
           <span className="text-xs text-paper-mute tabular" aria-hidden>
             {textLength}/{TEXT_MAX}
           </span>
@@ -115,23 +119,22 @@ export function SharePanel({
           onChange={(e) => dispatch({ type: "setText", value: e.target.value })}
           maxLength={TEXT_MAX}
           rows={3}
-          placeholder="One or two lines about the album"
+          placeholder={t.share.takePlaceholder}
           className={`${FIELD} resize-none leading-normal`}
         />
       </label>
 
       {fit?.truncated && !fit.tooLong && (
         <p role="status" className="text-xs text-score-mid">
-          Your text is cut to {[...(fit.payload.t ?? "")].length - 1} characters in the link to keep
-          it under {URL_LIMIT.toLocaleString("en")} characters.
+          {t.share.truncated([...(fit.payload.t ?? "")].length - 1, URL_LIMIT.toLocaleString("en"))}
         </p>
       )}
       {fit?.tooLong && (
         <p role="status" className="text-xs text-score-low">
-          This review is too long to fit in a link.
+          {t.share.tooLong}
         </p>
       )}
-      {!canShare && <p className="text-xs text-paper-mute">Rate at least one track to share.</p>}
+      {!canShare && <p className="text-xs text-paper-mute">{t.share.rateFirst}</p>}
 
       <div className="flex flex-wrap gap-2">
         <CopyLinkButton getUrl={getUrl} disabled={unavailable} />
@@ -148,13 +151,13 @@ export function SharePanel({
             rel="noopener"
             className="rounded-full px-4 py-2.5 text-sm text-paper-dim underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
           >
-            Preview ↗
+            {t.share.preview}
           </a>
         )}
       </div>
 
       <div className="flex flex-col gap-4 border-t border-ink-700 pt-5">
-        <h3 className="text-xs tracking-[0.25em] text-paper-mute uppercase">Image card</h3>
+        <h3 className="text-xs tracking-[0.25em] text-paper-mute uppercase">{t.share.imageCard}</h3>
         <CardExport
           reviewPath={reviewPath}
           album={{ title: albumTitle, artist: albumArtist }}

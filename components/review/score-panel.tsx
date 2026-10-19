@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useT } from "@/components/i18n/locale-provider";
 import type { Track } from "@/lib/music/types";
 import { type AlbumStats, formatScore, roundScore, type Verdict } from "@/lib/score";
 import { AnimatedNumber } from "../ui/animated-number";
@@ -20,6 +21,7 @@ export function ScoreNumber({ score, className }: { score: number | null; classN
 }
 
 function Progress({ stats }: { stats: AlbumStats }) {
+  const t = useT();
   const done = stats.scored + stats.skipped;
   const pct = stats.total ? (done / stats.total) * 100 : 0;
   return (
@@ -27,7 +29,7 @@ function Progress({ stats }: { stats: AlbumStats }) {
       <div
         className="h-1.5 overflow-hidden rounded-full bg-ink-800"
         role="progressbar"
-        aria-label="Tracks rated"
+        aria-label={t.score.tracksRated}
         aria-valuemin={0}
         aria-valuemax={stats.total}
         aria-valuenow={done}
@@ -38,8 +40,8 @@ function Progress({ stats }: { stats: AlbumStats }) {
         />
       </div>
       <p className="text-xs text-paper-mute tabular">
-        {stats.scored} of {stats.total} rated
-        {stats.skipped > 0 && ` · ${stats.skipped} skipped`}
+        {t.score.ratedOf(stats.scored, stats.total)}
+        {stats.skipped > 0 && ` · ${t.score.skippedN(stats.skipped)}`}
       </p>
     </div>
   );
@@ -64,6 +66,7 @@ export function ScorePanel({
   saveFailed,
   reference,
 }: ScorePanelProps) {
+  const t = useT();
   const { score, verdict, stats } = summary;
   const [confirmClear, setConfirmClear] = useState(false);
 
@@ -84,14 +87,14 @@ export function ScorePanel({
   return (
     <div className="flex flex-col gap-6 rounded-card border border-ink-700 bg-ink-900/70 p-6">
       <div className="flex flex-col gap-1">
-        <p className="text-xs tracking-[0.25em] text-paper-mute uppercase">Album score</p>
+        <p className="text-xs tracking-[0.25em] text-paper-mute uppercase">{t.score.albumScore}</p>
         <div className="flex items-baseline justify-between gap-4">
           <ScoreNumber
             score={score}
             className="font-mono text-7xl leading-none font-medium text-accent tabular"
           />
           <span className="font-display text-2xl text-paper-dim italic" aria-live="polite">
-            {verdict ?? "Unrated"}
+            {verdict ? t.verdict[verdict] : t.score.unrated}
           </span>
         </div>
       </div>
@@ -100,7 +103,7 @@ export function ScorePanel({
 
       {reference && (
         <p className="flex items-baseline justify-between gap-3 text-sm text-paper-dim">
-          <span className="line-clamp-1">{reference.name}’s score</span>
+          <span className="line-clamp-1">{t.score.theirScore(reference.name)}</span>
           <span
             className={`font-mono tabular ${reference.score === null ? "text-paper-mute" : scoreTone(reference.score)}`}
           >
@@ -111,22 +114,20 @@ export function ScorePanel({
 
       {stats.scored > 0 && (
         <dl className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-2 text-sm">
-          <dt className="text-paper-mute">Best</dt>
+          <dt className="text-paper-mute">{t.score.best}</dt>
           {pick(stats.highest)}
           {stats.scored > 1 && (
             <>
-              <dt className="text-paper-mute">Weakest</dt>
+              <dt className="text-paper-mute">{t.score.weakest}</dt>
               {pick(stats.lowest)}
             </>
           )}
-          <dt className="text-paper-mute">8+</dt>
-          <dd className="col-span-2 text-paper">
-            {stats.atLeast8} {stats.atLeast8 === 1 ? "track" : "tracks"}
-          </dd>
+          <dt className="text-paper-mute">{t.score.eightPlus}</dt>
+          <dd className="col-span-2 text-paper">{t.score.tracksN(stats.atLeast8)}</dd>
           {stats.consistency && (
             <>
-              <dt className="text-paper-mute">Flow</dt>
-              <dd className="col-span-2 text-paper">{stats.consistency}</dd>
+              <dt className="text-paper-mute">{t.score.flow}</dt>
+              <dd className="col-span-2 text-paper">{t.consistency[stats.consistency]}</dd>
             </>
           )}
         </dl>
@@ -140,8 +141,8 @@ export function ScorePanel({
         className="group flex items-center justify-between gap-3 text-left text-sm text-paper-dim"
       >
         <span>
-          Weight by track length
-          <span className="block text-xs text-paper-mute">Long songs count for more</span>
+          {t.score.weight}
+          <span className="block text-xs text-paper-mute">{t.score.weightHint}</span>
         </span>
         <span className="relative h-6 w-10 shrink-0 rounded-full bg-ink-700 transition-colors group-aria-checked:bg-accent">
           <span className="absolute top-1 left-1 size-4 rounded-full bg-paper transition-transform group-aria-checked:translate-x-4 group-aria-checked:bg-accent-ink" />
@@ -149,9 +150,7 @@ export function ScorePanel({
       </button>
 
       <div className="flex items-center justify-between gap-3 border-t border-ink-700 pt-4 text-xs text-paper-mute">
-        <span>
-          {saveFailed ? "Couldn’t save a draft in this browser" : "Draft saved in this browser"}
-        </span>
+        <span>{saveFailed ? t.score.draftFailed : t.score.draftSaved}</span>
         {stats.scored + stats.skipped > 0 && (
           <button
             type="button"
@@ -169,7 +168,7 @@ export function ScorePanel({
                 : "text-paper-mute hover:bg-ink-800 hover:text-paper"
             }`}
           >
-            {confirmClear ? "Tap again to clear" : "Clear all"}
+            {confirmClear ? t.score.tapAgain : t.score.clearAll}
           </button>
         )}
       </div>
@@ -179,6 +178,7 @@ export function ScorePanel({
 
 /** Compact score shown pinned to the bottom of small screens while the full panel is off-screen. */
 export function MobileScoreBar({ summary, hidden }: { summary: ScoreSummary; hidden: boolean }) {
+  const t = useT();
   const { score, verdict, stats } = summary;
   return (
     <div
@@ -189,9 +189,11 @@ export function MobileScoreBar({ summary, hidden }: { summary: ScoreSummary; hid
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
         <div className="flex flex-col">
-          <span className="font-display text-lg text-paper-dim italic">{verdict ?? "Unrated"}</span>
+          <span className="font-display text-lg text-paper-dim italic">
+            {verdict ? t.verdict[verdict] : t.score.unrated}
+          </span>
           <span className="text-xs text-paper-mute tabular">
-            {stats.scored} of {stats.total} rated
+            {t.score.ratedOf(stats.scored, stats.total)}
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -200,7 +202,7 @@ export function MobileScoreBar({ summary, hidden }: { summary: ScoreSummary; hid
             tabIndex={hidden ? -1 : undefined}
             className="rounded-full border border-ink-600 px-3 py-1.5 text-xs text-paper-dim"
           >
-            Share
+            {t.score.share}
           </a>
           <ScoreNumber
             score={score}

@@ -24,6 +24,7 @@ const full: ReviewPayload = {
   f: 1,
   w: 1,
   th: "vinyl",
+  l: "th",
   ref: { n: "Sam", r: "ggggg_ggg." },
 };
 
@@ -128,6 +129,8 @@ describe("buildPayload", () => {
     const base = { source: "dz" as const, albumId: "1", ratings: [20] };
     expect(buildPayload({ ...base, theme: "vivid" }).th).toBe("vivid");
     expect(buildPayload({ ...base, theme: "sleeve" }).th).toBeUndefined();
+    expect(buildPayload({ ...base, locale: "th" }).l).toBe("th");
+    expect(buildPayload({ ...base, locale: "en" }).l).toBeUndefined();
   });
 });
 

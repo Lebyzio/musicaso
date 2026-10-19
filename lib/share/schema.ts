@@ -29,6 +29,10 @@ export const ReviewPayloadV1 = z.object({
     .max(20)
     .regex(/^[a-z0-9-]+$/)
     .optional(), // card theme id
+  l: z
+    .string()
+    .regex(/^[a-z]{2}$/)
+    .optional(), // language of the card / OG image (absent = English); unknown codes read as English
   ref: z.object({ n: z.string().max(NAME_MAX).optional(), r: Ratings }).optional(),
 });
 

@@ -20,12 +20,6 @@ export type CardFormat = keyof typeof CARD_FORMATS;
 export const CARD_THEMES = ["sleeve", "paper", "vivid"] as const;
 export type CardTheme = (typeof CARD_THEMES)[number];
 
-export const THEME_LABEL: Record<CardTheme, string> = {
-  sleeve: "Sleeve",
-  paper: "Paper",
-  vivid: "Vivid",
-};
-
 export function isCardTheme(value: unknown): value is CardTheme {
   return CARD_THEMES.includes(value as CardTheme);
 }

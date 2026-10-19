@@ -4,6 +4,8 @@ import { EmptyTracklist } from "@/components/review/empty-tracklist";
 import { scoreTone } from "@/components/review/score-tone";
 import { type Accent, accentStyle } from "@/lib/accent";
 import { AGREE_WITHIN } from "@/lib/compare";
+import type { Dictionary } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import type { Album } from "@/lib/music/types";
 import { formatScore, isScored, type Rating, toScore } from "@/lib/score";
 import type { ReviewView } from "@/lib/share/review-view";
@@ -41,14 +43,24 @@ function AverageText({ score }: { score: number | null }) {
   return <span className={`font-mono ${scoreTone(score)}`}>{formatScore(score)}</span>;
 }
 
-function ScoreText({ rating, className = "" }: { rating: Rating; className?: string }) {
-  if (rating === "skip") return <span className={`text-paper-mute ${className}`}>skip</span>;
+function ScoreText({
+  rating,
+  className = "",
+  t,
+}: {
+  rating: Rating;
+  className?: string;
+  t: Dictionary;
+}) {
+  if (rating === "skip") {
+    return <span className={`text-paper-mute ${className}`}>{t.editor.skipShort}</span>;
+  }
   if (rating === null) return <span className={`text-paper-mute ${className}`}>–</span>;
   const score = toScore(rating);
   return <span className={`${scoreTone(score)} ${className}`}>{formatScore(score)}</span>;
 }
 
-export function SharedReview({
+export async function SharedReview({
   album,
   view,
   reviewItHref,
@@ -57,8 +69,9 @@ export function SharedReview({
   reviewPath,
   cardTheme,
 }: SharedReviewProps) {
-  const who = view.name ?? "Someone";
-  const refWho = view.reference?.name ?? "Original";
+  const t = await getT();
+  const who = view.name ?? t.shared.someone;
+  const refWho = view.reference?.name ?? t.shared.original;
   const { comparison, stats } = view;
   const multiDisc = new Set(album.tracks.map((t) => t.disc)).size > 1;
 
@@ -71,8 +84,7 @@ export function SharedReview({
           role="status"
           className="mt-6 rounded-xl border border-score-mid/40 bg-score-mid/10 p-4 text-sm text-paper-dim"
         >
-          This album’s tracklist has changed since the review was written, so scores are shown by
-          track order and may not line up exactly.
+          {t.shared.mismatch}
         </p>
       )}
 
@@ -81,8 +93,9 @@ export function SharedReview({
       <section className="grid gap-8 rounded-card border border-ink-700 bg-ink-900/70 p-6 sm:p-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-12">
         <div className="flex flex-col gap-2">
           <p className="text-xs tracking-[0.25em] text-paper-mute uppercase">
-            <span className={hasThai(who) ? "tracking-normal normal-case" : ""}>{who}</span>’s
-            verdict
+            {t.shared.verdictOf.before}
+            <span className={hasThai(who) ? "tracking-normal normal-case" : ""}>{who}</span>
+            {t.shared.verdictOf.after}
           </p>
           <div className="flex items-baseline gap-4">
             <ScoreCountUp
@@ -90,13 +103,13 @@ export function SharedReview({
               className="font-mono text-8xl leading-none font-medium text-accent tabular"
             />
             <span className="font-display text-3xl text-paper-dim italic">
-              {view.verdict ?? "Unrated"}
+              {view.verdict ? t.verdict[view.verdict] : t.score.unrated}
             </span>
           </div>
           <p className="text-xs text-paper-mute tabular">
-            {stats.scored === 0 && "No scores yet · "}
-            {stats.scored} of {stats.total} tracks rated
-            {stats.skipped > 0 && ` · ${stats.skipped} skipped`}
+            {stats.scored === 0 && `${t.shared.noScores} · `}
+            {t.shared.tracksRated(stats.scored, stats.total)}
+            {stats.skipped > 0 && ` · ${t.score.skippedN(stats.skipped)}`}
           </p>
         </div>
 
@@ -122,7 +135,7 @@ export function SharedReview({
                   {who}
                   <AverageText score={comparison.scoreA} />
                 </span>
-                <span className="text-paper-mute">vs</span>
+                <span className="text-paper-mute">{t.shared.vs}</span>
                 <span className="flex items-baseline gap-2">
                   <span className="size-2 rounded-full bg-paper-mute/60" aria-hidden />
                   {refWho}
@@ -131,12 +144,11 @@ export function SharedReview({
               </div>
               {comparison.both > 0 && (
                 <p className="text-paper-dim">
-                  Agree on {comparison.agree} of {comparison.both} tracks (within {AGREE_WITHIN}{" "}
-                  point).
+                  {t.shared.agree(comparison.agree, comparison.both, AGREE_WITHIN)}
                   {comparison.biggestSplit && (
                     <>
                       {" "}
-                      Biggest split:{" "}
+                      {t.shared.biggestSplit}{" "}
                       <span className="text-paper">
                         {album.tracks[comparison.biggestSplit.index]?.title}
                       </span>{" "}
@@ -167,7 +179,7 @@ export function SharedReview({
           id="shared-tracklist"
           className="px-1 text-xs tracking-[0.25em] text-paper-mute uppercase"
         >
-          Track by track
+          {t.shared.trackByTrack}
         </h2>
         {album.tracks.length === 0 && <EmptyTracklist source={album.source} />}
         <ol className="flex flex-col">
@@ -179,7 +191,7 @@ export function SharedReview({
               <RevealItem key={track.id} index={i} className="flex flex-col">
                 {showDisc && (
                   <p className="px-1 pt-6 pb-2 text-xs tracking-[0.25em] text-accent uppercase">
-                    Disc {track.disc}
+                    {t.album.disc(track.disc)}
                   </p>
                 )}
                 <div className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b border-ink-800 px-1 py-3">
@@ -189,8 +201,8 @@ export function SharedReview({
                   <div className={`min-w-0 ${rating === "skip" ? "opacity-45" : ""}`}>
                     <p className="line-clamp-2 leading-normal text-paper">
                       {i === view.favorite && (
-                        <span className="mr-1.5 text-accent" title="Favourite track">
-                          ★<span className="sr-only">Favourite:</span>
+                        <span className="mr-1.5 text-accent" title={t.shared.favourite}>
+                          ★<span className="sr-only">{t.shared.favouriteSr}</span>
                         </span>
                       )}
                       {track.title}
@@ -200,11 +212,11 @@ export function SharedReview({
                     </p>
                   </div>
                   <div className="flex flex-col items-end font-mono tabular">
-                    <ScoreText rating={rating} className="text-xl" />
+                    <ScoreText rating={rating} className="text-xl" t={t} />
                     {view.reference && (
                       <span className="text-xs text-paper-mute">
                         {refRating === "skip"
-                          ? "skip"
+                          ? t.editor.skipShort
                           : isScored(refRating)
                             ? formatScore(toScore(refRating))
                             : "–"}

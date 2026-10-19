@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/components/i18n/locale-provider";
 import { usePrefersReducedMotion } from "@/components/ui/use-reduced-motion";
 import { Fragment, type KeyboardEvent, useCallback, useEffect, useRef } from "react";
 import type { Track } from "@/lib/music/types";
@@ -21,6 +22,7 @@ interface TrackListProps {
 }
 
 export function TrackList({ tracks, ratings, active, dispatch, reference }: TrackListProps) {
+  const t = useT();
   const sliders = useRef<(HTMLInputElement | null)[]>([]);
   const pendingOne = useRef<{ index: number; timer: number } | null>(null);
   const reduced = usePrefersReducedMotion();
@@ -117,7 +119,7 @@ export function TrackList({ tracks, ratings, active, dispatch, reference }: Trac
   );
 
   return (
-    <ol className="flex flex-col gap-1" aria-label="Tracklist">
+    <ol className="flex flex-col gap-1" aria-label={t.editor.tracklist}>
       {tracks.map((track, i) => (
         <Fragment key={track.id}>
           {multiDisc && (i === 0 || tracks[i - 1].disc !== track.disc) && (
@@ -125,7 +127,7 @@ export function TrackList({ tracks, ratings, active, dispatch, reference }: Trac
               role="presentation"
               className="px-3 pt-6 pb-2 text-xs tracking-[0.25em] text-accent uppercase first:pt-0 sm:px-4"
             >
-              Disc {track.disc}
+              {t.album.disc(track.disc)}
             </li>
           )}
           <TrackRow
@@ -138,7 +140,7 @@ export function TrackList({ tracks, ratings, active, dispatch, reference }: Trac
             onQuickPick={onQuickPick}
             registerSlider={registerSlider}
             refRating={reference ? (reference.ratings[i] ?? null) : undefined}
-            refName={reference?.name ?? "Them"}
+            refName={reference?.name ?? t.editor.originalReviewer}
           />
         </Fragment>
       ))}

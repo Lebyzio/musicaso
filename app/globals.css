@@ -88,6 +88,10 @@
 :lang(th) .tracking-wider {
   letter-spacing: 0.02em;
 }
+/* IBM Plex Sans Thai has no italic: a synthesized slant smears the marks. (The logo is lang="en".) */
+:lang(th) .italic {
+  font-style: normal;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -175,6 +175,7 @@ export const ReviewPayloadV1 = z.object({
   f: z.number().int().optional(),     // index เพลงโปรด (ถ้าไม่ใส่ = คะแนนสูงสุด)
   w: z.literal(1).optional(),         // คะแนนรวมถ่วงน้ำหนักตามความยาวเพลง (ให้หน้า share คำนวณตรงกับ editor)
   th: z.string().optional(),          // theme id ของการ์ด
+  l: z.string().regex(/^[a-z]{2}$/).optional(), // ภาษาของการ์ด/OG ตามภาษา UI ของผู้รีวิว (ไม่ใส่ = en)
   ref: z.object({ n: z.string().max(40).optional(), r: z.string() }).optional(), // รีวิวต้นทาง (ตอน "รีวิวต่อ")
 });
 ```
@@ -320,7 +321,14 @@ tests/
 - ชื่อไฟล์ kebab-case, component PascalCase
 - ไม่เพิ่ม dependency ใหม่โดยไม่จำเป็น — ถ้าเพิ่มให้บอกเหตุผลใน PR/commit message
 - Error จาก provider: แสดงข้อความที่เข้าใจง่าย + ปุ่มลองใหม่ / สลับ source
-- ข้อความ UI: ภาษาอังกฤษเป็นหลัก (เตรียมโครงสร้างให้เพิ่มภาษาไทยได้ภายหลัง)
+- ข้อความ UI: **ห้าม hard-code** — ใส่ใน `lib/i18n/dictionaries/en.ts` (ต้นฉบับ) และ `th.ts` (type `Dictionary` เดียวกัน, test เช็ก key/ชนิดตรงกัน)
+  - ภาษามาจาก cookie `musicaso-lang` (ปุ่ม EN/ไทย ใน header) → `Accept-Language` → en (`pickLocale`); URL ไม่เปลี่ยน — root layout อ่าน cookie จึงทำให้ทุกหน้าเป็น dynamic
+  - Server Component: `const t = await getT()` (`lib/i18n/server.ts`); Client Component: `useT()` / `useLocale()` (`components/i18n/locale-provider.tsx`) — ส่งข้าม server→client แค่ locale (dictionary มีฟังก์ชัน)
+  - ข้อความที่มีชื่อแทรกกลางประโยค ใช้ `{ before, after }` (เช่น `verdictOf`) เพราะลำดับคำไทย/อังกฤษต่างกัน
+  - คำตัดสิน/Flow ใน `lib/score.ts` เป็น key ภาษาอังกฤษ → แปลตอนแสดงด้วย `t.verdict[…]` / `t.consistency[…]`
+  - CSS: `:lang(th)` รีเซ็ต letter-spacing ของ kicker และปิด italic (Plex Thai ไม่มีตัวเอียง) — โลโก้ใส่ `lang="en"` ไว้; หัวข้อใหญ่ภาษาไทยต้องใช้ leading ≥ 1.3
+  - การ์ด PNG: `?lang=` (CardExport ส่งภาษาของผู้ดู) → payload `l` → en; OG และ `generateMetadata` ของ `/r` ใช้ payload `l` (preview ในแชตเป็นภาษาคนส่ง); ป้ายบนการ์ดใช้ `VerdictKicker`/`displayStyle` ใน `components/card/review-card.tsx`
+  - Error ของ API (JSON) เป็นภาษาอังกฤษ — ไม่ใช่ข้อความที่ผู้ใช้เห็นตรง ๆ
 - Commit แบบ Conventional Commits (`feat:`, `fix:`, `chore:` …), commit ทีละเรื่องย่อย
 
 ---
@@ -369,6 +377,6 @@ tests/
 - [x] ค้นด้วยชื่อศิลปิน → แถบ discography จาก Deezer (`/search/artist` → `/artist/{id}/albums`) เหนือผลค้นหา
 - [x] MusicBrainz provider + Cover Art Archive (fallback Deezer → iTunes → MusicBrainz)
 - [x] i18n foundation (cookie `musicaso-lang` + Accept-Language, ปุ่มสลับ EN/ไทย)
-- [ ] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
+- [x] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
 - [ ] `/library` รีวิวของฉัน (draft + meta)
 - [ ] Top list ของปี `/l/{payload}` + การ์ด + OG

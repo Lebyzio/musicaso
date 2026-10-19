@@ -9,7 +9,7 @@ export async function SiteHeader() {
       className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-5 sm:px-8"
       style={{ viewTransitionName: "site-header" }}
     >
-      <Link href="/" className="font-display text-2xl tracking-tight italic">
+      <Link href="/" lang="en" className="font-display text-2xl tracking-tight italic">
         musicaso<span className="text-accent">.</span>
       </Link>
       <div className="flex items-center gap-5">

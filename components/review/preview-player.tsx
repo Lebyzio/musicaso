@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useT } from "@/components/i18n/locale-provider";
 import type { Track } from "@/lib/music/types";
 
 interface PlayerControls {
@@ -96,12 +97,15 @@ export function usePreviewPlayer(): PlayerControls {
 }
 
 export function PreviewButton({ track, tabIndex }: { track: Track; tabIndex?: number }) {
+  const t = useT();
   const { playingId, failedIds, toggle } = usePreviewPlayer();
   const playing = playingId === track.id;
   const unavailable = !track.previewUrl || failedIds.has(track.id);
   const label = unavailable
-    ? `No preview for ${track.title}`
-    : `${playing ? "Stop" : "Play"} preview of ${track.title}`;
+    ? t.editor.noPreviewFor(track.title)
+    : playing
+      ? t.editor.stopPreview(track.title)
+      : t.editor.playPreview(track.title);
 
   return (
     <button
@@ -109,7 +113,7 @@ export function PreviewButton({ track, tabIndex }: { track: Track; tabIndex?: nu
       onClick={() => toggle(track)}
       disabled={unavailable}
       aria-label={label}
-      title={unavailable ? "No preview available" : undefined}
+      title={unavailable ? t.editor.noPreview : undefined}
       aria-pressed={playing}
       tabIndex={tabIndex}
       className="relative flex size-9 shrink-0 items-center justify-center rounded-full border border-ink-600 text-paper-dim transition-colors hover:border-accent hover:text-paper disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-ink-600 aria-pressed:border-accent aria-pressed:text-accent"

@@ -4,13 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, ViewTransition } from "react";
 import { coverTransitionName } from "@/lib/music/cover";
-import type { AlbumSummary, RecordType } from "@/lib/music/types";
-
-const RECORD_TYPE_LABEL: Partial<Record<RecordType, string>> = {
-  ep: "EP",
-  single: "Single",
-  compilation: "Compilation",
-};
+import { useT } from "@/components/i18n/locale-provider";
+import type { AlbumSummary } from "@/lib/music/types";
 
 export function AlbumCard({
   album,
@@ -21,11 +16,15 @@ export function AlbumCard({
 }) {
   // MusicBrainz covers are guessed per release group and can be missing (404).
   const [broken, setBroken] = useState(false);
-  const badge = album.recordType ? RECORD_TYPE_LABEL[album.recordType] : undefined;
-  const meta = [
-    album.year,
-    album.trackCount ? `${album.trackCount} ${album.trackCount === 1 ? "track" : "tracks"}` : null,
-  ].filter(Boolean);
+  const t = useT();
+  // Albums are the norm; only the other release types get a badge.
+  const badge =
+    album.recordType && album.recordType !== "album"
+      ? t.album.recordType[album.recordType]
+      : undefined;
+  const meta = [album.year, album.trackCount ? t.album.tracks(album.trackCount) : null].filter(
+    Boolean,
+  );
 
   return (
     <Link
