@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
+import { usePrefersReducedMotion } from "@/components/ui/use-reduced-motion";
 import { Fragment, type KeyboardEvent, useCallback, useEffect, useRef } from "react";
 import type { Track } from "@/lib/music/types";
 import type { Rating } from "@/lib/score";
@@ -23,7 +23,7 @@ interface TrackListProps {
 export function TrackList({ tracks, ratings, active, dispatch, reference }: TrackListProps) {
   const sliders = useRef<(HTMLInputElement | null)[]>([]);
   const pendingOne = useRef<{ index: number; timer: number } | null>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { toggle } = usePreviewPlayer();
   const multiDisc = tracks.length > 0 && tracks.some((t) => t.disc !== tracks[0].disc);
 

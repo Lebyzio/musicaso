@@ -26,10 +26,7 @@ export function AlbumHeader({ album }: { album: Album }) {
   return (
     <header className="grid items-end gap-6 pt-6 sm:grid-cols-[minmax(0,17rem)_1fr] sm:gap-10 sm:pt-10">
       <div className="relative w-56 sm:w-full">
-        <div
-          aria-hidden
-          className="absolute -inset-4 rounded-full bg-accent opacity-25 blur-3xl transition-colors duration-700"
-        />
+        <div aria-hidden className="absolute -inset-4 rounded-full bg-accent opacity-25 blur-3xl" />
         <ViewTransition name={coverTransitionName(album)} share="morph" default="none">
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-ink-800 shadow-2xl ring-1 shadow-black/60 ring-white/10">
             {album.coverUrl && (
@@ -37,7 +34,8 @@ export function AlbumHeader({ album }: { album: Album }) {
                 src={album.coverUrl}
                 alt={`Cover of ${album.title}`}
                 fill
-                priority
+                // LCP on album and review pages: start the download from <head>, not mid-body.
+                preload
                 sizes="(min-width: 640px) 17rem, 14rem"
                 className="object-cover"
               />
@@ -47,7 +45,7 @@ export function AlbumHeader({ album }: { album: Album }) {
       </div>
 
       <div className="flex min-w-0 flex-col gap-3">
-        <p className="text-xs tracking-[0.25em] text-accent uppercase transition-colors duration-700">
+        <p className="text-xs tracking-[0.25em] text-accent uppercase">
           {album.recordType ? KICKER[album.recordType] : "Album"}
         </p>
         <h1

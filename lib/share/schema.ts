@@ -1,8 +1,8 @@
 import { z } from "zod";
+import { NAME_MAX, TEXT_MAX } from "./limits";
 import { RATINGS_PATTERN } from "./ratings";
 
-export const NAME_MAX = 40;
-export const TEXT_MAX = 280;
+export { NAME_MAX, TEXT_MAX };
 
 const Ratings = z.string().max(500).regex(RATINGS_PATTERN);
 

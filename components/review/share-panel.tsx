@@ -7,8 +7,8 @@ import { CopyLinkButton, NativeShareButton } from "@/components/share/share-acti
 import type { CardTheme } from "@/lib/card/themes";
 import type { SourceId } from "@/lib/music/types";
 import { isScored, type Rating } from "@/lib/score";
-import { buildPayload, fitShareUrl, URL_LIMIT } from "@/lib/share/codec";
-import { NAME_MAX, TEXT_MAX } from "@/lib/share/schema";
+import { buildPayload, fitShareUrl, URL_LIMIT } from "@/lib/share/encode";
+import { NAME_MAX, TEXT_MAX } from "@/lib/share/limits";
 import type { EditorAction } from "./editor-state";
 
 const subscribeNever = () => () => {};

@@ -1,6 +1,5 @@
 "use client";
 
-import { MotionConfig } from "motion/react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { loadDraft, loadReviewerName, saveDraft, saveReviewerName } from "@/lib/draft";
 import type { Album } from "@/lib/music/types";
@@ -100,100 +99,98 @@ export function ReviewEditor({
   }, []);
 
   return (
-    <MotionConfig reducedMotion="user">
-      <PreviewPlayerProvider>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
-          <section aria-labelledby="tracklist-heading" className="flex min-w-0 flex-col gap-4">
-            <div className="flex flex-wrap items-baseline justify-between gap-3 px-3 sm:px-4">
-              <h2
-                id="tracklist-heading"
-                className="text-xs tracking-[0.25em] text-paper-mute uppercase"
-              >
-                Tracklist
-              </h2>
-              <ul
-                className="hidden flex-wrap gap-x-4 gap-y-1 text-xs text-paper-mute sm:flex"
-                aria-label="Keyboard shortcuts"
-              >
-                {SHORTCUTS.map(([keys, action]) => (
-                  <li key={keys}>
-                    <kbd className="rounded border border-ink-600 px-1.5 py-0.5 font-mono text-[0.7rem] text-paper-dim">
-                      {keys}
-                    </kbd>{" "}
-                    {action}
-                  </li>
-                ))}
-              </ul>
-            </div>
+    <PreviewPlayerProvider>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
+        <section aria-labelledby="tracklist-heading" className="flex min-w-0 flex-col gap-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-3 px-3 sm:px-4">
+            <h2
+              id="tracklist-heading"
+              className="text-xs tracking-[0.25em] text-paper-mute uppercase"
+            >
+              Tracklist
+            </h2>
+            <ul
+              className="hidden flex-wrap gap-x-4 gap-y-1 text-xs text-paper-mute sm:flex"
+              aria-label="Keyboard shortcuts"
+            >
+              {SHORTCUTS.map(([keys, action]) => (
+                <li key={keys}>
+                  <kbd className="rounded border border-ink-600 px-1.5 py-0.5 font-mono text-[0.7rem] text-paper-dim">
+                    {keys}
+                  </kbd>{" "}
+                  {action}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {reference && (
-              <p
-                role="status"
-                className="mx-3 rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm text-paper-dim sm:mx-4"
-              >
-                Reviewing alongside <span className="text-paper">{referenceName}</span>. Their
-                scores show as faint marks — your link will include a side-by-side comparison.
+          {reference && (
+            <p
+              role="status"
+              className="mx-3 rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm text-paper-dim sm:mx-4"
+            >
+              Reviewing alongside <span className="text-paper">{referenceName}</span>. Their scores
+              show as faint marks — your link will include a side-by-side comparison.
+            </p>
+          )}
+
+          {state.mismatch && (
+            <div
+              role="status"
+              className="mx-3 flex items-start justify-between gap-4 rounded-xl border border-score-mid/40 bg-score-mid/10 p-4 text-sm text-paper-dim sm:mx-4"
+            >
+              <p>
+                This album’s tracklist changed since you started rating it. Your scores were matched
+                by track order — give them a quick check.
               </p>
-            )}
-
-            {state.mismatch && (
-              <div
-                role="status"
-                className="mx-3 flex items-start justify-between gap-4 rounded-xl border border-score-mid/40 bg-score-mid/10 p-4 text-sm text-paper-dim sm:mx-4"
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "dismissMismatch" })}
+                className="shrink-0 text-paper-mute hover:text-paper"
+                aria-label="Dismiss"
               >
-                <p>
-                  This album’s tracklist changed since you started rating it. Your scores were
-                  matched by track order — give them a quick check.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "dismissMismatch" })}
-                  className="shrink-0 text-paper-mute hover:text-paper"
-                  aria-label="Dismiss"
-                >
-                  ×
-                </button>
-              </div>
-            )}
+                ×
+              </button>
+            </div>
+          )}
 
-            <TrackList
-              tracks={tracks}
-              ratings={state.ratings}
-              active={state.active}
-              dispatch={dispatch}
-              reference={reference}
-            />
-          </section>
+          <TrackList
+            tracks={tracks}
+            ratings={state.ratings}
+            active={state.active}
+            dispatch={dispatch}
+            reference={reference}
+          />
+        </section>
 
-          <aside className="flex flex-col gap-6 lg:sticky lg:top-6 lg:self-start" ref={panelRef}>
-            <ScorePanel
-              tracks={tracks}
-              summary={summary}
-              weighted={state.weighted}
-              onToggleWeighted={() => dispatch({ type: "toggleWeighted" })}
-              onClearAll={() => dispatch({ type: "clearAll" })}
-              saveFailed={saveFailed}
-              reference={reference && { name: referenceName, score: referenceScore }}
-            />
-            <SharePanel
-              source={source}
-              albumId={id}
-              albumTitle={album.title}
-              albumArtist={album.artist}
-              accent={accent}
-              theme={state.theme}
-              ratings={state.ratings}
-              weighted={state.weighted}
-              name={state.name}
-              text={state.text}
-              reference={reference}
-              dispatch={dispatch}
-            />
-          </aside>
-        </div>
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-6 lg:self-start" ref={panelRef}>
+          <ScorePanel
+            tracks={tracks}
+            summary={summary}
+            weighted={state.weighted}
+            onToggleWeighted={() => dispatch({ type: "toggleWeighted" })}
+            onClearAll={() => dispatch({ type: "clearAll" })}
+            saveFailed={saveFailed}
+            reference={reference && { name: referenceName, score: referenceScore }}
+          />
+          <SharePanel
+            source={source}
+            albumId={id}
+            albumTitle={album.title}
+            albumArtist={album.artist}
+            accent={accent}
+            theme={state.theme}
+            ratings={state.ratings}
+            weighted={state.weighted}
+            name={state.name}
+            text={state.text}
+            reference={reference}
+            dispatch={dispatch}
+          />
+        </aside>
+      </div>
 
-        <MobileScoreBar summary={summary} hidden={panelVisible} />
-      </PreviewPlayerProvider>
-    </MotionConfig>
+      <MobileScoreBar summary={summary} hidden={panelVisible} />
+    </PreviewPlayerProvider>
   );
 }

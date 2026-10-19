@@ -1,7 +1,7 @@
 import { type CardTheme, isCardTheme } from "@/lib/card/themes";
 import { clampHalfSteps, type Rating } from "@/lib/score";
 import { fitRatings } from "@/lib/share/ratings";
-import { NAME_MAX, TEXT_MAX } from "@/lib/share/schema";
+import { NAME_MAX, TEXT_MAX } from "@/lib/share/limits";
 
 export interface EditorState {
   ratings: Rating[];

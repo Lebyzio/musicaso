@@ -1,20 +1,41 @@
-import { z } from "zod";
 import type { Rating } from "./score";
+import { NAME_MAX, TEXT_MAX } from "./share/limits";
 import { decodeRatings, encodeRatings, fitRatings, RATINGS_PATTERN } from "./share/ratings";
-import { NAME_MAX, TEXT_MAX } from "./share/schema";
 
 /** In-progress reviews live only in this browser's localStorage. */
 
-const DraftSchema = z.object({
-  v: z.literal(1),
-  k: z.number().int().nonnegative(), // track count when saved
-  r: z.string().max(1000).regex(RATINGS_PATTERN),
-  w: z.boolean().optional(), // weight by track length
-  n: z.string().max(NAME_MAX).optional(), // reviewer name
-  t: z.string().max(TEXT_MAX).optional(), // review text
-  th: z.string().max(20).optional(), // card theme
-  updatedAt: z.number(),
-});
+interface StoredDraft {
+  v: 1;
+  k: number; // track count when saved
+  r: string; // compact ratings
+  w?: boolean; // weight by track length
+  n?: string; // reviewer name
+  t?: string; // review text
+  th?: string; // card theme
+  updatedAt: number;
+}
+
+const optionalString = (value: unknown, max: number) =>
+  value === undefined || (typeof value === "string" && value.length <= max);
+
+/** Validated by hand rather than with zod: this runs in the browser bundle. */
+function parseStoredDraft(data: unknown): StoredDraft | null {
+  if (typeof data !== "object" || data === null) return null;
+  const d = data as Record<string, unknown>;
+  const ok =
+    d.v === 1 &&
+    Number.isInteger(d.k) &&
+    (d.k as number) >= 0 &&
+    typeof d.r === "string" &&
+    d.r.length <= 1000 &&
+    RATINGS_PATTERN.test(d.r) &&
+    (d.w === undefined || typeof d.w === "boolean") &&
+    optionalString(d.n, NAME_MAX) &&
+    optionalString(d.t, TEXT_MAX) &&
+    optionalString(d.th, 20) &&
+    typeof d.updatedAt === "number";
+  return ok ? (d as unknown as StoredDraft) : null;
+}
 
 export interface Draft {
   ratings: Rating[];
@@ -51,18 +72,18 @@ export function loadDraft(
   try {
     const raw = storage?.getItem(draftKey(source, id));
     if (!raw) return null;
-    const parsed = DraftSchema.safeParse(JSON.parse(raw));
-    if (!parsed.success) return null;
-    const ratings = decodeRatings(parsed.data.r);
+    const stored = parseStoredDraft(JSON.parse(raw));
+    if (!stored) return null;
+    const ratings = decodeRatings(stored.r);
     if (!ratings) return null;
     return {
       ratings: fitRatings(ratings, trackCount),
-      weighted: parsed.data.w ?? false,
-      name: parsed.data.n ?? "",
-      text: parsed.data.t ?? "",
-      theme: parsed.data.th,
-      updatedAt: parsed.data.updatedAt,
-      mismatch: parsed.data.k !== trackCount,
+      weighted: stored.w ?? false,
+      name: stored.n ?? "",
+      text: stored.t ?? "",
+      theme: stored.th,
+      updatedAt: stored.updatedAt,
+      mismatch: stored.k !== trackCount,
     };
   } catch {
     return null;
@@ -93,7 +114,7 @@ export function saveDraft(
       storage.removeItem(key);
       return true;
     }
-    const value: z.infer<typeof DraftSchema> = {
+    const value: StoredDraft = {
       v: 1,
       k: draft.ratings.length,
       r: encodeRatings(draft.ratings),
