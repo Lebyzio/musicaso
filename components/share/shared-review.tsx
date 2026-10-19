@@ -8,6 +8,7 @@ import { formatScore, isScored, type Rating, toScore } from "@/lib/score";
 import type { ReviewView } from "@/lib/share/review-view";
 import { formatDuration, hasThai } from "@/lib/text";
 import type { CardTheme } from "@/lib/card/themes";
+import { RevealBar, RevealItem, ScoreCountUp } from "./reveal";
 import { ShareActions } from "./share-actions";
 import { SharedCard } from "./shared-card";
 
@@ -26,9 +27,9 @@ function Bar({ rating, muted = false }: { rating: Rating; muted?: boolean }) {
   const pct = isScored(rating) ? (toScore(rating) / 10) * 100 : 0;
   return (
     <div className="h-1.5 overflow-hidden rounded-full bg-ink-800">
-      <div
+      <RevealBar
+        pct={pct}
         className={`h-full rounded-full ${muted ? "bg-paper-mute/60" : "bg-accent"}`}
-        style={{ width: `${pct}%` }}
       />
     </div>
   );
@@ -83,9 +84,10 @@ export function SharedReview({
             verdict
           </p>
           <div className="flex items-baseline gap-4">
-            <span className="font-mono text-8xl leading-none font-medium text-accent tabular">
-              {formatScore(view.score)}
-            </span>
+            <ScoreCountUp
+              score={view.score}
+              className="font-mono text-8xl leading-none font-medium text-accent tabular"
+            />
             <span className="font-display text-3xl text-paper-dim italic">
               {view.verdict ?? "Unrated"}
             </span>
@@ -171,7 +173,7 @@ export function SharedReview({
             const refRating = view.reference?.ratings[i] ?? null;
             const showDisc = multiDisc && (i === 0 || album.tracks[i - 1].disc !== track.disc);
             return (
-              <li key={track.id} className="flex flex-col">
+              <RevealItem key={track.id} index={i} className="flex flex-col">
                 {showDisc && (
                   <p className="px-1 pt-6 pb-2 text-xs tracking-[0.25em] text-accent uppercase">
                     Disc {track.disc}
@@ -211,7 +213,7 @@ export function SharedReview({
                     {view.reference && <Bar rating={refRating} muted />}
                   </div>
                 </div>
-              </li>
+              </RevealItem>
             );
           })}
         </ol>

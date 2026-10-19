@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ViewTransition } from "react";
 import { SiteFooter } from "@/components/ui/site-footer";
 import { SiteHeader } from "@/components/ui/site-header";
 import { fontVariables } from "./fonts";
@@ -40,7 +41,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <SiteHeader />
         <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-8">
-          {children}
+          {/* Route changes crossfade (see ::view-transition rules in globals.css). */}
+          <ViewTransition>{children}</ViewTransition>
         </main>
         <SiteFooter />
       </body>

@@ -14,3 +14,8 @@ export function coverAtSize(url: string, px: number): string {
   }
   return url;
 }
+
+/** Shared view-transition name so a cover morphs between search results and the album header. */
+export function coverTransitionName(album: { source: string; id: string }): string {
+  return `cover-${album.source}-${album.id}`;
+}

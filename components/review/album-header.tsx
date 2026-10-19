@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { ViewTransition } from "react";
+import { coverTransitionName } from "@/lib/music/cover";
 import type { Album, RecordType } from "@/lib/music/types";
 import { SOURCE_LABEL } from "@/lib/music/types";
 import { formatLength, hasThai } from "@/lib/text";
@@ -28,18 +30,20 @@ export function AlbumHeader({ album }: { album: Album }) {
           aria-hidden
           className="absolute -inset-4 rounded-full bg-accent opacity-25 blur-3xl transition-colors duration-700"
         />
-        <div className="relative aspect-square overflow-hidden rounded-2xl bg-ink-800 shadow-2xl ring-1 shadow-black/60 ring-white/10">
-          {album.coverUrl && (
-            <Image
-              src={album.coverUrl}
-              alt={`Cover of ${album.title}`}
-              fill
-              priority
-              sizes="(min-width: 640px) 17rem, 14rem"
-              className="object-cover"
-            />
-          )}
-        </div>
+        <ViewTransition name={coverTransitionName(album)} share="morph" default="none">
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-ink-800 shadow-2xl ring-1 shadow-black/60 ring-white/10">
+            {album.coverUrl && (
+              <Image
+                src={album.coverUrl}
+                alt={`Cover of ${album.title}`}
+                fill
+                priority
+                sizes="(min-width: 640px) 17rem, 14rem"
+                className="object-cover"
+              />
+            )}
+          </div>
+        </ViewTransition>
       </div>
 
       <div className="flex min-w-0 flex-col gap-3">
