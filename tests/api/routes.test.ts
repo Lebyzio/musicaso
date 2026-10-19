@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { GET as album } from "@/app/api/album/[source]/[id]/route";
 import { GET as cover } from "@/app/api/cover/route";
 import { GET as preview } from "@/app/api/preview/[source]/[trackId]/route";
 import { GET as search } from "@/app/api/search/route";
+import album302127 from "../fixtures/deezer/album-302127.json";
+import tracks302127 from "../fixtures/deezer/album-302127-tracks.json";
 import dzSearch from "../fixtures/deezer/search-album.json";
 import quota from "../fixtures/deezer/error-quota.json";
 import { fetchedUrls, mockFetch } from "../helpers/mock-fetch";
@@ -97,6 +100,32 @@ describe("GET /api/cover", () => {
       },
     ]);
     expect((await cover(req(`/api/cover?url=${encodeURIComponent(DZ_COVER)}`))).status).toBe(502);
+  });
+});
+
+describe("GET /api/album/[source]/[id]", () => {
+  const ctx = (source: string, id: string) => ({ params: Promise.resolve({ source, id }) });
+
+  it("returns album details without the tracklist, cacheable", async () => {
+    mockFetch([
+      { match: "/album/302127/tracks", body: tracks302127 },
+      { match: "/album/302127", body: album302127 },
+    ]);
+    const res = await album(req("/api/album/dz/302127"), ctx("dz", "302127"));
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toContain("s-maxage=86400");
+    const body = await res.json();
+    expect(body).toMatchObject({ source: "dz", id: "302127", title: album302127.title });
+    expect(body.trackCount).toBe(tracks302127.data.length);
+    expect(body).not.toHaveProperty("tracks");
+  });
+
+  it("404s for unknown sources without calling a provider", async () => {
+    const fetch = mockFetch([]);
+    const res = await album(req("/api/album/xx/1"), ctx("xx", "1"));
+    expect(res.status).toBe(404);
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    expect(fetch).not.toHaveBeenCalled();
   });
 });
 

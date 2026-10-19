@@ -50,6 +50,25 @@ export function ReviewEditor({
     });
   }, [source, id, tracks.length]);
 
+  const summary: ScoreSummary = useMemo(() => {
+    const score = albumScore(
+      state.ratings,
+      state.weighted ? tracks.map((t) => t.durationSec) : undefined,
+    );
+    return { score, verdict: verdict(score), stats: albumStats(state.ratings) };
+  }, [state.ratings, state.weighted, tracks]);
+
+  // What the review library (/library) shows for this draft without refetching the album.
+  const draftAlbum = useMemo(
+    () => ({
+      title: album.title,
+      artist: album.artist,
+      year: album.year,
+      cover: album.coverThumbUrl || undefined,
+    }),
+    [album.title, album.artist, album.year, album.coverThumbUrl],
+  );
+
   useEffect(() => {
     if (!state.loaded) return; // don't overwrite a draft before it has been read
     const timer = setTimeout(() => {
@@ -59,6 +78,8 @@ export function ReviewEditor({
         name: state.name,
         text: state.text,
         theme: state.theme,
+        album: draftAlbum,
+        score: summary.score,
       });
       saveReviewerName(state.name);
       setSaveFailed(!ok);
@@ -73,15 +94,9 @@ export function ReviewEditor({
     state.name,
     state.text,
     state.theme,
+    draftAlbum,
+    summary.score,
   ]);
-
-  const summary: ScoreSummary = useMemo(() => {
-    const score = albumScore(
-      state.ratings,
-      state.weighted ? tracks.map((t) => t.durationSec) : undefined,
-    );
-    return { score, verdict: verdict(score), stats: albumStats(state.ratings) };
-  }, [state.ratings, state.weighted, tracks]);
 
   const referenceScore = useMemo(
     () => (reference ? albumScore(reference.ratings) : null),

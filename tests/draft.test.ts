@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   clearDraft,
+  attachAlbum,
   draftKey,
+  listDrafts,
   loadDraft,
   loadReviewerName,
   saveDraft,
@@ -15,6 +17,10 @@ function memoryStorage(initial: Record<string, string> = {}) {
     getItem: (k: string) => data.get(k) ?? null,
     setItem: (k: string, v: string) => void data.set(k, v),
     removeItem: (k: string) => void data.delete(k),
+    get length() {
+      return data.size;
+    },
+    key: (i: number) => [...data.keys()][i] ?? null,
   };
 }
 
@@ -125,5 +131,83 @@ describe("draft storage", () => {
     expect(() => clearDraft("dz", "1", throwing)).not.toThrow();
     expect(loadDraft("dz", "1", 1, null)).toBeNull();
     expect(saveDraft("dz", "1", { ratings: [1], weighted: false }, null)).toBe(false);
+  });
+});
+
+describe("listDrafts", () => {
+  const cover = "https://cdn-images.dzcdn.net/images/cover/abc/500x500-000000-80-0-0.jpg";
+  const album = { title: "คราม", artist: "Bodyslam", year: 2010, cover };
+
+  it("lists saved reviews with their album details, newest first", () => {
+    const storage = memoryStorage({ "musicaso:name": "Alex", other: "x" });
+    saveDraft("dz", "1", { ratings: [20, 10], weighted: false, album }, storage, 1000);
+    saveDraft(
+      "mb",
+      "08e3fae7-b9c9-3d70-9657-4b620d547d5d",
+      { ratings: [16, "skip"], weighted: true, score: 8.04, text: "Smooth" },
+      storage,
+      2000,
+    );
+
+    const entries = listDrafts(storage);
+    expect(entries.map((e) => e.id)).toEqual(["08e3fae7-b9c9-3d70-9657-4b620d547d5d", "1"]);
+    expect(entries[1]).toMatchObject({
+      source: "dz",
+      album,
+      ratings: [20, 10],
+      score: 7.5, // computed: no stored score
+      updatedAt: 1000,
+    });
+    expect(entries[0]).toMatchObject({
+      source: "mb",
+      album: null, // saved before album details were stored
+      weighted: true,
+      score: 8.04, // the stored (length-weighted) score wins
+      text: "Smooth",
+    });
+  });
+
+  it("keeps album details through loadDraft round trips", () => {
+    const storage = memoryStorage();
+    saveDraft("dz", "1", { ratings: [20], weighted: false, album }, storage);
+    expect(loadDraft("dz", "1", 1, storage)?.ratings).toEqual([20]);
+  });
+
+  it("drops cover URLs from hosts we don't serve", () => {
+    const storage = memoryStorage();
+    saveDraft(
+      "dz",
+      "1",
+      { ratings: [20], weighted: false, album: { ...album, cover: "https://evil.example/x.jpg" } },
+      storage,
+    );
+    expect(listDrafts(storage)[0].album).toEqual({ title: "คราม", artist: "Bodyslam", year: 2010 });
+  });
+
+  it("attaches album details without changing ratings or the edit time", () => {
+    const storage = memoryStorage();
+    saveDraft("dz", "1", { ratings: [20, 10], weighted: false }, storage, 1000);
+    expect(attachAlbum("dz", "1", album, storage)).toBe(true);
+    expect(listDrafts(storage)[0]).toMatchObject({ album, ratings: [20, 10], updatedAt: 1000 });
+    expect(attachAlbum("dz", "missing", album, storage)).toBe(false);
+    expect(attachAlbum("dz", "1", album, throwing)).toBe(false);
+  });
+
+  it("skips corrupt entries and survives unavailable storage", () => {
+    const storage = memoryStorage({
+      "musicaso:draft:dz:1": "{oops",
+      "musicaso:draft:dz:2": JSON.stringify({ v: 1, k: 1, r: "a", m: { t: 1 }, updatedAt: 1 }),
+    });
+    expect(listDrafts(storage)).toEqual([]);
+    expect(listDrafts(null)).toEqual([]);
+    expect(
+      listDrafts({
+        getItem: () => null,
+        key: () => {
+          throw new Error("SecurityError");
+        },
+        length: 1,
+      }),
+    ).toEqual([]);
   });
 });

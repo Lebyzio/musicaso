@@ -378,5 +378,5 @@ tests/
 - [x] MusicBrainz provider + Cover Art Archive (fallback Deezer → iTunes → MusicBrainz)
 - [x] i18n foundation (cookie `musicaso-lang` + Accept-Language, ปุ่มสลับ EN/ไทย)
 - [x] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
-- [ ] `/library` รีวิวของฉัน (draft + meta)
+- [x] `/library` รีวิวของฉัน (draft + meta)
 - [ ] Top list ของปี `/l/{payload}` + การ์ด + OG

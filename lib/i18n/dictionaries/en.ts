@@ -26,6 +26,24 @@ export const en = {
     skipToContent: "Skip to content",
     tagline: "Track-by-track album reviews",
     language: "Language",
+    library: "My reviews",
+  },
+
+  library: {
+    title: "Your reviews",
+    description: "Every album you’ve rated in this browser.",
+    kicker: "Saved in this browser",
+    lead: "Every album you’ve rated here. Nothing leaves this browser until you share a link.",
+    count: (n: number) => plural(n, "album", "albums"),
+    loading: "Loading your reviews",
+    emptyTitle: "No reviews yet.",
+    emptyBody: "Rate an album and it shows up here, ready to finish or share.",
+    findAlbum: "Find an album",
+    noDetails: "Open it once more to show its details",
+    edited: (date: string) => `Edited ${date}`,
+    remove: "Remove",
+    confirmRemove: "Tap again to remove",
+    removeLabel: (title: string) => `Remove the review of ${title}`,
   },
 
   footer: {

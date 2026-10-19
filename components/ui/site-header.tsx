@@ -12,10 +12,16 @@ export async function SiteHeader() {
       <Link href="/" lang="en" className="font-display text-2xl tracking-tight italic">
         musicaso<span className="text-accent">.</span>
       </Link>
-      <div className="flex items-center gap-5">
-        <p className="hidden text-xs tracking-[0.2em] text-paper-mute uppercase md:block">
+      <div className="flex items-center gap-3 sm:gap-5">
+        <p className="hidden text-xs tracking-[0.2em] text-paper-mute uppercase lg:block">
           {t.nav.tagline}
         </p>
+        <Link
+          href="/library"
+          className="rounded-full px-2 py-1 text-sm text-paper-dim underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
+        >
+          {t.nav.library}
+        </Link>
         <LanguageSwitch />
       </div>
     </header>
