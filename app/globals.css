@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — dark-first, record-sleeve / music-magazine feel.
+ * `--album-accent` is overridden per album (dominant cover colour) on the review page;
+ * everything accent-coloured should go through `accent` utilities so it follows along.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --album-accent: #f2b34b;
+  --album-accent-ink: #1a1206; /* text colour on top of the accent */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts — Thai glyphs fall through to IBM Plex Sans Thai in every stack */
+  --font-display: var(--font-fraunces), var(--font-plex-thai), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), var(--font-plex-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), var(--font-plex-thai), ui-monospace, monospace;
+
+  /* Accent follows the current album */
+  --color-accent: var(--album-accent);
+  --color-accent-ink: var(--album-accent-ink);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Surfaces: warm near-black, like a sleeve under low light */
+  --color-ink-950: #0c0b0a;
+  --color-ink-900: #141311;
+  --color-ink-800: #1d1b19;
+  --color-ink-700: #2a2724;
+  --color-ink-600: #3a3632;
+
+  /* Text — all ≥ AA (4.5:1) on ink-950/900 */
+  --color-paper: #f4efe6;
+  --color-paper-dim: #c9c2b6;
+  --color-paper-mute: #9a9387;
+
+  /* Score scale, low → high (used by rating chips and verdict badges) */
+  --color-score-low: #e5654f;
+  --color-score-mid: #e9b949;
+  --color-score-high: #7fcf8c;
+
+  --radius-card: 1.25rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-paper antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  /* Thai needs taller line boxes than Latin to keep vowels/tone marks from clipping */
+  :lang(th),
+  .thai {
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: var(--album-accent);
+    color: var(--album-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--album-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
