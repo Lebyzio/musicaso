@@ -4,6 +4,7 @@ import { AlbumAccent } from "@/components/review/album-accent";
 import { AlbumHeader } from "@/components/review/album-header";
 import { AlbumLoadError } from "@/components/review/album-load-error";
 import { ReviewEditor } from "@/components/review/review-editor";
+import { accentStyle, getAlbumAccent } from "@/lib/accent";
 import { loadAlbum } from "@/lib/music";
 import { decodePayload } from "@/lib/share/codec";
 import { decodeRatings, fitRatings } from "@/lib/share/ratings";
@@ -47,10 +48,11 @@ export default async function AlbumPage({
     return <AlbumLoadError code={result.code} />;
   }
   const { album } = result;
+  const accent = await getAlbumAccent(album.coverUrl);
 
   return (
-    <div className="flex flex-col gap-10 pb-24">
-      <AlbumAccent coverUrl={album.coverThumbUrl} />
+    <div className="flex flex-col gap-10 pb-24" style={accentStyle(accent)}>
+      <AlbumAccent {...accent} />
       <AlbumHeader album={album} />
       <ReviewEditor
         album={album}

@@ -15,6 +15,7 @@
     "fonts": "node scripts/sync-fonts.mjs"
   },
   "dependencies": {
+    "jpeg-js": "^0.4.4",
     "lz-string": "^1.5.0",
     "motion": "^14.3.0",
     "next": "16.4.2",

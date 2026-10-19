@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AlbumLoadError } from "@/components/review/album-load-error";
 import { BrokenLink } from "@/components/share/broken-link";
 import { SharedReview } from "@/components/share/shared-review";
+import { getAlbumAccent } from "@/lib/accent";
 import { loadAlbum } from "@/lib/music";
 import type { Album } from "@/lib/music/types";
 import { formatScore } from "@/lib/score";
@@ -51,8 +52,10 @@ export default async function SharedReviewPage({ params }: PageProps<"/r/[payloa
   }
 
   const view = reviewView(result.album, decoded.payload);
+  const accent = await getAlbumAccent(result.album.coverUrl);
   return (
     <SharedReview
+      accent={accent}
       album={result.album}
       view={view}
       title={reviewTitle(result.album, view)}

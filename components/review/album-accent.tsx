@@ -1,44 +1,23 @@
 "use client";
 
 import { useEffect } from "react";
-import { accentFromPixels } from "@/lib/color";
-
-const SAMPLE = 32;
+import type { Accent } from "@/lib/accent";
 
 /**
- * Tints the page with the cover's dominant colour by setting --album-accent on <html>.
- * The cover is loaded through /api/cover (same origin) so the canvas stays readable.
+ * Tints the whole document (header, footer, focus rings) with the album colour computed on the
+ * server (lib/accent.ts). Content inside the page wrapper is already tinted on first paint via
+ * an inline --album-accent; this extends it to <html> and restores the default on leave.
  */
-export function AlbumAccent({ coverUrl }: { coverUrl: string }) {
+export function AlbumAccent({ accent, ink }: Accent) {
   useEffect(() => {
-    if (!coverUrl) return;
     const root = document.documentElement;
-    let cancelled = false;
-    const img = new Image();
-    img.decoding = "async";
-    img.onload = () => {
-      if (cancelled) return;
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = canvas.height = SAMPLE;
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
-        if (!ctx) return;
-        ctx.drawImage(img, 0, 0, SAMPLE, SAMPLE);
-        const { accent, ink } = accentFromPixels(ctx.getImageData(0, 0, SAMPLE, SAMPLE).data);
-        root.style.setProperty("--album-accent", accent);
-        root.style.setProperty("--album-accent-ink", ink);
-      } catch {
-        // Tainted canvas or decode failure — keep the default accent.
-      }
-    };
-    img.src = `/api/cover?url=${encodeURIComponent(coverUrl)}`;
-
+    root.style.setProperty("--album-accent", accent);
+    root.style.setProperty("--album-accent-ink", ink);
     return () => {
-      cancelled = true;
       root.style.removeProperty("--album-accent");
       root.style.removeProperty("--album-accent-ink");
     };
-  }, [coverUrl]);
+  }, [accent, ink]);
 
   return null;
 }

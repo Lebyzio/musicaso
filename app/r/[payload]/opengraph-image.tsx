@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getAlbumAccent } from "@/lib/accent";
 import { CARD_FONT, loadCardFonts } from "@/lib/fonts";
 import { loadAlbum } from "@/lib/music";
 import { formatScore } from "@/lib/score";
@@ -60,6 +61,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
 
   const { album } = result;
   const view = reviewView(album, decoded.payload);
+  const { accent } = await getAlbumAccent(album.coverUrl);
   const refScore = view.comparison?.scoreB ?? null;
   const thaiTitle = hasThai(album.title);
 
@@ -73,7 +75,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
         gap: 56,
         padding: 64,
         background: C.bg,
-        backgroundImage: `radial-gradient(circle at 18% 40%, ${C.accent}44 0%, ${C.bg} 55%)`,
+        backgroundImage: `radial-gradient(circle at 18% 40%, ${accent}55 0%, ${C.bg} 55%)`,
         color: C.paper,
         fontFamily: CARD_FONT.body,
       }}
@@ -92,7 +94,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
       )}
 
       <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0, gap: 8 }}>
-        <div style={{ display: "flex", fontSize: 24, color: C.accent }}>
+        <div style={{ display: "flex", fontSize: 24, color: accent }}>
           {/* Letter-spacing pulls Thai tone marks off their base letters in Satori. */}
           {view.name && (
             <span
@@ -125,7 +127,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
               fontWeight: 600,
               fontSize: 168,
               lineHeight: 1,
-              color: C.accent,
+              color: accent,
             }}
           >
             {formatScore(view.score)}
@@ -156,7 +158,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
               display: "flex",
             }}
           >
-            musicaso<span style={{ color: C.accent }}>.</span>
+            musicaso<span style={{ color: accent }}>.</span>
           </div>
         </div>
       </div>

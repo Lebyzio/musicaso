@@ -1,6 +1,7 @@
 import { AlbumAccent } from "@/components/review/album-accent";
 import { AlbumHeader } from "@/components/review/album-header";
 import { scoreTone } from "@/components/review/score-tone";
+import { type Accent, accentStyle } from "@/lib/accent";
 import { AGREE_WITHIN } from "@/lib/compare";
 import type { Album } from "@/lib/music/types";
 import { formatScore, isScored, type Rating, toScore } from "@/lib/score";
@@ -13,6 +14,7 @@ interface SharedReviewProps {
   view: ReviewView;
   reviewItHref: string;
   title: string;
+  accent: Accent;
 }
 
 function Bar({ rating, muted = false }: { rating: Rating; muted?: boolean }) {
@@ -39,15 +41,15 @@ function ScoreText({ rating, className = "" }: { rating: Rating; className?: str
   return <span className={`${scoreTone(score)} ${className}`}>{formatScore(score)}</span>;
 }
 
-export function SharedReview({ album, view, reviewItHref, title }: SharedReviewProps) {
+export function SharedReview({ album, view, reviewItHref, title, accent }: SharedReviewProps) {
   const who = view.name ?? "Someone";
   const refWho = view.reference?.name ?? "Original";
   const { comparison, stats } = view;
   const multiDisc = new Set(album.tracks.map((t) => t.disc)).size > 1;
 
   return (
-    <div className="flex flex-col gap-10 pb-24">
-      <AlbumAccent coverUrl={album.coverThumbUrl} />
+    <div className="flex flex-col gap-10 pb-24" style={accentStyle(accent)}>
+      <AlbumAccent {...accent} />
 
       {view.mismatch && (
         <p
