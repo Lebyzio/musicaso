@@ -5,6 +5,7 @@ import { Fragment, type KeyboardEvent, useCallback, useEffect, useRef } from "re
 import type { Track } from "@/lib/music/types";
 import type { Rating } from "@/lib/score";
 import type { EditorAction } from "./editor-state";
+import type { Reference } from "./share-panel";
 import { usePreviewPlayer } from "./preview-player";
 import { TrackRow } from "./track-row";
 
@@ -16,9 +17,10 @@ interface TrackListProps {
   ratings: Rating[];
   active: number;
   dispatch: (action: EditorAction) => void;
+  reference?: Reference;
 }
 
-export function TrackList({ tracks, ratings, active, dispatch }: TrackListProps) {
+export function TrackList({ tracks, ratings, active, dispatch, reference }: TrackListProps) {
   const sliders = useRef<(HTMLInputElement | null)[]>([]);
   const pendingOne = useRef<{ index: number; timer: number } | null>(null);
   const reduced = useReducedMotion();
@@ -87,6 +89,8 @@ export function TrackList({ tracks, ratings, active, dispatch }: TrackListProps)
       } else if (key === "s" || key === "S") {
         e.preventDefault();
         dispatch({ type: "toggleSkip", index });
+        // Skipping is a decision like scoring, so move on; un-skipping stays put.
+        if (ratings[index] !== "skip") focusTrack(index + 1);
       } else if (key === "p" || key === "P") {
         e.preventDefault();
         toggle(tracks[index]);
@@ -133,6 +137,8 @@ export function TrackList({ tracks, ratings, active, dispatch }: TrackListProps)
             onKeyDown={onKeyDown}
             onQuickPick={onQuickPick}
             registerSlider={registerSlider}
+            refRating={reference ? (reference.ratings[i] ?? null) : undefined}
+            refName={reference?.name ?? "Them"}
           />
         </Fragment>
       ))}

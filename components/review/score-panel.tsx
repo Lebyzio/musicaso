@@ -52,6 +52,7 @@ interface ScorePanelProps {
   onToggleWeighted: () => void;
   onClearAll: () => void;
   saveFailed: boolean;
+  reference?: { name: string; score: number | null };
 }
 
 export function ScorePanel({
@@ -61,6 +62,7 @@ export function ScorePanel({
   onToggleWeighted,
   onClearAll,
   saveFailed,
+  reference,
 }: ScorePanelProps) {
   const { score, verdict, stats } = summary;
   const [confirmClear, setConfirmClear] = useState(false);
@@ -95,6 +97,17 @@ export function ScorePanel({
       </div>
 
       <Progress stats={stats} />
+
+      {reference && (
+        <p className="flex items-baseline justify-between gap-3 text-sm text-paper-dim">
+          <span className="line-clamp-1">{reference.name}’s score</span>
+          <span
+            className={`font-mono tabular ${reference.score === null ? "text-paper-mute" : scoreTone(reference.score)}`}
+          >
+            {formatScore(reference.score)}
+          </span>
+        </p>
+      )}
 
       {stats.scored > 0 && (
         <dl className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-2 text-sm">
@@ -181,7 +194,19 @@ export function MobileScoreBar({ summary, hidden }: { summary: ScoreSummary; hid
             {stats.scored} of {stats.total} rated
           </span>
         </div>
-        <ScoreNumber score={score} className="font-mono text-4xl font-medium text-accent tabular" />
+        <div className="flex items-center gap-3">
+          <a
+            href="#share"
+            tabIndex={hidden ? -1 : undefined}
+            className="rounded-full border border-ink-600 px-3 py-1.5 text-xs text-paper-dim"
+          >
+            Share
+          </a>
+          <ScoreNumber
+            score={score}
+            className="font-mono text-4xl font-medium text-accent tabular"
+          />
+        </div>
       </div>
     </div>
   );

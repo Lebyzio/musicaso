@@ -17,6 +17,12 @@ function valueText(rating: Rating): string {
   return `${formatScore(toScore(rating))} out of 10`;
 }
 
+function shortScore(rating: Rating): string {
+  if (rating === null) return "–";
+  if (rating === "skip") return "skip";
+  return formatScore(toScore(rating));
+}
+
 interface TrackRowProps {
   track: Track;
   index: number;
@@ -26,6 +32,9 @@ interface TrackRowProps {
   onKeyDown: (index: number, e: KeyboardEvent<HTMLInputElement>) => void;
   onQuickPick: (index: number, score: number) => void;
   registerSlider: (index: number, el: HTMLInputElement | null) => void;
+  /** The earlier reviewer's rating ("Review it yourself"), shown as a ghost. */
+  refRating?: Rating;
+  refName?: string;
 }
 
 export const TrackRow = memo(function TrackRow({
@@ -37,6 +46,8 @@ export const TrackRow = memo(function TrackRow({
   onKeyDown,
   onQuickPick,
   registerSlider,
+  refRating,
+  refName,
 }: TrackRowProps) {
   const skipped = rating === "skip";
   const scored = typeof rating === "number";
@@ -65,44 +76,61 @@ export const TrackRow = memo(function TrackRow({
           </p>
         </div>
         <PreviewButton track={track} tabIndex={inner} />
-        <span
-          className={`w-12 shrink-0 text-right font-mono text-xl tabular ${
-            scored ? scoreTone(toScore(rating)) : "text-paper-mute"
-          }`}
-          aria-hidden
-        >
-          {skipped ? "skip" : scored ? formatScore(toScore(rating)) : "–"}
+        <span className="flex w-14 shrink-0 flex-col items-end" aria-hidden>
+          <span
+            className={`font-mono text-xl tabular ${
+              scored ? scoreTone(toScore(rating)) : "text-paper-mute"
+            }`}
+          >
+            {skipped ? "skip" : scored ? formatScore(toScore(rating)) : "–"}
+          </span>
+          {refRating !== undefined && (
+            <span className="max-w-full truncate text-[0.65rem] text-paper-mute tabular">
+              {refName} {shortScore(refRating)}
+            </span>
+          )}
         </span>
       </div>
 
       <div className="flex items-center gap-3 pl-9">
-        <input
-          ref={(el) => registerSlider(index, el)}
-          type="range"
-          min={0}
-          max={20}
-          step={1}
-          value={scored ? rating : UNRATED_POSITION}
-          tabIndex={inner}
-          aria-label={`Rating for ${track.title}`}
-          aria-valuetext={valueText(rating)}
-          aria-disabled={skipped}
-          data-track-index={index}
-          onFocus={() => dispatch({ type: "focus", index })}
-          onChange={(e) => {
-            if (!skipped) dispatch({ type: "set", index, value: Number(e.target.value) });
-          }}
-          // Clicking the thumb of an unrated track at its resting spot fires no change event.
-          onClick={(e) => {
-            if (rating === null) {
-              dispatch({ type: "set", index, value: Number(e.currentTarget.value) });
-            }
-          }}
-          onKeyDown={(e) => onKeyDown(index, e)}
-          className={`h-6 min-w-0 flex-1 cursor-pointer accent-accent ${
-            scored ? "" : "opacity-35"
-          } ${skipped ? "cursor-not-allowed" : ""}`}
-        />
+        <div className="relative flex min-w-0 flex-1 items-center">
+          {typeof refRating === "number" && (
+            <span
+              aria-hidden
+              title={`${refName}: ${valueText(refRating)}`}
+              className="pointer-events-none absolute top-0 h-1.5 w-0.5 -translate-x-1/2 rounded-full bg-paper-mute"
+              // Native range thumbs are ~16px wide: map 0–20 onto the thumb-centre track.
+              style={{ left: `calc(8px + (100% - 16px) * ${refRating / 20})` }}
+            />
+          )}
+          <input
+            ref={(el) => registerSlider(index, el)}
+            type="range"
+            min={0}
+            max={20}
+            step={1}
+            value={scored ? rating : UNRATED_POSITION}
+            tabIndex={inner}
+            aria-label={`Rating for ${track.title}`}
+            aria-valuetext={valueText(rating)}
+            aria-disabled={skipped}
+            data-track-index={index}
+            onFocus={() => dispatch({ type: "focus", index })}
+            onChange={(e) => {
+              if (!skipped) dispatch({ type: "set", index, value: Number(e.target.value) });
+            }}
+            // Clicking the thumb of an unrated track at its resting spot fires no change event.
+            onClick={(e) => {
+              if (rating === null) {
+                dispatch({ type: "set", index, value: Number(e.currentTarget.value) });
+              }
+            }}
+            onKeyDown={(e) => onKeyDown(index, e)}
+            className={`h-6 w-full min-w-0 cursor-pointer accent-accent ${
+              scored ? "" : "opacity-35"
+            } ${skipped ? "cursor-not-allowed" : ""}`}
+          />
+        </div>
         <button
           type="button"
           tabIndex={inner}

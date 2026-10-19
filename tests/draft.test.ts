@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { clearDraft, draftKey, loadDraft, saveDraft } from "@/lib/draft";
+import {
+  clearDraft,
+  draftKey,
+  loadDraft,
+  loadReviewerName,
+  saveDraft,
+  saveReviewerName,
+} from "@/lib/draft";
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial));
@@ -43,9 +50,40 @@ describe("draft storage", () => {
     expect(loadDraft("dz", "1", 3, storage)).toEqual({
       ratings: [16, "skip", null],
       weighted: true,
+      name: "",
+      text: "",
       updatedAt: 123,
       mismatch: false,
     });
+  });
+
+  it("keeps the reviewer name and text, trimmed", () => {
+    const storage = memoryStorage();
+    saveDraft(
+      "dz",
+      "1",
+      { ratings: [null], weighted: false, name: " Alex ", text: " wow " },
+      storage,
+      1,
+    );
+    expect(loadDraft("dz", "1", 1, storage)).toMatchObject({ name: "Alex", text: "wow" });
+  });
+
+  it("does not keep a draft that only has the (pre-filled) name", () => {
+    const storage = memoryStorage();
+    saveDraft("dz", "1", { ratings: [null], weighted: false, name: "Alex" }, storage);
+    expect(storage.data.size).toBe(0);
+  });
+
+  it("remembers the reviewer name across albums", () => {
+    const storage = memoryStorage();
+    expect(loadReviewerName(storage)).toBe("");
+    saveReviewerName("  ต้น  ", storage);
+    expect(loadReviewerName(storage)).toBe("ต้น");
+    saveReviewerName("   ", storage);
+    expect(loadReviewerName(storage)).toBe("ต้น");
+    expect(loadReviewerName(throwing)).toBe("");
+    expect(() => saveReviewerName("x", throwing)).not.toThrow();
   });
 
   it("removes the draft instead of saving an empty one", () => {

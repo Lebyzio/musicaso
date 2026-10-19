@@ -1,11 +1,15 @@
 import { clampHalfSteps, type Rating } from "@/lib/score";
 import { fitRatings } from "@/lib/share/ratings";
+import { NAME_MAX, TEXT_MAX } from "@/lib/share/schema";
 
 export interface EditorState {
   ratings: Rating[];
   /** Index of the track that has keyboard focus / the quick-pick strip. */
   active: number;
   weighted: boolean;
+  /** Reviewer name and short review text, shared in the link. */
+  name: string;
+  text: string;
   /** The saved draft has been read (autosave must not run before that). */
   loaded: boolean;
   /** The draft was saved against a different tracklist. */
@@ -21,7 +25,16 @@ export type EditorAction =
   | { type: "focus"; index: number }
   | { type: "move"; delta: number }
   | { type: "toggleWeighted" }
-  | { type: "hydrate"; ratings: readonly Rating[]; weighted: boolean; mismatch: boolean }
+  | { type: "setName"; value: string }
+  | { type: "setText"; value: string }
+  | {
+      type: "hydrate";
+      ratings: readonly Rating[];
+      weighted: boolean;
+      mismatch: boolean;
+      name?: string;
+      text?: string;
+    }
   | { type: "dismissMismatch" };
 
 /** Unrated tracks start nudging from the middle of the scale. */
@@ -32,6 +45,8 @@ export function initEditor(trackCount: number): EditorState {
     ratings: Array<Rating>(trackCount).fill(null),
     active: 0,
     weighted: false,
+    name: "",
+    text: "",
     loaded: false,
     mismatch: false,
   };
@@ -79,9 +94,15 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
         ...state,
         ratings: fitRatings(action.ratings, state.ratings.length),
         weighted: action.weighted,
+        name: (action.name ?? "").slice(0, NAME_MAX),
+        text: (action.text ?? "").slice(0, TEXT_MAX),
         loaded: true,
         mismatch: action.mismatch,
       };
+    case "setName":
+      return { ...state, name: action.value.slice(0, NAME_MAX) };
+    case "setText":
+      return { ...state, text: action.value.slice(0, TEXT_MAX) };
     case "dismissMismatch":
       return state.mismatch ? { ...state, mismatch: false } : state;
   }

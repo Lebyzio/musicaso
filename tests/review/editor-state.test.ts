@@ -5,6 +5,8 @@ const start = (ratings: EditorState["ratings"], active = 0): EditorState => ({
   ratings,
   active,
   weighted: false,
+  name: "",
+  text: "",
   loaded: true,
   mismatch: false,
 });
@@ -15,6 +17,8 @@ describe("editorReducer", () => {
       ratings: [null, null, null],
       active: 0,
       weighted: false,
+      name: "",
+      text: "",
       loaded: false,
       mismatch: false,
     });
@@ -70,6 +74,22 @@ describe("editorReducer", () => {
     expect(editorReducer(s, { type: "set", index: 0, value: 14 })).toBe(s);
     expect(editorReducer(s, { type: "set", index: 5, value: 14 })).toBe(s);
     expect(editorReducer(s, { type: "focus", index: 0 })).toBe(s);
+  });
+
+  it("edits name and text within the share limits", () => {
+    let s = editorReducer(initEditor(1), { type: "setName", value: "x".repeat(50) });
+    expect(s.name).toHaveLength(40);
+    s = editorReducer(s, { type: "setText", value: "y".repeat(300) });
+    expect(s.text).toHaveLength(280);
+    const hydrated = editorReducer(initEditor(1), {
+      type: "hydrate",
+      ratings: [],
+      weighted: false,
+      mismatch: false,
+      name: "Alex",
+      text: "Great",
+    });
+    expect(hydrated).toMatchObject({ name: "Alex", text: "Great" });
   });
 
   it("hydrates a draft, fitting it to the tracklist", () => {

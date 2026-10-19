@@ -5,6 +5,8 @@ import { AlbumHeader } from "@/components/review/album-header";
 import { AlbumLoadError } from "@/components/review/album-load-error";
 import { ReviewEditor } from "@/components/review/review-editor";
 import { loadAlbum } from "@/lib/music";
+import { decodePayload } from "@/lib/share/codec";
+import { decodeRatings, fitRatings } from "@/lib/share/ratings";
 
 export async function generateMetadata({
   params,
@@ -19,8 +21,26 @@ export async function generateMetadata({
   };
 }
 
-export default async function AlbumPage({ params }: PageProps<"/album/[source]/[id]">) {
-  const { source, id } = await params;
+/** "Review it yourself": the review being answered, if `?from=` is a valid payload for this album. */
+function referenceFrom(
+  from: string | string[] | undefined,
+  source: string,
+  id: string,
+  trackCount: number,
+) {
+  const decoded = decodePayload(typeof from === "string" ? from : undefined);
+  if (!decoded.ok || decoded.payload.s !== source || decoded.payload.a !== id) return undefined;
+  return {
+    name: decoded.payload.n,
+    ratings: fitRatings(decodeRatings(decoded.payload.r) ?? [], trackCount),
+  };
+}
+
+export default async function AlbumPage({
+  params,
+  searchParams,
+}: PageProps<"/album/[source]/[id]">) {
+  const [{ source, id }, { from }] = await Promise.all([params, searchParams]);
   const result = await loadAlbum(source, id);
   if (!result.ok) {
     if (result.code === "not_found") notFound();
@@ -32,7 +52,10 @@ export default async function AlbumPage({ params }: PageProps<"/album/[source]/[
     <div className="flex flex-col gap-10 pb-24">
       <AlbumAccent coverUrl={album.coverThumbUrl} />
       <AlbumHeader album={album} />
-      <ReviewEditor album={album} />
+      <ReviewEditor
+        album={album}
+        reference={referenceFrom(from, source, id, album.tracks.length)}
+      />
     </div>
   );
 }

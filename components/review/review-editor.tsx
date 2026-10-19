@@ -2,12 +2,13 @@
 
 import { MotionConfig } from "motion/react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { loadDraft, saveDraft } from "@/lib/draft";
+import { loadDraft, loadReviewerName, saveDraft, saveReviewerName } from "@/lib/draft";
 import type { Album } from "@/lib/music/types";
 import { albumScore, albumStats, verdict } from "@/lib/score";
 import { editorReducer, initEditor } from "./editor-state";
 import { PreviewPlayerProvider } from "./preview-player";
 import { MobileScoreBar, ScorePanel, type ScoreSummary } from "./score-panel";
+import { type Reference, SharePanel } from "./share-panel";
 import { TrackList } from "./track-list";
 
 const AUTOSAVE_MS = 400;
@@ -20,7 +21,7 @@ const SHORTCUTS: [string, string][] = [
   ["↑ ↓", "track"],
 ];
 
-export function ReviewEditor({ album }: { album: Album }) {
+export function ReviewEditor({ album, reference }: { album: Album; reference?: Reference }) {
   const { source, id, tracks } = album;
   const [state, dispatch] = useReducer(editorReducer, tracks.length, initEditor);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -33,17 +34,25 @@ export function ReviewEditor({ album }: { album: Album }) {
       ratings: saved?.ratings ?? [],
       weighted: saved?.weighted ?? false,
       mismatch: saved?.mismatch ?? false,
+      name: saved?.name || loadReviewerName(),
+      text: saved?.text ?? "",
     });
   }, [source, id, tracks.length]);
 
   useEffect(() => {
     if (!state.loaded) return; // don't overwrite a draft before it has been read
     const timer = setTimeout(() => {
-      const ok = saveDraft(source, id, { ratings: state.ratings, weighted: state.weighted });
+      const ok = saveDraft(source, id, {
+        ratings: state.ratings,
+        weighted: state.weighted,
+        name: state.name,
+        text: state.text,
+      });
+      saveReviewerName(state.name);
       setSaveFailed(!ok);
     }, AUTOSAVE_MS);
     return () => clearTimeout(timer);
-  }, [state.loaded, source, id, state.ratings, state.weighted]);
+  }, [state.loaded, source, id, state.ratings, state.weighted, state.name, state.text]);
 
   const summary: ScoreSummary = useMemo(() => {
     const score = albumScore(
@@ -52,6 +61,12 @@ export function ReviewEditor({ album }: { album: Album }) {
     );
     return { score, verdict: verdict(score), stats: albumStats(state.ratings) };
   }, [state.ratings, state.weighted, tracks]);
+
+  const referenceScore = useMemo(
+    () => (reference ? albumScore(reference.ratings) : null),
+    [reference],
+  );
+  const referenceName = reference?.name ?? "The original reviewer";
 
   // Hide the pinned mobile bar while the full panel is on screen.
   const panelRef = useRef<HTMLDivElement>(null);
@@ -91,6 +106,16 @@ export function ReviewEditor({ album }: { album: Album }) {
               </ul>
             </div>
 
+            {reference && (
+              <p
+                role="status"
+                className="mx-3 rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm text-paper-dim sm:mx-4"
+              >
+                Reviewing alongside <span className="text-paper">{referenceName}</span>. Their
+                scores show as faint marks — your link will include a side-by-side comparison.
+              </p>
+            )}
+
             {state.mismatch && (
               <div
                 role="status"
@@ -116,10 +141,11 @@ export function ReviewEditor({ album }: { album: Album }) {
               ratings={state.ratings}
               active={state.active}
               dispatch={dispatch}
+              reference={reference}
             />
           </section>
 
-          <aside className="lg:sticky lg:top-6 lg:self-start" ref={panelRef}>
+          <aside className="flex flex-col gap-6 lg:sticky lg:top-6 lg:self-start" ref={panelRef}>
             <ScorePanel
               tracks={tracks}
               summary={summary}
@@ -127,6 +153,18 @@ export function ReviewEditor({ album }: { album: Album }) {
               onToggleWeighted={() => dispatch({ type: "toggleWeighted" })}
               onClearAll={() => dispatch({ type: "clearAll" })}
               saveFailed={saveFailed}
+              reference={reference && { name: referenceName, score: referenceScore }}
+            />
+            <SharePanel
+              source={source}
+              albumId={id}
+              albumTitle={album.title}
+              ratings={state.ratings}
+              weighted={state.weighted}
+              name={state.name}
+              text={state.text}
+              reference={reference}
+              dispatch={dispatch}
             />
           </aside>
         </div>
