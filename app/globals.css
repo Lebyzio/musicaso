@@ -5,9 +5,17 @@
  * `--album-accent` is overridden per album (dominant cover colour) on the review page;
  * everything accent-coloured should go through `accent` utilities so it follows along.
  */
+/* Registered so the accent can transition smoothly when an album's colour arrives. */
+@property --album-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f2b34b;
+}
+
 :root {
   --album-accent: #f2b34b;
   --album-accent-ink: #1a1206; /* text colour on top of the accent */
+  transition: --album-accent 0.7s ease;
 }
 
 @theme inline {

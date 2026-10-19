@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AlbumAccent } from "@/components/review/album-accent";
 import { AlbumHeader } from "@/components/review/album-header";
 import { AlbumLoadError } from "@/components/review/album-load-error";
+import { ReviewEditor } from "@/components/review/review-editor";
 import { loadAlbum } from "@/lib/music";
-import { formatDuration } from "@/lib/text";
 
 export async function generateMetadata({
   params,
@@ -29,16 +30,9 @@ export default async function AlbumPage({ params }: PageProps<"/album/[source]/[
 
   return (
     <div className="flex flex-col gap-10 pb-24">
+      <AlbumAccent coverUrl={album.coverThumbUrl} />
       <AlbumHeader album={album} />
-      <ol className="flex flex-col divide-y divide-ink-800">
-        {album.tracks.map((t) => (
-          <li key={t.id} className="flex gap-4 py-3">
-            <span className="w-6 text-right text-paper-mute tabular">{t.position}</span>
-            <span className="flex-1">{t.title}</span>
-            <span className="text-paper-mute tabular">{formatDuration(t.durationSec)}</span>
-          </li>
-        ))}
-      </ol>
+      <ReviewEditor album={album} />
     </div>
   );
 }
