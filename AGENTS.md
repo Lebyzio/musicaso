@@ -167,6 +167,7 @@ export const ReviewPayloadV1 = z.object({
   n: z.string().max(40).optional(),   // ชื่อผู้รีวิว
   t: z.string().max(280).optional(),  // คำวิจารณ์สั้นของทั้งอัลบั้ม
   f: z.number().int().optional(),     // index เพลงโปรด (ถ้าไม่ใส่ = คะแนนสูงสุด)
+  w: z.literal(1).optional(),         // คะแนนรวมถ่วงน้ำหนักตามความยาวเพลง (ให้หน้า share คำนวณตรงกับ editor)
   th: z.string().optional(),          // theme id ของการ์ด
   ref: z.object({ n: z.string().max(40).optional(), r: z.string() }).optional(), // รีวิวต้นทาง (ตอน "รีวิวต่อ")
 });
@@ -180,8 +181,10 @@ export const ReviewPayloadV1 = z.object({
 ### 5.2 Encoding
 - `JSON.stringify(payload)` → `lz-string.compressToEncodedURIComponent` → ใส่ใน path: **`/r/{payload}`**
 - ใช้ **path segment ไม่ใช่ `#hash`** เพราะ server ต้องอ่านได้เพื่อทำ OG image และ metadata
-- ถ้า URL ยาวเกิน **1,800 ตัวอักษร** → ตัด/ลดข้อความ `t` ก่อน แล้วเตือนผู้ใช้ใน UI
-- Decode ต้อง **ไม่ throw ไปถึง user**: payload เสีย → แสดงหน้า error ที่เป็นมิตร + ปุ่มกลับหน้าแรก
+- ถ้า URL ยาวเกิน **1,800 ตัวอักษร** → ตัด/ลดข้อความ `t` ก่อน แล้วเตือนผู้ใช้ใน UI (`fitShareUrl` — binary search ความยาว `t` + ต่อท้าย `…`; ในทางปฏิบัติ 65 เพลง + ข้อความไทย 280 ตัว ยาวแค่ ~560)
+- Decode ต้อง **ไม่ throw ไปถึง user**: payload เสีย → แสดงหน้า error ที่เป็นมิตร + ปุ่มกลับหน้าแรก (`decodePayload` คืน `{ ok: false, reason }`)
+- ⚠️ Next 16 ส่ง route param มาแบบยัง percent-encoded (`+` → `%2B`) — `decodePayload` จัดการ `decodeURIComponent` ให้แล้ว; เวลาสร้างลิงก์ใหม่ให้ใช้ `encodePayload(payload)` ไม่ใช่ param ดิบ
+- Schema อยู่ `lib/share/schema.ts`, codec อยู่ `lib/share/codec.ts`, ค่าที่หน้า share/metadata/OG ใช้ร่วมกันอยู่ `lib/share/review-view.ts`
 - ถ้า `k` ไม่ตรงกับจำนวนเพลงปัจจุบัน → แสดง warning แต่ยังแสดงรีวิวตามลำดับเท่าที่ตรง
 - โค้ดทั้งหมดอยู่ใน `lib/share/codec.ts` และ **ต้องมี unit test round-trip ครบทุก field**
 - encoding ของ `r` มีอยู่แล้วใน `lib/share/ratings.ts` (`encodeRatings` / `decodeRatings` / `fitRatings`) — draft ใช้อยู่ ห้ามเขียนซ้ำใน codec
@@ -189,6 +192,8 @@ export const ReviewPayloadV1 = z.object({
 ### 5.3 Flow "รีวิวต่อ"
 หน้า `/r/{payload}` มีปุ่ม **"Review it yourself"** → ไป `/album/{s}/{a}?from={payload}`
 → editor เปิดเปล่า แต่โชว์คะแนนของคนก่อนเป็น ghost/side-by-side → ตอนแชร์ใส่ `ref` เพื่อให้หน้า share แสดงการเปรียบเทียบ 2 คนได้ (เก็บ `ref` ได้แค่ 1 ชั้น ไม่ซ้อนต่อ)
+- `?from=` ถูก decode ฝั่ง server ใน `app/album/[source]/[id]/page.tsx` และใช้เฉพาะเมื่อ `s`/`a` ตรงกับอัลบั้ม
+- ชื่อผู้รีวิวจำข้ามอัลบั้มไว้ที่ `localStorage` key `musicaso:name` (ชื่ออย่างเดียวไม่ทำให้เกิด draft)
 
 ---
 
@@ -245,6 +250,9 @@ tests/
 - 2 format: `square` 1080×1080, `story` 1080×1920 (+ OG 1200×630)
 - ข้อจำกัดของ Satori: รองรับแค่ flexbox และ CSS subset — ทุก `div` ที่มีลูกหลายตัวต้องมี `display: flex`, ไม่มี grid, ไม่มี Tailwind class (ใช้ inline style หรือ `tw` prop)
 - **ฟอนต์ภาษาไทยต้องโหลดเอง** (เช่น Noto Sans Thai / IBM Plex Sans Thai / Anuphan) เป็น `ArrayBuffer` ใน `lib/fonts.ts` ไม่งั้นชื่อเพลงไทยจะเป็นกล่องสี่เหลี่ยม — ทดสอบด้วยอัลบั้มไทยจริงเสมอ
+  - ใช้ `loadCardFonts()` + `CARD_FONT.display`/`.body` ใน `lib/fonts.ts`; ไฟล์ `.woff` แบบ static อยู่ใน `assets/fonts/` (commit ไว้) คัดลอกจาก `@fontsource/*` ด้วย `pnpm fonts` — Satori อ่าน woff2/variable font ไม่ได้
+  - ⚠️ ห้ามใส่ `letterSpacing` กับข้อความไทยใน ImageResponse — Satori วางวรรณยุกต์ผิดตำแหน่ง
+- OG image ต้องมี URL แบบ absolute: `metadataBase` ใน `app/layout.tsx` อ่านจาก `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` → localhost
 - ปุ่ม Download ฝั่ง client: `fetch(cardUrl)` → blob → `<a download>`; บนมือถือใช้ `navigator.share({ files })` ถ้ารองรับ
 - ธีมการ์ด: ดึงสีหลักจากปกอัลบั้ม (dominant color) เพื่อทำ gradient — คำนวณฝั่ง server ตอน render (เช่นด้วย `sharp` stats หรือ algorithm ง่าย ๆ)
 
@@ -307,10 +315,10 @@ tests/
 - [x] autosave draft ลง `localStorage` (key: `musicaso:draft:{source}:{id}`)
 
 ### Phase 3 — Share Link
-- [ ] `lib/share/codec.ts` + tests (round-trip, payload เสีย, URL ยาวเกิน)
-- [ ] `/r/[payload]` read-only view + `generateMetadata` + `opengraph-image`
-- [ ] ปุ่ม Copy link / Web Share API
-- [ ] Flow "Review it yourself" + เปรียบเทียบกับ `ref`
+- [x] `lib/share/codec.ts` + tests (round-trip, payload เสีย, URL ยาวเกิน)
+- [x] `/r/[payload]` read-only view + `generateMetadata` + `opengraph-image`
+- [x] ปุ่ม Copy link / Web Share API
+- [x] Flow "Review it yourself" + เปรียบเทียบกับ `ref`
 
 ### Phase 4 — Image Export
 - [ ] `/r/[payload]/card?format=square|story` ด้วย `ImageResponse` + ฟอนต์ไทย + dominant color
