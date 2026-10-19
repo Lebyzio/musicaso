@@ -184,6 +184,7 @@ export const ReviewPayloadV1 = z.object({
 - Decode ต้อง **ไม่ throw ไปถึง user**: payload เสีย → แสดงหน้า error ที่เป็นมิตร + ปุ่มกลับหน้าแรก
 - ถ้า `k` ไม่ตรงกับจำนวนเพลงปัจจุบัน → แสดง warning แต่ยังแสดงรีวิวตามลำดับเท่าที่ตรง
 - โค้ดทั้งหมดอยู่ใน `lib/share/codec.ts` และ **ต้องมี unit test round-trip ครบทุก field**
+- encoding ของ `r` มีอยู่แล้วใน `lib/share/ratings.ts` (`encodeRatings` / `decodeRatings` / `fitRatings`) — draft ใช้อยู่ ห้ามเขียนซ้ำใน codec
 
 ### 5.3 Flow "รีวิวต่อ"
 หน้า `/r/{payload}` มีปุ่ม **"Review it yourself"** → ไป `/album/{s}/{a}?from={payload}`
@@ -198,7 +199,9 @@ export const ReviewPayloadV1 = z.object({
 - **Album score = ค่าเฉลี่ยของเพลงที่ให้คะแนนแล้วและไม่ถูกข้าม** แสดงทศนิยม 1 ตำแหน่ง
 - Option (toggle ใน UI, เก็บใน payload ภายหลังถ้าต้องการ): ถ่วงน้ำหนักตามความยาวเพลง
 - ข้อมูลเสริมที่คำนวณได้: เพลงคะแนนสูงสุด/ต่ำสุด, ส่วนเบี่ยงเบน (ความ "สม่ำเสมอ" ของอัลบั้ม), จำนวนเพลงที่ ≥ 8
-- Verdict label ตามช่วงคะแนน (เช่น 9+ "Masterpiece", 8+ "Great", 6.5+ "Good", 5+ "Mixed", ต่ำกว่า "Skip") — กำหนดไว้ที่เดียวใน `lib/score.ts`
+- Verdict label ตามช่วงคะแนน (เช่น 9+ "Masterpiece", 8+ "Great", 6.5+ "Good", 5+ "Mixed", ต่ำกว่า "Skip") — กำหนดไว้ที่เดียวใน `lib/score.ts` และคิดจากคะแนน **หลังปัดทศนิยม** (8.95 แสดง 9.0 → Masterpiece)
+- คะแนนในโค้ดเก็บเป็น **half-step จำนวนเต็ม 0–20** (`Rating = number | "skip" | null`) แปลงเป็น 0–10 ด้วย `toScore()` เฉพาะตอนแสดงผล/คำนวณ
+- ความสม่ำเสมอ ("Flow") ใช้ SD: ≤0.75 Rock solid, ≤1.5 Consistent, ≤2.5 Uneven, มากกว่านั้น All over the place (ต้องมี ≥3 เพลงที่ให้คะแนน)
 
 ---
 
@@ -263,8 +266,8 @@ tests/
 ## 10. Design Direction
 
 - Dark-first, typographic, รู้สึกเหมือนนิตยสารดนตรี/ปกแผ่นเสียง — ปกอัลบั้มคือพระเอก
-- สีของหน้า review ปรับตาม dominant color ของปก (CSS variable `--album-accent`)
-- Rating input: slider + ปุ่มตัวเลข + keyboard (`←/→` ±0.5, `0–9` ตั้งคะแนนเร็ว, `S` ข้ามเพลง, `↑/↓` เลื่อนเพลง)
+- สีของหน้า review ปรับตาม dominant color ของปก (CSS variable `--album-accent`) — `lib/color.ts` (pure, รับ RGBA) เลือกสีสดที่เด่นสุด แล้วปรับให้ contrast ≥ 4.5:1 บนพื้น `ink-950`; ฝั่ง client อ่าน pixel ผ่าน `/api/cover` + canvas (`components/review/album-accent.tsx`) ส่วนการ์ด PNG ใน Phase 4 ให้ใช้ฟังก์ชันเดียวกัน
+- Rating input: slider + ปุ่มตัวเลข + keyboard (`←/→` ±0.5, `0–9` ตั้งคะแนนเร็วแล้วเลื่อนไปเพลงถัดไป — `1` ตามด้วย `0` ภายใน 600ms = 10, `S` ข้ามเพลง, `P` เล่น preview, `Backspace` ล้างคะแนน, `↑/↓` เลื่อนเพลง) — tracklist เป็น roving focus (tab stop เดียว)
 - คะแนนรวมอัปเดตแบบ live พร้อม animated number
 - Mobile-first: ทุกหน้าต้องใช้ได้ดีที่ 375px
 - Accessibility: ทุก control ใช้ keyboard ได้, contrast ผ่าน WCAG AA, เคารพ `prefers-reduced-motion`
@@ -299,9 +302,9 @@ tests/
 - [x] หน้าแรก: search box (debounce 300ms) + ผลลัพธ์เป็น grid ปก
 
 ### Phase 2 — Review Editor
-- [ ] `/album/[source]/[id]`: header อัลบั้ม, tracklist, rating input ต่อเพลง, ปุ่มข้ามเพลง, preview 30s
-- [ ] `lib/score.ts` + live album score + verdict
-- [ ] autosave draft ลง `localStorage` (key: `musicaso:draft:{source}:{id}`)
+- [x] `/album/[source]/[id]`: header อัลบั้ม, tracklist, rating input ต่อเพลง, ปุ่มข้ามเพลง, preview 30s
+- [x] `lib/score.ts` + live album score + verdict
+- [x] autosave draft ลง `localStorage` (key: `musicaso:draft:{source}:{id}`)
 
 ### Phase 3 — Share Link
 - [ ] `lib/share/codec.ts` + tests (round-trip, payload เสีย, URL ยาวเกิน)
