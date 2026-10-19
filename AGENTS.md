@@ -396,3 +396,5 @@ tests/
 - [x] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
 - [x] `/library` รีวิวของฉัน (draft + meta)
 - [x] Top list ของปี `/l/{payload}` + การ์ด + OG
+- ผลบน prod (mobile): หน้าแรก 92/100/100/100, `/library` 99/100/100/100, `/l` 93/100/100/92, album (MusicBrainz) 96/100/100/92
+- ⚠️ ค้าง: ค้น "christopher cross" บน Vercel ไม่ขึ้นแถบ discography (ในเครื่องขึ้น, ศิลปินอื่นขึ้นปกติ) — ดู function log หา `Artist discography failed`
