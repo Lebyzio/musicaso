@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AlbumAccent } from "@/components/review/album-accent";
 import { AlbumHeader } from "@/components/review/album-header";
 import { AlbumLoadError } from "@/components/review/album-load-error";
+import { EmptyTracklist } from "@/components/review/empty-tracklist";
 import { ReviewEditor } from "@/components/review/review-editor";
 import { accentStyle, getAlbumAccent } from "@/lib/accent";
 import { loadAlbum } from "@/lib/music";
@@ -54,11 +55,15 @@ export default async function AlbumPage({
     <div className="flex flex-col gap-10 pb-24" style={accentStyle(accent)}>
       <AlbumAccent {...accent} />
       <AlbumHeader album={album} />
-      <ReviewEditor
-        album={album}
-        accent={accent.accent}
-        reference={referenceFrom(from, source, id, album.tracks.length)}
-      />
+      {album.tracks.length === 0 ? (
+        <EmptyTracklist source={album.source} />
+      ) : (
+        <ReviewEditor
+          album={album}
+          accent={accent.accent}
+          reference={referenceFrom(from, source, id, album.tracks.length)}
+        />
+      )}
     </div>
   );
 }

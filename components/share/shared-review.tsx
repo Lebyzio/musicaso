@@ -1,5 +1,6 @@
 import { AlbumAccent } from "@/components/review/album-accent";
 import { AlbumHeader } from "@/components/review/album-header";
+import { EmptyTracklist } from "@/components/review/empty-tracklist";
 import { scoreTone } from "@/components/review/score-tone";
 import { type Accent, accentStyle } from "@/lib/accent";
 import { AGREE_WITHIN } from "@/lib/compare";
@@ -93,6 +94,7 @@ export function SharedReview({
             </span>
           </div>
           <p className="text-xs text-paper-mute tabular">
+            {stats.scored === 0 && "No scores yet · "}
             {stats.scored} of {stats.total} tracks rated
             {stats.skipped > 0 && ` · ${stats.skipped} skipped`}
           </p>
@@ -167,6 +169,7 @@ export function SharedReview({
         >
           Track by track
         </h2>
+        {album.tracks.length === 0 && <EmptyTracklist source={album.source} />}
         <ol className="flex flex-col">
           {album.tracks.map((track, i) => {
             const rating = view.ratings[i];

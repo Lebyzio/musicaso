@@ -2,7 +2,7 @@
 
 import { MotionConfig } from "motion/react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ApiErrorBody, ApiErrorCode } from "@/lib/api-response";
 import type { SearchResult } from "@/lib/music";
 import { SOURCE_LABEL } from "@/lib/music/types";
@@ -35,6 +35,7 @@ export function AlbumSearch() {
   const [override, setOverride] = useState<{ query: string; source: Source } | null>(null);
   const source = override?.query === query ? override.source : undefined;
   const [attempt, setAttempt] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const key = query.length >= MIN_CHARS ? `${source ?? "auto"}|${attempt}|${query}` : null;
   const [outcome, setOutcome] = useState<Outcome | null>(null);
@@ -110,6 +111,7 @@ export function AlbumSearch() {
             <SearchIcon className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-paper-mute" />
             <input
               id="album-search"
+              ref={inputRef}
               type="search"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -171,7 +173,10 @@ export function AlbumSearch() {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => setAttempt((n) => n + 1)}
+                onClick={() => {
+                  setAttempt((n) => n + 1);
+                  inputRef.current?.focus(); // the button disappears; keep focus somewhere useful
+                }}
                 className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink"
               >
                 Try again
