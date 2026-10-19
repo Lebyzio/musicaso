@@ -12,9 +12,9 @@ const nextConfig: NextConfig = {
     })),
     qualities: [75],
   },
-  // Fonts for ImageResponse are read from disk at request time (lib/fonts.ts).
+  // Read from disk at request time by lib/fonts.ts and lib/render-image.ts.
   outputFileTracingIncludes: {
-    "/*": ["./assets/fonts/*.woff"],
+    "/*": ["./assets/fonts/*.woff", "./node_modules/@resvg/resvg-wasm/index_bg.wasm"],
   },
   turbopack: {
     rules: {

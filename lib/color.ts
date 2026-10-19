@@ -120,3 +120,15 @@ export function accentFromPixels(rgba: ArrayLike<number>): { accent: string; ink
   const accent = ensureContrast(pickAccent(rgba));
   return { accent: toHex(accent), ink: toHex(inkFor(accent)) };
 }
+
+export function fromHex(hex: string): RGB {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return DEFAULT_ACCENT;
+  const n = parseInt(m[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+/** Linear blend: t = 0 → a, t = 1 → b. */
+export function mix(a: RGB, b: RGB, t: number): RGB {
+  return rgb(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t);
+}

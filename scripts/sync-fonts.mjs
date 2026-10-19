@@ -17,9 +17,7 @@ const FILES = {
   ],
   "ibm-plex-sans-thai": [
     "ibm-plex-sans-thai-thai-400-normal.woff",
-    "ibm-plex-sans-thai-thai-600-normal.woff",
     "ibm-plex-sans-thai-latin-400-normal.woff",
-    "ibm-plex-sans-thai-latin-600-normal.woff",
   ],
 };
 

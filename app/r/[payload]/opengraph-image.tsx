@@ -1,9 +1,11 @@
-import { ImageResponse } from "next/og";
+import { CoverArt } from "@/components/card/cover-art";
 import { getAlbumAccent } from "@/lib/accent";
-import { CARD_FONT, loadCardFonts } from "@/lib/fonts";
+import { coverDataUri } from "@/lib/cover-image";
+import { CARD_FONT } from "@/lib/fonts";
 import { loadAlbum } from "@/lib/music";
 import { formatScore } from "@/lib/score";
 import { decodePayload } from "@/lib/share/codec";
+import { pngResponse, renderPng } from "@/lib/render-image";
 import { reviewView } from "@/lib/share/review-view";
 import { hasThai } from "@/lib/text";
 
@@ -31,6 +33,7 @@ function Fallback() {
     <div
       style={{
         width: "100%",
+        boxSizing: "border-box",
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -52,23 +55,26 @@ function Fallback() {
 }
 
 export default async function OpenGraphImage({ params }: { params: Promise<{ payload: string }> }) {
-  const [{ payload }, fonts] = await Promise.all([params, loadCardFonts()]);
-  const options = { ...size, fonts };
+  const { payload } = await params;
 
   const decoded = decodePayload(payload);
   const result = decoded.ok ? await loadAlbum(decoded.payload.s, decoded.payload.a) : null;
-  if (!decoded.ok || !result?.ok) return new ImageResponse(<Fallback />, options);
+  if (!decoded.ok || !result?.ok) return pngResponse(await renderPng(<Fallback />, size));
 
   const { album } = result;
   const view = reviewView(album, decoded.payload);
-  const { accent } = await getAlbumAccent(album.coverUrl);
+  const [{ accent }, cover] = await Promise.all([
+    getAlbumAccent(album.coverUrl),
+    coverDataUri(album.coverUrl, 470),
+  ]);
   const refScore = view.comparison?.scoreB ?? null;
   const thaiTitle = hasThai(album.title);
 
-  return new ImageResponse(
+  const png = await renderPng(
     <div
       style={{
         width: "100%",
+        boxSizing: "border-box",
         height: "100%",
         display: "flex",
         alignItems: "center",
@@ -80,20 +86,18 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
         fontFamily: CARD_FONT.body,
       }}
     >
-      {album.coverUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- Satori renders plain <img>
-        <img
-          src={album.coverUrl}
-          width={470}
-          height={470}
-          alt=""
-          style={{ borderRadius: 24, boxShadow: "0 30px 60px rgba(0,0,0,0.6)" }}
-        />
-      ) : (
-        <div style={{ width: 470, height: 470, borderRadius: 24, background: "#1d1b19" }} />
-      )}
+      <CoverArt src={cover} size={470} radius={24} placeholder="#1d1b19" />
 
-      <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0, gap: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          minWidth: 0,
+          overflow: "hidden",
+          gap: 8,
+        }}
+      >
         <div style={{ display: "flex", fontSize: 24, color: accent }}>
           {/* Letter-spacing pulls Thai tone marks off their base letters in Satori. */}
           {view.name && (
@@ -163,6 +167,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ pay
         </div>
       </div>
     </div>,
-    options,
+    size,
   );
+  return pngResponse(png);
 }
