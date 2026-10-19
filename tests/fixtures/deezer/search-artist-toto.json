@@ -1,0 +1,74 @@
+{
+  "data": [
+    {
+      "id": 62971182,
+      "name": "Toto",
+      "nb_album": 2,
+      "nb_fan": 75,
+      "type": "artist"
+    },
+    {
+      "id": 6385818,
+      "name": "Toto & Pascal Laraque",
+      "nb_album": 1,
+      "nb_fan": 13,
+      "type": "artist"
+    },
+    {
+      "id": 62971472,
+      "name": "Toto",
+      "nb_album": 9,
+      "nb_fan": 19,
+      "type": "artist"
+    },
+    {
+      "id": 215,
+      "name": "Toto",
+      "nb_album": 36,
+      "nb_fan": 983807,
+      "type": "artist"
+    },
+    {
+      "id": 9353182,
+      "name": "Toto",
+      "nb_album": 3,
+      "nb_fan": 18,
+      "type": "artist"
+    },
+    {
+      "id": 10465333,
+      "name": "Toto",
+      "nb_album": 52,
+      "nb_fan": 76,
+      "type": "artist"
+    },
+    {
+      "id": 2903,
+      "name": "Toto Cutugno",
+      "nb_album": 6,
+      "nb_fan": 68861,
+      "type": "artist"
+    },
+    {
+      "id": 13353341,
+      "name": "YOTO",
+      "nb_album": 58,
+      "nb_fan": 51,
+      "type": "artist"
+    },
+    {
+      "id": 12626,
+      "name": "Totó La Momposina",
+      "nb_album": 41,
+      "nb_fan": 40063,
+      "type": "artist"
+    },
+    {
+      "id": 139291922,
+      "name": "Totô de Babalong",
+      "nb_album": 16,
+      "nb_fan": 996,
+      "type": "artist"
+    }
+  ]
+}

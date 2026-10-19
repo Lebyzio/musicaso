@@ -79,7 +79,7 @@ pnpm test         # vitest run
 ### 4.1 Deezer API — **Primary** ✅
 - Base: `https://api.deezer.com` — **ไม่ต้องใช้ API key** สำหรับ public catalog
 - Rate limit ~**50 requests / 5 วินาที** ต่อ IP
-- ค้นด้วยชื่อศิลปินพอดี (`isSameName` ใน `lib/music/match.ts`) → `searchArtistAlbums` ดึง `/search/artist?limit=1` + `/artist/{id}/albums?limit=100` (เรียงตาม `fans`) แสดงเป็นแถบ "Albums by …" — album search ให้แค่ 20 ผลปนศิลปินอื่น อัลบั้มดังของศิลปินอาจไม่ติด
+- ค้นด้วยชื่อศิลปินพอดี (`isSameName` ใน `lib/music/match.ts`) → `searchArtistAlbums` ดึง `/search/artist?limit=10` (เลือกชื่อตรงที่ `nb_fan` สูงสุด — ศิลปินชื่อซ้ำมีหลายคน และลำดับต่างกันตามภูมิภาคของ server) + `/artist/{id}/albums?limit=100` (เรียงตาม `fans`) แสดงเป็นแถบ "Albums by …" — album search ให้แค่ 20 ผลปนศิลปินอื่น อัลบั้มดังของศิลปินอาจไม่ติด
 - Endpoints ที่ใช้
   - `GET /search/album?q={query}&limit=20` — ค้นหาอัลบั้ม
   - `GET /album/{id}` — รายละเอียดอัลบั้ม + `tracks.data[]` (ถ้า track > 25 ให้ตาม `tracks.next` หรือเรียก `/album/{id}/tracks?limit=100`)

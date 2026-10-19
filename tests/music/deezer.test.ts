@@ -12,6 +12,7 @@ import quota from "../fixtures/deezer/error-quota.json";
 import artistAlbums from "../fixtures/deezer/artist-5661-albums.json";
 import search from "../fixtures/deezer/search-album.json";
 import searchArtist from "../fixtures/deezer/search-artist.json";
+import searchArtistToto from "../fixtures/deezer/search-artist-toto.json";
 import { fetchedUrls, mockFetch } from "../helpers/mock-fetch";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -175,7 +176,7 @@ describe("deezer.searchArtistAlbums", () => {
     const found = await deezer.searchArtistAlbums("christopher cross");
 
     expect(fetchedUrls(fetch)).toEqual([
-      "https://api.deezer.com/search/artist?q=christopher%20cross&limit=1",
+      "https://api.deezer.com/search/artist?q=christopher%20cross&limit=10",
       "https://api.deezer.com/artist/5661/albums?limit=100",
     ]);
     expect(found?.name).toBe("Christopher Cross");
@@ -189,6 +190,18 @@ describe("deezer.searchArtistAlbums", () => {
     });
     expect(found?.albums.some((a) => a.recordType === "single")).toBe(false);
     expect(found?.albums).toHaveLength(7);
+  });
+
+  it("picks the most-followed artist when several share the name", async () => {
+    const fetch = mockFetch([
+      { match: "/search/artist", body: searchArtistToto },
+      { match: "/artist/215/albums", body: { data: [{ id: 1, title: "Toto IV", fans: 9 }] } },
+    ]);
+    const found = await deezer.searchArtistAlbums("toto");
+    // Deezer lists a 75-fan "Toto" first; the band (id 215) is further down.
+    expect(searchArtistToto.data[0].id).not.toBe(215);
+    expect(fetchedUrls(fetch)[1]).toBe("https://api.deezer.com/artist/215/albums?limit=100");
+    expect(found?.albums[0].title).toBe("Toto IV");
   });
 
   it("returns null when the top artist is not the one searched for", async () => {

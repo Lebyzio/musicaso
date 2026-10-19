@@ -65,8 +65,11 @@ export const DeezerTracksPageSchema = z.object({
 const DeezerTrackSchema = z.object({ id: z.number(), preview: z.string().nullish() });
 
 export const DeezerArtistSearchSchema = z.object({
-  data: z.array(z.object({ id: z.number(), name: z.string() })),
+  data: z.array(z.object({ id: z.number(), name: z.string(), nb_fan: z.number().optional() })),
 });
+
+/** Several artists share a name ("Toto" ×4); search order varies by region, fan count doesn't. */
+const ARTIST_CANDIDATES = 10;
 
 export const DeezerArtistAlbumsSchema = z.object({
   data: z.array(
@@ -241,12 +244,14 @@ export const deezer: MusicProvider & {
    */
   async searchArtistAlbums(query: string): Promise<ArtistAlbums | null> {
     const found = await deezerGet(
-      `${BASE}/search/artist?q=${encodeURIComponent(query)}&limit=1`,
+      `${BASE}/search/artist?q=${encodeURIComponent(query)}&limit=${ARTIST_CANDIDATES}`,
       DeezerArtistSearchSchema,
       REVALIDATE.search,
     );
-    const artist = found.data[0];
-    if (!artist || !isSameName(query, artist.name)) return null;
+    const artist = found.data
+      .filter((a) => isSameName(query, a.name))
+      .sort((a, b) => (b.nb_fan ?? 0) - (a.nb_fan ?? 0))[0];
+    if (!artist) return null;
     const body = await deezerGet(
       `${BASE}/artist/${artist.id}/albums?limit=100`,
       DeezerArtistAlbumsSchema,
