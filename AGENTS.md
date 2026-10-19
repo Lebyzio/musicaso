@@ -302,6 +302,7 @@ tests/
   - **ห้ามให้ zod ไปอยู่ใน bundle ฝั่ง client**: client import `lib/share/encode.ts` / `lib/share/limits.ts` เท่านั้น (ไม่ใช่ `codec.ts` / `schema.ts`) และ draft ตรวจด้วยฟังก์ชันธรรมดา
   - รูป LCP (ปกใน header) ใช้ `preload` ของ `next/image` (Next 16 เลิกใช้ `priority`); `imageSizes` มี 448 สำหรับปกบนมือถือ
   - ฟอนต์เว็บ: Fraunces/Geist ใช้แค่ subset `latin` ไม่มีแกนเพิ่ม, Geist Mono ไม่ preload
+  - Streaming metadata (Next 16): หน้า dynamic ส่ง `<title>`/description/OG ต่อท้ายใน `<body>` ให้ browser ทั่วไป → Lighthouse SEO หน้า album/`/r` บน prod ได้ 92 ("no meta description") — **ตั้งใจไม่แก้**: บอท link preview (facebookexternalhit, LINE `line-poker`, Twitterbot/Telegram, Discordbot, Slackbot, WhatsApp) อยู่ใน `HTML_LIMITED_BOT_UA_RE` ได้ metadata ใน `<head>` ครบ (ตรวจด้วย `curl -A` แล้ว) ส่วน `htmlLimitedBots: /.*/` จะทำให้ TTFB/LCP แย่ลงทุก request
 
 ---
 
@@ -351,7 +352,7 @@ tests/
 ### Phase 5 — Polish
 - [x] Animation (page transition, score count-up, track reveal), reduced-motion
 - [x] Empty/loading/error states ครบ, skeleton
-- [ ] Lighthouse ≥ 90 ทุกหมวดบนมือถือ, deploy Vercel — Lighthouse ผ่านแล้วบน production build ในเครื่อง (perf 92–94, อื่น ๆ 100); รอผู้ใช้ import repo บน Vercel ตาม README แล้ววัดซ้ำบน prod
+- [x] Lighthouse ≥ 90 ทุกหมวดบนมือถือ, deploy Vercel — https://musicaso.vercel.app (import จาก GitHub, push `main` = deploy) — Lighthouse mobile บน prod: หน้าแรก 97/100/100/100, album 92–93/100/100/92, `/r` 93/100/100/92 (SEO 92 = streaming metadata ดูหัวข้อ 10)
 
 ### Phase 6 — Short Video (HyperFrames)
 - [ ] composition template 9:16 + data injection
