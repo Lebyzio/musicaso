@@ -1,0 +1,7 @@
+{
+  "error": {
+    "type": "ParameterException",
+    "message": "empty parameter",
+    "code": 500
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "data": [
+    {
+      "id": 14880659,
+      "title": "In Rainbows",
+      "link": "https://www.deezer.com/album/14880659",
+      "cover": "https://api.deezer.com/album/14880659/image",
+      "cover_small": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/56x56-000000-80-0-0.jpg",
+      "cover_medium": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg",
+      "cover_big": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg",
+      "cover_xl": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg",
+      "md5_image": "a175af9b7d329bc678cb4d26fc13d6de",
+      "genre_id": 85,
+      "nb_tracks": 10,
+      "record_type": "album",
+      "tracklist": "https://api.deezer.com/album/14880659/tracks",
+      "explicit_lyrics": false,
+      "artist": {
+        "id": 399,
+        "name": "Radiohead",
+        "link": "https://www.deezer.com/artist/399",
+        "picture": "https://api.deezer.com/artist/399/image",
+        "picture_small": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/56x56-000000-80-0-0.jpg",
+        "picture_medium": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/250x250-000000-80-0-0.jpg",
+        "picture_big": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/500x500-000000-80-0-0.jpg",
+        "picture_xl": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/1000x1000-000000-80-0-0.jpg",
+        "tracklist": "https://api.deezer.com/artist/399/top?limit=50",
+        "type": "artist"
+      },
+      "type": "album"
+    },
+    {
+      "id": 14880561,
+      "title": "In Rainbows (Disk 2)",
+      "link": "https://www.deezer.com/album/14880561",
+      "cover": "https://api.deezer.com/album/14880561/image",
+      "cover_small": "https://cdn-images.dzcdn.net/images/cover/353aed6e5bf61cd59943eecedc16b2f2/56x56-000000-80-0-0.jpg",
+      "cover_medium": "https://cdn-images.dzcdn.net/images/cover/353aed6e5bf61cd59943eecedc16b2f2/250x250-000000-80-0-0.jpg",
+      "cover_big": "https://cdn-images.dzcdn.net/images/cover/353aed6e5bf61cd59943eecedc16b2f2/500x500-000000-80-0-0.jpg",
+      "cover_xl": "https://cdn-images.dzcdn.net/images/cover/353aed6e5bf61cd59943eecedc16b2f2/1000x1000-000000-80-0-0.jpg",
+      "md5_image": "353aed6e5bf61cd59943eecedc16b2f2",
+      "genre_id": 85,
+      "nb_tracks": 8,
+      "record_type": "ep",
+      "tracklist": "https://api.deezer.com/album/14880561/tracks",
+      "explicit_lyrics": true,
+      "artist": {
+        "id": 399,
+        "name": "Radiohead",
+        "link": "https://www.deezer.com/artist/399",
+        "picture": "https://api.deezer.com/artist/399/image",
+        "picture_small": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/56x56-000000-80-0-0.jpg",
+        "picture_medium": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/250x250-000000-80-0-0.jpg",
+        "picture_big": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/500x500-000000-80-0-0.jpg",
+        "picture_xl": "https://cdn-images.dzcdn.net/images/artist/0d58cfbc90f2e776608bcdc0c45a4711/1000x1000-000000-80-0-0.jpg",
+        "tracklist": "https://api.deezer.com/artist/399/top?limit=50",
+        "type": "artist"
+      },
+      "type": "album"
+    },
+    {
+      "id": 568945281,
+      "title": "In Search Of The Cosmic Tale: Crossing The Galactic Portal",
+      "link": "https://www.deezer.com/album/568945281",
+      "cover": "https://api.deezer.com/album/568945281/image",
+      "cover_small": "https://cdn-images.dzcdn.net/images/cover/9862d9b1ee2869109cb01c73583e44b7/56x56-000000-80-0-0.jpg",
+      "cover_medium": "https://cdn-images.dzcdn.net/images/cover/9862d9b1ee2869109cb01c73583e44b7/250x250-000000-80-0-0.jpg",
+      "cover_big": "https://cdn-images.dzcdn.net/images/cover/9862d9b1ee2869109cb01c73583e44b7/500x500-000000-80-0-0.jpg",
+      "cover_xl": "https://cdn-images.dzcdn.net/images/cover/9862d9b1ee2869109cb01c73583e44b7/1000x1000-000000-80-0-0.jpg",
+      "md5_image": "9862d9b1ee2869109cb01c73583e44b7",
+      "genre_id": 152,
+      "nb_tracks": 6,
+      "record_type": "album",
+      "tracklist": "https://api.deezer.com/album/568945281/tracks",
+      "explicit_lyrics": false,
+      "artist": {
+        "id": 58409,
+        "name": "Nebula",
+        "link": "https://www.deezer.com/artist/58409",
+        "picture": "https://api.deezer.com/artist/58409/image",
+        "picture_small": "https://cdn-images.dzcdn.net/images/artist/8bb92acf89cf4e9ffb1bd5138234ef70/56x56-000000-80-0-0.jpg",
+        "picture_medium": "https://cdn-images.dzcdn.net/images/artist/8bb92acf89cf4e9ffb1bd5138234ef70/250x250-000000-80-0-0.jpg",
+        "picture_big": "https://cdn-images.dzcdn.net/images/artist/8bb92acf89cf4e9ffb1bd5138234ef70/500x500-000000-80-0-0.jpg",
+        "picture_xl": "https://cdn-images.dzcdn.net/images/artist/8bb92acf89cf4e9ffb1bd5138234ef70/1000x1000-000000-80-0-0.jpg",
+        "tracklist": "https://api.deezer.com/artist/58409/top?limit=50",
+        "type": "artist"
+      },
+      "type": "album"
+    }
+  ],
+  "total": 142,
+  "next": "https://api.deezer.com/search/album?q=in%20rainbows&limit=20&index=20"
+}
