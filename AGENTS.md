@@ -82,13 +82,15 @@ pnpm test         # vitest run
 - Endpoints ที่ใช้
   - `GET /search/album?q={query}&limit=20` — ค้นหาอัลบั้ม
   - `GET /album/{id}` — รายละเอียดอัลบั้ม + `tracks.data[]` (ถ้า track > 25 ให้ตาม `tracks.next` หรือเรียก `/album/{id}/tracks?limit=100`)
-- ปกอัลบั้ม: `cover_xl` (1000×1000) สำหรับ export, `cover_medium` สำหรับ list
-- `track.preview` = MP3 30 วินาที (บางเพลงอาจว่าง)
+- ปกอัลบั้ม: `cover_xl` (1000×1000) สำหรับ export, `cover_big` (500) สำหรับ list (`cover_medium` 250px เบลอบนจอ 2x)
+- ⚠️ track ที่ฝังมากับ `/album/{id}` หยุดที่ 25 เพลงและ **ไม่มี `disk_number`** → ดึง tracklist จาก `/album/{id}/tracks?limit=100` เสมอ (ตาม `next`)
+- `track.preview` = MP3 30 วินาที (บางเพลงอาจว่าง) — ⚠️ **เป็น signed URL หมดอายุในไม่กี่นาที** ห้าม cache ไว้กับข้อมูลอัลบั้ม → `Track.previewUrl` ของ Deezer ชี้ไป `/api/preview/dz/{trackId}` ซึ่ง 302 ไป URL สดจาก `GET /track/{id}` (no-store)
 - Error: Deezer อาจตอบ HTTP 200 แต่ body มี `{ "error": {...} }` → ต้องเช็กเสมอ
 
 ### 4.2 iTunes Search API — **Fallback** ✅
 - Search: `https://itunes.apple.com/search?term={q}&entity=album&media=music&limit=20`
-- Tracks: `https://itunes.apple.com/lookup?id={collectionId}&entity=song` (result แรกคือ album, ที่เหลือคือเพลง กรองด้วย `wrapperType === "track"`)
+- Tracks: `https://itunes.apple.com/lookup?id={collectionId}&entity=song&limit=200` (result แรกคือ album, ที่เหลือคือเพลง กรองด้วย `wrapperType === "track" && kind === "song"` — มี music video ปนมาได้; default limit คือ 50 ซึ่งตัดอัลบั้ม deluxe)
+- ชื่อ collection มักมี suffix ` - Single` / ` - EP` → ตัดออกแล้วเก็บเป็น `recordType`
 - ไม่ต้องใช้ key แต่ limit ต่ำ (~**20 req/นาที**) → cache ให้หนัก
 - ปก: แทนที่ `100x100bb` ใน `artworkUrl100` เป็น `1000x1000bb`
 - รองรับ `country=th` สำหรับ catalog ไทย (ให้ลอง `th` ก่อนแล้ว fallback `us`)
@@ -127,11 +129,12 @@ export interface Album {
   coverUrl: string;      // ขนาดใหญ่สุดที่หาได้
   coverThumbUrl: string;
   genre?: string;
+  recordType?: RecordType; // "album" | "ep" | "single" | "compilation"
   tracks: Track[];
   externalUrl?: string;  // ลิงก์ไปหน้า Deezer / Apple Music (ใช้ใน attribution)
 }
 
-export interface AlbumSummary { source: SourceId; id: string; title: string; artist: string; year?: number; coverThumbUrl: string; trackCount?: number; }
+export interface AlbumSummary { source: SourceId; id: string; title: string; artist: string; year?: number; coverThumbUrl: string; trackCount?: number; recordType?: RecordType; }
 
 export interface MusicProvider {
   id: SourceId;
@@ -141,7 +144,10 @@ export interface MusicProvider {
 ```
 
 - Response จาก API ภายนอก **ต้อง parse ด้วย zod** ก่อน map เสมอ
-- Cache: ใช้ `fetch(url, { next: { revalidate: 86400 } })` สำหรับ album detail, 3600 สำหรับ search (หรือกลไก cache ของ Next 16 — เช็ก docs)
+- Cache: ใช้ `fetch(url, { next: { revalidate: 86400 } })` สำหรับ album detail, 3600 สำหรับ search (ค่าอยู่ใน `lib/music/http.ts`) + `Cache-Control: s-maxage` ใน route handler ให้ CDN ช่วยรับโหลด
+  - **ตั้งใจไม่เปิด `cacheComponents`**: in-memory cache ของ `"use cache"` ไม่คงอยู่ข้าม request บน Vercel serverless และ `"use cache: remote"` คือ cache store ของ platform (ขัดกับ Non-goals) — ถ้าจะเปลี่ยนให้ถามผู้ใช้ก่อน
+- Error: provider โยน `ProviderError` (`not_found` / `rate_limited` / `upstream` / `invalid_response`) → route map เป็น 404/429/502 ผ่าน `lib/api-response.ts` และ response error ต้อง `no-store`
+- `/api/search` ไม่ระบุ `source` = Deezer ก่อน แล้ว fallback เป็น iTunes เมื่อ Deezer error หรือได้ 0 ผล (response บอก `source` ที่ใช้จริงเพื่อทำ attribution)
 - แสดง attribution เล็ก ๆ ("Data from Deezer" / "Apple Music") ในหน้ารีวิวและบนการ์ด
 
 ---
@@ -207,6 +213,7 @@ app/
   r/[payload]/card/route.tsx        # PNG สำหรับดาวน์โหลด ?format=square|story
   api/search/route.ts               # GET ?q=&source=
   api/album/[source]/[id]/route.ts  # GET (ใช้ฝั่ง client ถ้าจำเป็น)
+  api/preview/[source]/[trackId]/route.ts  # 302 ไป preview URL สดของ Deezer
   api/cover/route.ts                # proxy รูปปก — allowlist host เท่านั้น
 components/
   search/  review/  share/  card/  ui/
@@ -224,7 +231,7 @@ video/                              # Phase 6 — HyperFrames composition templa
 tests/
 ```
 
-- `/api/cover` ต้องมี **allowlist host** (Deezer CDN, `*.mzstatic.com`, `coverartarchive.org`) — ห้ามเป็น open proxy
+- `/api/cover` ต้องมี **allowlist host** (Deezer CDN, `*.mzstatic.com`, `coverartarchive.org`) — ห้ามเป็น open proxy — allowlist อยู่ที่ `lib/music/hosts.ts` ที่เดียว (`next.config.ts` import ไปสร้าง `remotePatterns`) และต้องเช็ก host ซ้ำทุก redirect hop
 - `next.config.ts`: ตั้ง `images.remotePatterns` ให้ตรงกับ host เดียวกัน
 
 ---
@@ -287,9 +294,9 @@ tests/
 - [x] ตั้ง design tokens + ฟอนต์ (รวมฟอนต์ไทย) + layout หลัก
 
 ### Phase 1 — Data Layer
-- [ ] types กลาง + Deezer provider + iTunes provider (zod schema + mapper + tests ด้วย fixture JSON)
-- [ ] `/api/search`, `/api/cover` (allowlist)
-- [ ] หน้าแรก: search box (debounce 300ms) + ผลลัพธ์เป็น grid ปก
+- [x] types กลาง + Deezer provider + iTunes provider (zod schema + mapper + tests ด้วย fixture JSON)
+- [x] `/api/search`, `/api/cover` (allowlist)
+- [x] หน้าแรก: search box (debounce 300ms) + ผลลัพธ์เป็น grid ปก
 
 ### Phase 2 — Review Editor
 - [ ] `/album/[source]/[id]`: header อัลบั้ม, tracklist, rating input ต่อเพลง, ปุ่มข้ามเพลง, preview 30s
