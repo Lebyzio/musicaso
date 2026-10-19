@@ -65,7 +65,7 @@ export const DeezerTracksPageSchema = z.object({
 const DeezerTrackSchema = z.object({ id: z.number(), preview: z.string().nullish() });
 
 export const DeezerArtistSearchSchema = z.object({
-  data: z.array(z.object({ id: z.number(), name: z.string(), nb_fan: z.number().optional() })),
+  data: z.array(z.object({ id: z.number(), name: z.string(), nb_fan: z.number().nullish() })),
 });
 
 /** Several artists share a name ("Toto" ×4); search order varies by region, fan count doesn't. */
@@ -76,9 +76,10 @@ export const DeezerArtistAlbumsSchema = z.object({
     z.object({
       id: z.number(),
       title: z.string(),
-      release_date: z.string().optional(),
-      record_type: z.string().optional(),
-      fans: z.number().optional(),
+      // Nullable: listings differ by region, and Deezer sends null for some catalogue entries.
+      release_date: z.string().nullish(),
+      record_type: z.string().nullish(),
+      fans: z.number().nullish(),
       ...CoverFields,
     }),
   ),
@@ -148,7 +149,7 @@ export function mapDeezerArtistAlbums(body: DeezerArtistAlbums, artist: string):
       id: String(item.id),
       title: item.title,
       artist,
-      year: parseYear(item.release_date),
+      year: parseYear(item.release_date ?? undefined),
       coverThumbUrl: pickCover(item).coverThumbUrl,
       recordType: item.record_type ? RECORD_TYPES[item.record_type] : undefined,
     } satisfies AlbumSummary,

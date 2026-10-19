@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ProviderError } from "@/lib/music/errors";
-import { deezer, mapDeezerArtistAlbums } from "@/lib/music/providers/deezer";
+import {
+  deezer,
+  DeezerArtistAlbumsSchema,
+  mapDeezerArtistAlbums,
+} from "@/lib/music/providers/deezer";
 import album302127 from "../fixtures/deezer/album-302127.json";
 import tracks302127 from "../fixtures/deezer/album-302127-tracks.json";
 import album73301852 from "../fixtures/deezer/album-73301852.json";
@@ -208,6 +212,23 @@ describe("deezer.searchArtistAlbums", () => {
     const fetch = mockFetch([{ match: "/search/artist", body: searchArtist }]);
     await expect(deezer.searchArtistAlbums("sailing")).resolves.toBeNull();
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("accepts null fields in the discography", () => {
+    const body = DeezerArtistAlbumsSchema.parse({
+      data: [{ id: 1, title: "Old", release_date: null, record_type: null, fans: null }],
+    });
+    expect(mapDeezerArtistAlbums(body, "X")).toEqual([
+      {
+        source: "dz",
+        id: "1",
+        title: "Old",
+        artist: "X",
+        year: undefined,
+        coverThumbUrl: "",
+        recordType: undefined,
+      },
+    ]);
   });
 
   it("keeps singles when an artist has fewer than three albums", () => {

@@ -45,7 +45,10 @@ export interface SearchResult {
 
 /** The discography is a bonus: a failure there must never fail the search itself. */
 function findArtist(query: string): Promise<ArtistAlbums | null> {
-  return deezer.searchArtistAlbums(query).catch(() => null);
+  return deezer.searchArtistAlbums(query).catch((err: unknown) => {
+    console.warn(`Artist discography failed for "${query}"`, err);
+    return null;
+  });
 }
 
 /** Results that are already in the discography section aren't repeated below it. */

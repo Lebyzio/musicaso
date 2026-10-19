@@ -88,6 +88,7 @@ describe("searchAlbums with an artist name", () => {
   });
 
   it("still returns results when the artist lookup fails", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     mockFetch([
       { match: "/search/artist", status: 500, body: {} },
       { match: "/search/album", body: dzSearch },
@@ -95,5 +96,7 @@ describe("searchAlbums with an artist name", () => {
     const res = await searchAlbums("radiohead", "dz");
     expect(res.artist).toBeUndefined();
     expect(res.results).toHaveLength(3);
+    expect(warn).toHaveBeenCalledOnce();
+    warn.mockRestore();
   });
 });
