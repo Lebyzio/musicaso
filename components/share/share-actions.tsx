@@ -111,8 +111,17 @@ export function NativeShareButton({
   );
 }
 
-/** Actions on a shared review: answer it with your own review, or pass the link on. */
-export function ShareActions({ reviewItHref, title }: { reviewItHref: string; title: string }) {
+/** Actions on a shared review or list: make your own, or pass the link on. */
+export function ShareActions({
+  reviewItHref,
+  reviewItLabel,
+  title,
+}: {
+  reviewItHref: string;
+  /** Defaults to "Review it yourself". */
+  reviewItLabel?: string;
+  title: string;
+}) {
   const t = useT();
   const currentUrl = () => window.location.href;
   return (
@@ -121,7 +130,7 @@ export function ShareActions({ reviewItHref, title }: { reviewItHref: string; ti
         href={reviewItHref}
         className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink"
       >
-        {t.share.reviewIt}
+        {reviewItLabel ?? t.share.reviewIt}
       </Link>
       <CopyLinkButton getUrl={currentUrl} />
       <NativeShareButton getUrl={currentUrl} title={title} />

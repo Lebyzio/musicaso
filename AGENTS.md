@@ -204,6 +204,18 @@ export const ReviewPayloadV1 = z.object({
 
 ---
 
+### 5.4 Library + Top list (`/library`, `/l/{payload}`)
+- `/library` (client) อ่าน draft ทั้งหมดใน localStorage ผ่าน `listDrafts()` (`lib/draft.ts`) — draft เก็บ `m` (ชื่อ/ศิลปิน/ปี/ปกที่ผ่าน allowlist) และ `sc` (คะแนนตามที่แสดง รวมถ่วงน้ำหนัก) ไว้แล้ว; draft เก่าที่ไม่มี `m` ถูกเติมผ่าน `/api/album/[source]/[id]` + `attachAlbum()` (ไม่แตะคะแนนและ `updatedAt`)
+- ตัวสร้างลิสต์อยู่ในหน้า library: เลือกได้ ≤ `LIST_MAX` (10) อัลบั้มที่มีข้อมูลและให้คะแนนแล้วอย่างน้อย 1 เพลง, เรียงตามคะแนนจนกว่าผู้ใช้จะเลื่อนเอง, filter "ออกปีนี้"
+- Payload (`lib/share/list-schema.ts`):
+  ```ts
+  ListPayloadV1 = { v: 1, n?: string /* ≤40 */, t?: string /* ≤60 */, l?: lang, i: [{ s, a, k, r, w? }] /* 1–10, ห้ามซ้ำ */ }
+  ```
+  แต่ละ item คือรีวิวเต็ม (ไม่มี n/t/th/ref) → `listItemReview()` สร้างลิงก์ `/r/…` ของแต่ละอัลบั้ม (ชื่อ/ภาษาเป็นของคนทำลิสต์)
+- Encode ฝั่ง client: `lib/share/list-encode.ts` (ไม่มี zod) — decode ฝั่ง server: `decodeList()` ใน `list-codec.ts`; ทั้ง `/r` และ `/l` ใช้ `decodeSegment()` (`lib/share/segment.ts`) และ `fitText()` (ตัด `t` ให้ URL ≤ 1,800) ร่วมกัน — 10 อัลบั้ม × 65 เพลงยาวราว 1,000 ตัวอักษร
+- หน้า/รูปโหลดทุกอัลบั้มด้วย `loadListView()` (`lib/card/list-entries.ts`, ขนาน, Data Cache); อัลบั้มที่โหลดไม่ได้แสดงเป็นแถว "ไม่พบอัลบั้ม" ไม่ทำให้หน้าพัง; สีจากปกอันดับแรกที่โหลดได้
+- การ์ด `components/card/list-card.tsx`: story = 10 แถว (ปก 106), square = ตารางปก 5×2 (ปก 168), OG = ปก 5 อันดับแรก + "+N"
+
 ## 6. Scoring Rules
 
 `lib/score.ts` — pure functions ทั้งหมด + unit test
@@ -225,9 +237,13 @@ app/
   album/[source]/[id]/page.tsx      # Review editor (server fetch album → client editor)
   r/[payload]/page.tsx              # Read-only shared review + generateMetadata
   r/[payload]/opengraph-image.tsx   # OG image 1200×630
-  r/[payload]/card/route.tsx        # PNG สำหรับดาวน์โหลด ?format=square|story
+  r/[payload]/card/route.tsx        # PNG สำหรับดาวน์โหลด ?format=square|story&theme=&lang=
+  library/page.tsx                  # รีวิวของฉัน (localStorage) + ตัวสร้าง Top list
+  l/[payload]/page.tsx              # Top list ที่แชร์ + generateMetadata
+  l/[payload]/opengraph-image.tsx   # OG ของลิสต์
+  l/[payload]/card/route.tsx        # PNG ของลิสต์ ?format=square|story&theme=&lang=
   api/search/route.ts               # GET ?q=&source=
-  api/album/[source]/[id]/route.ts  # GET (ใช้ฝั่ง client ถ้าจำเป็น)
+  api/album/[source]/[id]/route.ts  # GET ข้อมูลอัลบั้มไม่รวม tracklist (library เติม draft เก่า)
   api/preview/[source]/[trackId]/route.ts  # 302 ไป preview URL สดของ Deezer
   api/cover/route.ts                # proxy รูปปก — allowlist host เท่านั้น
 components/
@@ -379,4 +395,4 @@ tests/
 - [x] i18n foundation (cookie `musicaso-lang` + Accept-Language, ปุ่มสลับ EN/ไทย)
 - [x] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
 - [x] `/library` รีวิวของฉัน (draft + meta)
-- [ ] Top list ของปี `/l/{payload}` + การ์ด + OG
+- [x] Top list ของปี `/l/{payload}` + การ์ด + OG

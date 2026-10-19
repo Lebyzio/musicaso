@@ -7,12 +7,12 @@ import type { CardTheme } from "@/lib/card/themes";
 
 /** Image-card section on a shared review. The viewer can pick another theme without changing the link. */
 export function SharedCard({
-  reviewPath,
+  basePath,
   album,
   accent,
   initialTheme,
 }: {
-  reviewPath: string;
+  basePath: string;
   album: { title: string; artist: string };
   accent: string;
   initialTheme: CardTheme;
@@ -28,7 +28,7 @@ export function SharedCard({
         {t.share.imageCard}
       </h2>
       <CardExport
-        reviewPath={reviewPath}
+        basePath={basePath}
         album={album}
         accent={accent}
         theme={theme}

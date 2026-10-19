@@ -159,7 +159,7 @@ export function SharePanel({
       <div className="flex flex-col gap-4 border-t border-ink-700 pt-5">
         <h3 className="text-xs tracking-[0.25em] text-paper-mute uppercase">{t.share.imageCard}</h3>
         <CardExport
-          reviewPath={reviewPath}
+          basePath={reviewPath}
           album={{ title: albumTitle, artist: albumArtist }}
           accent={accent}
           theme={theme}

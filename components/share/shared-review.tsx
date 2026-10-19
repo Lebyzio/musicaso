@@ -168,7 +168,7 @@ export async function SharedReview({
       </section>
 
       <SharedCard
-        reviewPath={reviewPath}
+        basePath={reviewPath}
         album={{ title: album.title, artist: album.artist }}
         accent={accent.accent}
         initialTheme={cardTheme}

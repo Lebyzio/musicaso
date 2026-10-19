@@ -67,22 +67,32 @@ export function sharePath(payload: ReviewPayload): string {
   return `/r/${encodePayload(payload)}`;
 }
 
-export interface FitResult {
-  payload: ReviewPayload;
+export interface Fit<P> {
+  payload: P;
   url: string;
-  /** The review text was shortened (or dropped) to keep the URL under the limit. */
+  /** The text was shortened (or dropped) to keep the URL under the limit. */
   truncated: boolean;
-  /** Still over the limit even without review text. */
+  /** Still over the limit even without the text. */
   tooLong: boolean;
 }
 
+export type FitResult = Fit<ReviewPayload>;
+
 /** Build the share URL, shortening the review text if the URL would exceed `limit`. */
 export function fitShareUrl(origin: string, payload: ReviewPayload, limit = URL_LIMIT): FitResult {
-  const urlFor = (p: ReviewPayload) => `${origin}${sharePath(p)}`;
+  return fitText(payload, (p) => `${origin}${sharePath(p)}`, limit);
+}
+
+/** Shorten the payload's free text (`t`) until `urlFor(payload)` is at most `limit` long. */
+export function fitText<P extends { t?: string }>(
+  payload: P,
+  urlFor: (p: P) => string,
+  limit: number,
+): Fit<P> {
   const url = urlFor(payload);
   if (url.length <= limit) return { payload, url, truncated: false, tooLong: false };
 
-  const bare: ReviewPayload = { ...payload };
+  const bare: P = { ...payload };
   delete bare.t;
   const bareUrl = urlFor(bare);
   if (!payload.t || bareUrl.length > limit) {
@@ -92,7 +102,7 @@ export function fitShareUrl(origin: string, payload: ReviewPayload, limit = URL_
   // Longest prefix of the text that still fits. Compression makes length only roughly
   // monotonic in text length, which is fine for a binary search over a ≤280 char string.
   const chars = [...payload.t];
-  let best: FitResult = { payload: bare, url: bareUrl, truncated: true, tooLong: false };
+  let best: Fit<P> = { payload: bare, url: bareUrl, truncated: true, tooLong: false };
   let lo = 1;
   let hi = chars.length - 1;
   while (lo <= hi) {

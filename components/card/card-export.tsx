@@ -40,8 +40,8 @@ type Status =
   { kind: "idle" } | { kind: "busy"; label: string } | { kind: "done" | "error"; label: string };
 
 interface CardExportProps {
-  /** `/r/{payload}` — the card lives under it. null while there is nothing to render yet. */
-  reviewPath: string | null;
+  /** `/r/{payload}` or `/l/{payload}` — the card route lives under it. null while there is nothing to render yet. */
+  basePath: string | null;
   album: { title: string; artist: string };
   accent: string;
   theme: CardTheme;
@@ -49,7 +49,7 @@ interface CardExportProps {
 }
 
 /** Format + theme picker, live preview, PNG download and (on mobile) native file sharing. */
-export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: CardExportProps) {
+export function CardExport({ basePath, album, accent, theme, onThemeChange }: CardExportProps) {
   const [format, setFormat] = useState<CardFormat>("story");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [loadedUrl, setLoadedUrl] = useState<string | null>(null);
@@ -59,8 +59,8 @@ export function CardExport({ reviewPath, album, accent, theme, onThemeChange }: 
   // The card is drawn in the viewer's language, whatever language the review was written in.
   const locale = useLocale();
 
-  const cardUrl = reviewPath
-    ? `${reviewPath}/card?format=${format}&theme=${theme}&lang=${locale}`
+  const cardUrl = basePath
+    ? `${basePath}/card?format=${format}&theme=${theme}&lang=${locale}`
     : null;
   const filename = cardFilename(album, format);
   const busy = status.kind === "busy";
