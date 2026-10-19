@@ -7,6 +7,7 @@ const start = (ratings: EditorState["ratings"], active = 0): EditorState => ({
   weighted: false,
   name: "",
   text: "",
+  theme: "sleeve",
   loaded: true,
   mismatch: false,
 });
@@ -19,6 +20,7 @@ describe("editorReducer", () => {
       weighted: false,
       name: "",
       text: "",
+      theme: "sleeve",
       loaded: false,
       mismatch: false,
     });
@@ -90,6 +92,20 @@ describe("editorReducer", () => {
       text: "Great",
     });
     expect(hydrated).toMatchObject({ name: "Alex", text: "Great" });
+  });
+
+  it("sets the card theme and ignores unknown themes from drafts", () => {
+    expect(editorReducer(initEditor(1), { type: "setTheme", value: "vivid" }).theme).toBe("vivid");
+    const h = (theme: string) =>
+      editorReducer(initEditor(1), {
+        type: "hydrate",
+        ratings: [],
+        weighted: false,
+        mismatch: false,
+        theme,
+      }).theme;
+    expect(h("paper")).toBe("paper");
+    expect(h("neon")).toBe("sleeve");
   });
 
   it("hydrates a draft, fitting it to the tracklist", () => {

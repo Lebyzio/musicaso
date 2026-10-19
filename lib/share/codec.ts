@@ -135,6 +135,8 @@ export interface PayloadInput {
   text?: string;
   favorite?: number;
   weighted?: boolean;
+  /** Card theme id; the default ("sleeve") is left out to keep links short. */
+  theme?: string;
   /** The review this one answers ("Review it yourself"). Its own reference is never carried over. */
   reference?: { name?: string; ratings: readonly Rating[] };
 }
@@ -151,6 +153,7 @@ export function buildPayload(input: PayloadInput): ReviewPayload {
     t: input.text,
     f: input.favorite,
     w: input.weighted ? 1 : undefined,
+    th: input.theme && input.theme !== "sleeve" ? input.theme : undefined,
     ref: input.reference && {
       n: input.reference.name,
       r: encodeRatings(fitRatings(input.reference.ratings, k)),

@@ -52,6 +52,7 @@ describe("draft storage", () => {
       weighted: true,
       name: "",
       text: "",
+      theme: undefined,
       updatedAt: 123,
       mismatch: false,
     });
@@ -67,6 +68,14 @@ describe("draft storage", () => {
       1,
     );
     expect(loadDraft("dz", "1", 1, storage)).toMatchObject({ name: "Alex", text: "wow" });
+  });
+
+  it("keeps a non-default card theme", () => {
+    const storage = memoryStorage();
+    saveDraft("dz", "1", { ratings: [4], weighted: false, theme: "paper" }, storage);
+    expect(loadDraft("dz", "1", 1, storage)?.theme).toBe("paper");
+    saveDraft("dz", "1", { ratings: [4], weighted: false, theme: "sleeve" }, storage);
+    expect(loadDraft("dz", "1", 1, storage)?.theme).toBeUndefined();
   });
 
   it("does not keep a draft that only has the (pre-filled) name", () => {

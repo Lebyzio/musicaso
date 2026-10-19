@@ -12,6 +12,7 @@ const DraftSchema = z.object({
   w: z.boolean().optional(), // weight by track length
   n: z.string().max(NAME_MAX).optional(), // reviewer name
   t: z.string().max(TEXT_MAX).optional(), // review text
+  th: z.string().max(20).optional(), // card theme
   updatedAt: z.number(),
 });
 
@@ -20,6 +21,7 @@ export interface Draft {
   weighted: boolean;
   name: string;
   text: string;
+  theme: string | undefined;
   updatedAt: number;
   /** The tracklist changed since this draft was saved; ratings were matched by position. */
   mismatch: boolean;
@@ -58,6 +60,7 @@ export function loadDraft(
       weighted: parsed.data.w ?? false,
       name: parsed.data.n ?? "",
       text: parsed.data.t ?? "",
+      theme: parsed.data.th,
       updatedAt: parsed.data.updatedAt,
       mismatch: parsed.data.k !== trackCount,
     };
@@ -70,7 +73,13 @@ export function loadDraft(
 export function saveDraft(
   source: string,
   id: string,
-  draft: { ratings: readonly Rating[]; weighted: boolean; name?: string; text?: string },
+  draft: {
+    ratings: readonly Rating[];
+    weighted: boolean;
+    name?: string;
+    text?: string;
+    theme?: string;
+  },
   storage: StorageLike | null = defaultStorage(),
   now: number = Date.now(),
 ): boolean {
@@ -91,6 +100,7 @@ export function saveDraft(
       ...(draft.weighted ? { w: true } : {}),
       ...(name ? { n: name } : {}),
       ...(text ? { t: text } : {}),
+      ...(draft.theme && draft.theme !== "sleeve" ? { th: draft.theme } : {}),
       updatedAt: now,
     };
     storage.setItem(key, JSON.stringify(value));

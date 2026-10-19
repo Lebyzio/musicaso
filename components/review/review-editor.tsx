@@ -21,7 +21,16 @@ const SHORTCUTS: [string, string][] = [
   ["↑ ↓", "track"],
 ];
 
-export function ReviewEditor({ album, reference }: { album: Album; reference?: Reference }) {
+export function ReviewEditor({
+  album,
+  reference,
+  accent,
+}: {
+  album: Album;
+  reference?: Reference;
+  /** Album accent (hex) from the server, for the card theme swatches. */
+  accent: string;
+}) {
   const { source, id, tracks } = album;
   const [state, dispatch] = useReducer(editorReducer, tracks.length, initEditor);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -36,6 +45,7 @@ export function ReviewEditor({ album, reference }: { album: Album; reference?: R
       mismatch: saved?.mismatch ?? false,
       name: saved?.name || loadReviewerName(),
       text: saved?.text ?? "",
+      theme: saved?.theme,
     });
   }, [source, id, tracks.length]);
 
@@ -47,12 +57,22 @@ export function ReviewEditor({ album, reference }: { album: Album; reference?: R
         weighted: state.weighted,
         name: state.name,
         text: state.text,
+        theme: state.theme,
       });
       saveReviewerName(state.name);
       setSaveFailed(!ok);
     }, AUTOSAVE_MS);
     return () => clearTimeout(timer);
-  }, [state.loaded, source, id, state.ratings, state.weighted, state.name, state.text]);
+  }, [
+    state.loaded,
+    source,
+    id,
+    state.ratings,
+    state.weighted,
+    state.name,
+    state.text,
+    state.theme,
+  ]);
 
   const summary: ScoreSummary = useMemo(() => {
     const score = albumScore(
@@ -159,6 +179,9 @@ export function ReviewEditor({ album, reference }: { album: Album; reference?: R
               source={source}
               albumId={id}
               albumTitle={album.title}
+              albumArtist={album.artist}
+              accent={accent}
+              theme={state.theme}
               ratings={state.ratings}
               weighted={state.weighted}
               name={state.name}

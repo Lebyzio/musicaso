@@ -3,6 +3,7 @@ import { AlbumLoadError } from "@/components/review/album-load-error";
 import { BrokenLink } from "@/components/share/broken-link";
 import { SharedReview } from "@/components/share/shared-review";
 import { getAlbumAccent } from "@/lib/accent";
+import { isCardTheme } from "@/lib/card/themes";
 import { loadAlbum } from "@/lib/music";
 import type { Album } from "@/lib/music/types";
 import { formatScore } from "@/lib/score";
@@ -53,13 +54,16 @@ export default async function SharedReviewPage({ params }: PageProps<"/r/[payloa
 
   const view = reviewView(result.album, decoded.payload);
   const accent = await getAlbumAccent(result.album.coverUrl);
+  const canonical = encodePayload(decoded.payload);
   return (
     <SharedReview
       accent={accent}
       album={result.album}
       view={view}
       title={reviewTitle(result.album, view)}
-      reviewItHref={`/album/${s}/${a}?from=${encodeURIComponent(encodePayload(decoded.payload))}`}
+      reviewItHref={`/album/${s}/${a}?from=${encodeURIComponent(canonical)}`}
+      reviewPath={`/r/${canonical}`}
+      cardTheme={isCardTheme(decoded.payload.th) ? decoded.payload.th : "sleeve"}
     />
   );
 }

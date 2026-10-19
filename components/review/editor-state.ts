@@ -1,3 +1,4 @@
+import { type CardTheme, isCardTheme } from "@/lib/card/themes";
 import { clampHalfSteps, type Rating } from "@/lib/score";
 import { fitRatings } from "@/lib/share/ratings";
 import { NAME_MAX, TEXT_MAX } from "@/lib/share/schema";
@@ -10,6 +11,8 @@ export interface EditorState {
   /** Reviewer name and short review text, shared in the link. */
   name: string;
   text: string;
+  /** Card theme, carried in the share link so viewers get the same default card. */
+  theme: CardTheme;
   /** The saved draft has been read (autosave must not run before that). */
   loaded: boolean;
   /** The draft was saved against a different tracklist. */
@@ -27,6 +30,7 @@ export type EditorAction =
   | { type: "toggleWeighted" }
   | { type: "setName"; value: string }
   | { type: "setText"; value: string }
+  | { type: "setTheme"; value: CardTheme }
   | {
       type: "hydrate";
       ratings: readonly Rating[];
@@ -34,6 +38,7 @@ export type EditorAction =
       mismatch: boolean;
       name?: string;
       text?: string;
+      theme?: string;
     }
   | { type: "dismissMismatch" };
 
@@ -47,6 +52,7 @@ export function initEditor(trackCount: number): EditorState {
     weighted: false,
     name: "",
     text: "",
+    theme: "sleeve",
     loaded: false,
     mismatch: false,
   };
@@ -96,6 +102,7 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
         weighted: action.weighted,
         name: (action.name ?? "").slice(0, NAME_MAX),
         text: (action.text ?? "").slice(0, TEXT_MAX),
+        theme: isCardTheme(action.theme) ? action.theme : state.theme,
         loaded: true,
         mismatch: action.mismatch,
       };
@@ -103,6 +110,8 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
       return { ...state, name: action.value.slice(0, NAME_MAX) };
     case "setText":
       return { ...state, text: action.value.slice(0, TEXT_MAX) };
+    case "setTheme":
+      return state.theme === action.value ? state : { ...state, theme: action.value };
     case "dismissMismatch":
       return state.mismatch ? { ...state, mismatch: false } : state;
   }

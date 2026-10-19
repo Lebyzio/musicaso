@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
+import { CardExport } from "@/components/card/card-export";
+import { useDebouncedValue } from "@/components/search/use-debounced-value";
 import { CopyLinkButton, NativeShareButton } from "@/components/share/share-actions";
+import type { CardTheme } from "@/lib/card/themes";
 import type { SourceId } from "@/lib/music/types";
 import { isScored, type Rating } from "@/lib/score";
 import { buildPayload, fitShareUrl, URL_LIMIT } from "@/lib/share/codec";
@@ -19,6 +22,9 @@ interface SharePanelProps {
   source: SourceId;
   albumId: string;
   albumTitle: string;
+  albumArtist: string;
+  accent: string;
+  theme: CardTheme;
   ratings: Rating[];
   weighted: boolean;
   name: string;
@@ -34,6 +40,9 @@ export function SharePanel({
   source,
   albumId,
   albumTitle,
+  albumArtist,
+  accent,
+  theme,
   ratings,
   weighted,
   name,
@@ -58,10 +67,14 @@ export function SharePanel({
       name,
       text,
       weighted,
+      theme,
       reference,
     });
     return fitShareUrl(origin, payload);
-  }, [origin, canShare, source, albumId, ratings, name, text, weighted, reference]);
+  }, [origin, canShare, source, albumId, ratings, name, text, weighted, theme, reference]);
+
+  // The card preview re-renders on the server, so wait until typing/rating pauses.
+  const reviewPath = useDebouncedValue(fit && !fit.tooLong ? new URL(fit.url).pathname : null, 700);
 
   const textLength = [...text].length;
   const getUrl = () => fit?.url ?? "";
@@ -138,6 +151,17 @@ export function SharePanel({
             Preview ↗
           </a>
         )}
+      </div>
+
+      <div className="flex flex-col gap-4 border-t border-ink-700 pt-5">
+        <h3 className="text-xs tracking-[0.25em] text-paper-mute uppercase">Image card</h3>
+        <CardExport
+          reviewPath={reviewPath}
+          album={{ title: albumTitle, artist: albumArtist }}
+          accent={accent}
+          theme={theme}
+          onThemeChange={(value) => dispatch({ type: "setTheme", value })}
+        />
       </div>
     </section>
   );

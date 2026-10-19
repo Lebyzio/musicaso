@@ -7,7 +7,9 @@ import type { Album } from "@/lib/music/types";
 import { formatScore, isScored, type Rating, toScore } from "@/lib/score";
 import type { ReviewView } from "@/lib/share/review-view";
 import { formatDuration, hasThai } from "@/lib/text";
+import type { CardTheme } from "@/lib/card/themes";
 import { ShareActions } from "./share-actions";
+import { SharedCard } from "./shared-card";
 
 interface SharedReviewProps {
   album: Album;
@@ -15,6 +17,9 @@ interface SharedReviewProps {
   reviewItHref: string;
   title: string;
   accent: Accent;
+  /** Canonical /r/{payload} path, for the image card. */
+  reviewPath: string;
+  cardTheme: CardTheme;
 }
 
 function Bar({ rating, muted = false }: { rating: Rating; muted?: boolean }) {
@@ -41,7 +46,15 @@ function ScoreText({ rating, className = "" }: { rating: Rating; className?: str
   return <span className={`${scoreTone(score)} ${className}`}>{formatScore(score)}</span>;
 }
 
-export function SharedReview({ album, view, reviewItHref, title, accent }: SharedReviewProps) {
+export function SharedReview({
+  album,
+  view,
+  reviewItHref,
+  title,
+  accent,
+  reviewPath,
+  cardTheme,
+}: SharedReviewProps) {
   const who = view.name ?? "Someone";
   const refWho = view.reference?.name ?? "Original";
   const { comparison, stats } = view;
@@ -137,6 +150,13 @@ export function SharedReview({ album, view, reviewItHref, title, accent }: Share
           <ShareActions reviewItHref={reviewItHref} title={title} />
         </div>
       </section>
+
+      <SharedCard
+        reviewPath={reviewPath}
+        album={{ title: album.title, artist: album.artist }}
+        accent={accent.accent}
+        initialTheme={cardTheme}
+      />
 
       <section aria-labelledby="shared-tracklist" className="flex flex-col gap-2">
         <h2

@@ -56,6 +56,7 @@ export default async function AlbumPage({
       <AlbumHeader album={album} />
       <ReviewEditor
         album={album}
+        accent={accent.accent}
         reference={referenceFrom(from, source, id, album.tracks.length)}
       />
     </div>

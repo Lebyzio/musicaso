@@ -123,6 +123,12 @@ describe("buildPayload", () => {
     });
     expect(decodeRatings(p.ref!.r)).toHaveLength(3);
   });
+
+  it("carries a non-default theme only", () => {
+    const base = { source: "dz" as const, albumId: "1", ratings: [20] };
+    expect(buildPayload({ ...base, theme: "vivid" }).th).toBe("vivid");
+    expect(buildPayload({ ...base, theme: "sleeve" }).th).toBeUndefined();
+  });
 });
 
 describe("fitShareUrl", () => {
