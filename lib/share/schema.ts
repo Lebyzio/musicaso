@@ -23,6 +23,7 @@ export const ReviewPayloadV1 = z.object({
   n: z.string().max(NAME_MAX).optional(), // reviewer name
   t: z.string().max(TEXT_MAX).optional(), // short review text
   f: z.number().int().nonnegative().optional(), // favourite track index
+  w: z.literal(1).optional(), // album score weighted by track length
   th: z
     .string()
     .max(20)

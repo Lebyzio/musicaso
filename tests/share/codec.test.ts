@@ -22,6 +22,7 @@ const full: ReviewPayload = {
   n: "Alex",
   t: "Warm, restless, perfect. 🌈",
   f: 1,
+  w: 1,
   th: "vinyl",
   ref: { n: "Sam", r: "ggggg_ggg." },
 };
@@ -59,6 +60,13 @@ describe("encode / decode", () => {
   it("is deterministic regardless of key order", () => {
     const shuffled = Object.fromEntries(Object.entries(full).reverse()) as ReviewPayload;
     expect(encodePayload(shuffled)).toBe(encodePayload(full));
+  });
+
+  it("accepts percent-encoded input (route params keep %2B)", () => {
+    const encoded = encodePayload({ ...full, n: "Old", k: 12, r: "gggggggggggg" });
+    expect(encoded).toContain("+");
+    expect(decodePayload(encodeURIComponent(encoded))).toEqual(decodePayload(encoded));
+    expect(decodePayload("%E0%A4%A")).toEqual({ ok: false, reason: "corrupt" });
   });
 
   it("produces URL-safe path segments", () => {

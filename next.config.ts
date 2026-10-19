@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     })),
     qualities: [75],
   },
+  // Fonts for ImageResponse are read from disk at request time (lib/fonts.ts).
+  outputFileTracingIncludes: {
+    "/*": ["./assets/fonts/*.woff"],
+  },
   turbopack: {
     rules: {
       "*.css": {

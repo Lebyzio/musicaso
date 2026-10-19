@@ -4,7 +4,17 @@ import { SiteHeader } from "@/components/ui/site-header";
 import { fontVariables } from "./fonts";
 import "./globals.css";
 
+/** Absolute base for OG image URLs: explicit env, then the Vercel production domain, then local dev. */
+function siteUrl(): URL {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return new URL(explicit);
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return new URL(`https://${vercel}`);
+  return new URL(`http://localhost:${process.env.PORT ?? 3000}`);
+}
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl(),
   title: {
     default: "musicaso — rate albums track by track",
     template: "%s · musicaso",

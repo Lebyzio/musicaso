@@ -31,6 +31,7 @@ function normalize(p: ReviewPayload): ReviewPayload {
     ...(n && { n }),
     ...(t && { t }),
     ...(p.f !== undefined && { f: p.f }),
+    ...(p.w && { w: 1 as const }),
     ...(p.th && { th: p.th }),
     ...(p.ref && { ref: { ...(refName && { n: refName }), r: p.ref.r } }),
   };
@@ -45,9 +46,19 @@ export function decodePayload(encoded: string | undefined | null): DecodeResult 
   if (!encoded) return { ok: false, reason: "empty" };
   if (encoded.length > MAX_ENCODED) return { ok: false, reason: "corrupt" };
 
+  // Route params can arrive still percent-encoded ("+" as "%2B"); the lz alphabet never contains "%".
+  let raw = encoded;
+  if (raw.includes("%")) {
+    try {
+      raw = decodeURIComponent(raw);
+    } catch {
+      return { ok: false, reason: "corrupt" };
+    }
+  }
+
   let json: string | null;
   try {
-    json = decompressFromEncodedURIComponent(encoded);
+    json = decompressFromEncodedURIComponent(raw);
   } catch {
     json = null;
   }
@@ -123,6 +134,7 @@ export interface PayloadInput {
   name?: string;
   text?: string;
   favorite?: number;
+  weighted?: boolean;
   /** The review this one answers ("Review it yourself"). Its own reference is never carried over. */
   reference?: { name?: string; ratings: readonly Rating[] };
 }
@@ -138,6 +150,7 @@ export function buildPayload(input: PayloadInput): ReviewPayload {
     n: input.name,
     t: input.text,
     f: input.favorite,
+    w: input.weighted ? 1 : undefined,
     ref: input.reference && {
       n: input.reference.name,
       r: encodeRatings(fitRatings(input.reference.ratings, k)),
