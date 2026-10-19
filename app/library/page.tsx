@@ -4,8 +4,8 @@ import { getT } from "@/lib/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
-  // Personal and empty for crawlers (the reviews live in the visitor's browser).
-  return { title: t.library.title, description: t.library.description, robots: { index: false } };
+  // The reviews themselves live in the visitor’s browser; the HTML is only the page shell.
+  return { title: t.library.title, description: t.library.description };
 }
 
 export default async function LibraryPage() {
