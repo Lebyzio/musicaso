@@ -293,6 +293,15 @@ tests/
 - คะแนนรวมอัปเดตแบบ live พร้อม animated number
 - Mobile-first: ทุกหน้าต้องใช้ได้ดีที่ 375px
 - Accessibility: ทุก control ใช้ keyboard ได้, contrast ผ่าน WCAG AA, เคารพ `prefers-reduced-motion`
+- Motion:
+  - เปลี่ยนหน้าใช้ React `<ViewTransition>` (ห่อ `children` ใน `app/layout.tsx`) — ปกในผลค้นหาและ header ใช้ชื่อเดียวกันจาก `coverTransitionName()` + `share="morph" default="none"`; header ตรึงไว้ด้วย `view-transition-name: site-header`; CSS อยู่ท้าย `globals.css`
+  - หน้า `/r`: `components/share/reveal.tsx` (count-up, แถว/แถบคะแนนโผล่ตอนเลื่อนถึง)
+  - **หน้า editor ห้าม import `motion`** — ใช้ `AnimatedNumber` (rAF เขียนเอง) และ `usePrefersReducedMotion()` ใน `components/ui/` เพื่อให้ Lighthouse หน้า album ≥ 90
+- Performance (Lighthouse mobile ≥ 90 ทุกหน้า — วัดด้วย `next build && next start` + `npx lighthouse`):
+  - ห้ามใส่ `transition` ให้ custom property ที่ inherit บน `:root` (เคยทำให้ style/layout 2.3 วินาที)
+  - **ห้ามให้ zod ไปอยู่ใน bundle ฝั่ง client**: client import `lib/share/encode.ts` / `lib/share/limits.ts` เท่านั้น (ไม่ใช่ `codec.ts` / `schema.ts`) และ draft ตรวจด้วยฟังก์ชันธรรมดา
+  - รูป LCP (ปกใน header) ใช้ `preload` ของ `next/image` (Next 16 เลิกใช้ `priority`); `imageSizes` มี 448 สำหรับปกบนมือถือ
+  - ฟอนต์เว็บ: Fraunces/Geist ใช้แค่ subset `latin` ไม่มีแกนเพิ่ม, Geist Mono ไม่ preload
 
 ---
 
@@ -340,9 +349,9 @@ tests/
 - [x] 2–3 ธีมการ์ด
 
 ### Phase 5 — Polish
-- [ ] Animation (page transition, score count-up, track reveal), reduced-motion
-- [ ] Empty/loading/error states ครบ, skeleton
-- [ ] Lighthouse ≥ 90 ทุกหมวดบนมือถือ, deploy Vercel
+- [x] Animation (page transition, score count-up, track reveal), reduced-motion
+- [x] Empty/loading/error states ครบ, skeleton
+- [ ] Lighthouse ≥ 90 ทุกหมวดบนมือถือ, deploy Vercel — Lighthouse ผ่านแล้วบน production build ในเครื่อง (perf 92–94, อื่น ๆ 100); รอผู้ใช้ import repo บน Vercel ตาม README แล้ววัดซ้ำบน prod
 
 ### Phase 6 — Short Video (HyperFrames)
 - [ ] composition template 9:16 + data injection
