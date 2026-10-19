@@ -57,3 +57,31 @@ describe("searchAlbums", () => {
     expect(fetchedUrls(fetch).some((u) => u.includes("deezer"))).toBe(false);
   });
 });
+
+describe("searchAlbums with an artist name", () => {
+  it("adds the discography and drops its albums from the regular results", async () => {
+    const discography = {
+      data: [{ id: dzSearch.data[0].id, title: dzSearch.data[0].title, fans: 9 }],
+    };
+    mockFetch([
+      { match: "/search/artist", body: { data: [{ id: 7, name: "Radiohead" }] } },
+      { match: "/artist/7/albums", body: discography },
+      { match: "/search/album", body: dzSearch },
+    ]);
+    const res = await searchAlbums("radiohead");
+    expect(res.artist?.name).toBe("Radiohead");
+    expect(res.artist?.albums).toHaveLength(1);
+    expect(res.results).toHaveLength(2);
+    expect(res.results.some((a) => a.id === String(dzSearch.data[0].id))).toBe(false);
+  });
+
+  it("still returns results when the artist lookup fails", async () => {
+    mockFetch([
+      { match: "/search/artist", status: 500, body: {} },
+      { match: "/search/album", body: dzSearch },
+    ]);
+    const res = await searchAlbums("radiohead", "dz");
+    expect(res.artist).toBeUndefined();
+    expect(res.results).toHaveLength(3);
+  });
+});

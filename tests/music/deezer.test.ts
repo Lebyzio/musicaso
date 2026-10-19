@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ProviderError } from "@/lib/music/errors";
-import { deezer } from "@/lib/music/providers/deezer";
+import { deezer, mapDeezerArtistAlbums } from "@/lib/music/providers/deezer";
 import album302127 from "../fixtures/deezer/album-302127.json";
 import tracks302127 from "../fixtures/deezer/album-302127-tracks.json";
 import album73301852 from "../fixtures/deezer/album-73301852.json";
@@ -9,7 +9,9 @@ import sgtPage2 from "../fixtures/deezer/album-73301852-tracks-2.json";
 import emptyQuery from "../fixtures/deezer/error-empty-query.json";
 import notFound from "../fixtures/deezer/error-not-found.json";
 import quota from "../fixtures/deezer/error-quota.json";
+import artistAlbums from "../fixtures/deezer/artist-5661-albums.json";
 import search from "../fixtures/deezer/search-album.json";
+import searchArtist from "../fixtures/deezer/search-artist.json";
 import { fetchedUrls, mockFetch } from "../helpers/mock-fetch";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -161,5 +163,47 @@ describe("deezer.getFreshPreviewUrl", () => {
   it("throws not_found when the track has no preview", async () => {
     mockFetch([{ match: "/track/1", body: { id: 1, preview: "" } }]);
     await expect(deezer.getFreshPreviewUrl("1")).rejects.toMatchObject({ code: "not_found" });
+  });
+});
+
+describe("deezer.searchArtistAlbums", () => {
+  it("returns the discography, most popular first, when the query names the artist", async () => {
+    const fetch = mockFetch([
+      { match: "/search/artist", body: searchArtist },
+      { match: "/artist/5661/albums", body: artistAlbums },
+    ]);
+    const found = await deezer.searchArtistAlbums("christopher cross");
+
+    expect(fetchedUrls(fetch)).toEqual([
+      "https://api.deezer.com/search/artist?q=christopher%20cross&limit=1",
+      "https://api.deezer.com/artist/5661/albums?limit=100",
+    ]);
+    expect(found?.name).toBe("Christopher Cross");
+    // The debut (most fans) leads; the lone single is dropped because there are enough albums.
+    expect(found?.albums[0]).toMatchObject({
+      source: "dz",
+      title: "Christopher Cross",
+      artist: "Christopher Cross",
+      year: 2009,
+      recordType: "album",
+    });
+    expect(found?.albums.some((a) => a.recordType === "single")).toBe(false);
+    expect(found?.albums).toHaveLength(7);
+  });
+
+  it("returns null when the top artist is not the one searched for", async () => {
+    const fetch = mockFetch([{ match: "/search/artist", body: searchArtist }]);
+    await expect(deezer.searchArtistAlbums("sailing")).resolves.toBeNull();
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps singles when an artist has fewer than three albums", () => {
+    const body = {
+      data: [
+        { id: 1, title: "Only Album", record_type: "album", fans: 5 },
+        { id: 2, title: "Hit", record_type: "single", fans: 50 },
+      ],
+    };
+    expect(mapDeezerArtistAlbums(body, "X").map((a) => a.title)).toEqual(["Hit", "Only Album"]);
   });
 });

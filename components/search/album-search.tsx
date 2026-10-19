@@ -4,7 +4,7 @@ import { MotionConfig } from "motion/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { ApiErrorBody, ApiErrorCode } from "@/lib/api-response";
-import type { SearchResult } from "@/lib/music";
+import type { ArtistAlbums, SearchResult } from "@/lib/music";
 import { SOURCE_LABEL } from "@/lib/music/types";
 import { AlbumGrid, AlbumGridSkeleton } from "./album-grid";
 import { useDebouncedValue } from "./use-debounced-value";
@@ -17,6 +17,8 @@ type Outcome =
 const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 const SUGGESTIONS = ["In Rainbows", "Blonde", "คราม", "Abbey Road", "Bodyslam"];
+/** Order of the "Try …" links; the source that answered is left out. */
+const SOURCES: Source[] = ["dz", "it"];
 
 const ERROR_MESSAGE: Partial<Record<ApiErrorCode | "network", string>> = {
   rate_limited: "The music catalogue is busy right now — give it a few seconds.",
@@ -91,7 +93,8 @@ export function AlbumSearch() {
     : loading
       ? "Searching…"
       : current?.ok
-        ? plural(current.data.results.length, "album") + " found"
+        ? plural(current.data.results.length + (current.data.artist?.albums.length ?? 0), "album") +
+          " found"
         : "Search failed";
 
   return (
@@ -181,15 +184,17 @@ export function AlbumSearch() {
               >
                 Try again
               </button>
-              {source !== "it" && (
+              {/* "auto" starts at Deezer, so offer the others. */}
+              {SOURCES.filter((s) => s !== (source ?? "dz")).map((s) => (
                 <button
+                  key={s}
                   type="button"
-                  onClick={() => switchSource("it")}
+                  onClick={() => switchSource(s)}
                   className="rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
                 >
-                  Search Apple Music instead
+                  Search {SOURCE_LABEL[s]} instead
                 </button>
-              )}
+              ))}
             </div>
           </div>
         )}
@@ -201,28 +206,41 @@ export function AlbumSearch() {
             className={`flex flex-col gap-6 transition-opacity ${loading ? "opacity-50" : ""}`}
             aria-busy={loading}
           >
-            {shown.data.results.length === 0 ? (
-              <EmptyState
-                query={shown.query}
-                onSwitch={shown.data.source === "dz" ? () => switchSource("it") : undefined}
-              />
-            ) : (
-              <>
+            {shown.data.artist && (
+              // Keyed by query so "Show all" collapses again for a new search.
+              <ArtistSection key={shown.query} artist={shown.data.artist} />
+            )}
+            {shown.data.results.length > 0 ? (
+              <section className="flex flex-col gap-6" aria-label="Search results">
                 <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs tracking-[0.15em] text-paper-mute uppercase">
-                  <span className="tabular">{plural(shown.data.results.length, "result")}</span>
+                  <span className="tabular">
+                    {shown.data.artist ? "More results · " : ""}
+                    {plural(shown.data.results.length, "result")}
+                  </span>
                   <span className="flex items-baseline gap-3">
                     <span>Data from {SOURCE_LABEL[shown.data.source]}</span>
-                    <button
-                      type="button"
-                      onClick={() => switchSource(shown.data.source === "dz" ? "it" : "dz")}
-                      className="tracking-normal text-paper-dim normal-case underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
-                    >
-                      Try {SOURCE_LABEL[shown.data.source === "dz" ? "it" : "dz"]}
-                    </button>
+                    {SOURCES.filter((s) => s !== shown.data.source).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => switchSource(s)}
+                        className="tracking-normal text-paper-dim normal-case underline decoration-ink-600 underline-offset-4 hover:text-paper hover:decoration-accent"
+                      >
+                        Try {SOURCE_LABEL[s]}
+                      </button>
+                    ))}
                   </span>
                 </div>
-                <AlbumGrid albums={shown.data.results} />
-              </>
+                <AlbumGrid albums={shown.data.results} eager={shown.data.artist ? 0 : 4} />
+              </section>
+            ) : (
+              !shown.data.artist && (
+                <EmptyState
+                  query={shown.query}
+                  others={SOURCES.filter((s) => s !== shown.data.source)}
+                  onSwitch={switchSource}
+                />
+              )
             )}
           </div>
         )}
@@ -231,22 +249,65 @@ export function AlbumSearch() {
   );
 }
 
-function EmptyState({ query, onSwitch }: { query: string; onSwitch?: () => void }) {
+/** Discography cards shown before the user asks for more (two rows on wide screens). */
+const ARTIST_PREVIEW = 10;
+
+function ArtistSection({ artist }: { artist: ArtistAlbums }) {
+  const [expanded, setExpanded] = useState(false);
+  const hidden = artist.albums.length - ARTIST_PREVIEW;
+  const albums = expanded ? artist.albums : artist.albums.slice(0, ARTIST_PREVIEW);
+  return (
+    <section className="flex flex-col gap-6" aria-labelledby="artist-albums">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="artist-albums" className="font-display text-2xl text-paper">
+          Albums by {artist.name}
+        </h2>
+        <span className="text-xs tracking-[0.15em] text-paper-mute uppercase">
+          Data from {SOURCE_LABEL.dz}
+        </span>
+      </div>
+      <AlbumGrid albums={albums} />
+      {hidden > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className="self-start rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
+        >
+          {expanded ? "Show fewer" : `Show all ${artist.albums.length}`}
+        </button>
+      )}
+    </section>
+  );
+}
+
+function EmptyState({
+  query,
+  others,
+  onSwitch,
+}: {
+  query: string;
+  others: Source[];
+  onSwitch: (source: Source) => void;
+}) {
   return (
     <div className="flex flex-col items-start gap-3 py-8">
       <p className="font-display text-2xl text-paper-dim italic">
         Nothing for “<span className="not-italic">{query}</span>”.
       </p>
       <p className="text-sm text-paper-mute">Check the spelling, or search by artist name.</p>
-      {onSwitch && (
-        <button
-          type="button"
-          onClick={onSwitch}
-          className="rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
-        >
-          Search Apple Music instead
-        </button>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {others.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => onSwitch(s)}
+            className="rounded-full border border-ink-600 px-4 py-2 text-sm text-paper hover:border-accent"
+          >
+            Search {SOURCE_LABEL[s]} instead
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

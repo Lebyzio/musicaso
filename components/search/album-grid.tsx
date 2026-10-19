@@ -6,7 +6,8 @@ import { AlbumCard } from "./album-card";
 
 const GRID = "grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5";
 
-export function AlbumGrid({ albums }: { albums: AlbumSummary[] }) {
+/** `eager`: how many leading covers load immediately (above the fold). */
+export function AlbumGrid({ albums, eager = 4 }: { albums: AlbumSummary[]; eager?: number }) {
   return (
     <ul className={GRID}>
       {albums.map((album, i) => (
@@ -16,7 +17,7 @@ export function AlbumGrid({ albums }: { albums: AlbumSummary[] }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: Math.min(i, 10) * 0.03, ease: [0.16, 1, 0.3, 1] }}
         >
-          <AlbumCard album={album} priority={i < 4} />
+          <AlbumCard album={album} priority={i < eager} />
         </motion.li>
       ))}
     </ul>

@@ -358,3 +358,11 @@ tests/
 - [ ] composition template 9:16 + data injection
 - [ ] `pnpm video <shareUrl>` render MP4 บนเครื่อง
 - [ ] (optional) preview ในเว็บด้วย `<hyperframes-player>`
+
+### Phase 7 — Catalog กว้างขึ้น + ภาษาไทย + Top list
+- [x] ค้นด้วยชื่อศิลปิน → แถบ discography จาก Deezer (`/search/artist` → `/artist/{id}/albums`) เหนือผลค้นหา
+- [ ] MusicBrainz provider + Cover Art Archive (fallback Deezer → iTunes → MusicBrainz)
+- [ ] i18n foundation (cookie `musicaso-lang` + Accept-Language, ปุ่มสลับ EN/ไทย)
+- [ ] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
+- [ ] `/library` รีวิวของฉัน (draft + meta)
+- [ ] Top list ของปี `/l/{payload}` + การ์ด + OG

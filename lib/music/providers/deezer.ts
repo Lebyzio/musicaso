@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ProviderError } from "../errors";
 import { fetchJson, parseResponse, REVALIDATE } from "../http";
+import { isSameName } from "../match";
 import type { Album, AlbumSummary, MusicProvider, RecordType, Track } from "../types";
 
 const BASE = "https://api.deezer.com";
@@ -63,10 +64,28 @@ export const DeezerTracksPageSchema = z.object({
 
 const DeezerTrackSchema = z.object({ id: z.number(), preview: z.string().nullish() });
 
+export const DeezerArtistSearchSchema = z.object({
+  data: z.array(z.object({ id: z.number(), name: z.string() })),
+});
+
+export const DeezerArtistAlbumsSchema = z.object({
+  data: z.array(
+    z.object({
+      id: z.number(),
+      title: z.string(),
+      release_date: z.string().optional(),
+      record_type: z.string().optional(),
+      fans: z.number().optional(),
+      ...CoverFields,
+    }),
+  ),
+});
+
 type DeezerSearch = z.infer<typeof DeezerSearchSchema>;
 type DeezerAlbum = z.infer<typeof DeezerAlbumSchema>;
 type DeezerTracksPage = z.infer<typeof DeezerTracksPageSchema>;
 type DeezerTrack = DeezerTracksPage["data"][number];
+type DeezerArtistAlbums = z.infer<typeof DeezerArtistAlbumsSchema>;
 
 // --- Mappers (pure) ---
 
@@ -112,6 +131,29 @@ export function mapDeezerSearch(body: DeezerSearch): AlbumSummary[] {
     trackCount: item.nb_tracks,
     recordType: item.record_type ? RECORD_TYPES[item.record_type] : undefined,
   }));
+}
+
+/** Below this many albums/EPs, singles stay in the discography so it isn't nearly empty. */
+const MIN_FULL_RELEASES = 3;
+
+/** An artist's releases, most popular first — the record people search an artist for is usually near the top. */
+export function mapDeezerArtistAlbums(body: DeezerArtistAlbums, artist: string): AlbumSummary[] {
+  const albums = body.data.map((item) => ({
+    fans: item.fans ?? 0,
+    summary: {
+      source: "dz",
+      id: String(item.id),
+      title: item.title,
+      artist,
+      year: parseYear(item.release_date),
+      coverThumbUrl: pickCover(item).coverThumbUrl,
+      recordType: item.record_type ? RECORD_TYPES[item.record_type] : undefined,
+    } satisfies AlbumSummary,
+  }));
+  const full = albums.filter((a) => a.summary.recordType !== "single");
+  return (full.length >= MIN_FULL_RELEASES ? full : albums)
+    .sort((a, b) => b.fans - a.fans)
+    .map((a) => a.summary);
 }
 
 export function mapDeezerTracks(tracks: DeezerTrack[]): Track[] {
@@ -177,12 +219,41 @@ function assertNumericId(id: string): void {
   if (!/^\d{1,20}$/.test(id)) throw new ProviderError("not_found", "Invalid Deezer id");
 }
 
-export const deezer: MusicProvider & { getFreshPreviewUrl(trackId: string): Promise<string> } = {
+export interface ArtistAlbums {
+  name: string;
+  albums: AlbumSummary[];
+}
+
+export const deezer: MusicProvider & {
+  getFreshPreviewUrl(trackId: string): Promise<string>;
+  searchArtistAlbums(query: string): Promise<ArtistAlbums | null>;
+} = {
   id: "dz",
 
   async searchAlbums(query: string): Promise<AlbumSummary[]> {
     const url = `${BASE}/search/album?q=${encodeURIComponent(query)}&limit=20`;
     return mapDeezerSearch(await deezerGet(url, DeezerSearchSchema, REVALIDATE.search));
+  },
+
+  /**
+   * The full discography when the query is exactly an artist's name. Album search caps at 20
+   * results and mixes in other artists, so an artist's best-known record can be missing from it.
+   */
+  async searchArtistAlbums(query: string): Promise<ArtistAlbums | null> {
+    const found = await deezerGet(
+      `${BASE}/search/artist?q=${encodeURIComponent(query)}&limit=1`,
+      DeezerArtistSearchSchema,
+      REVALIDATE.search,
+    );
+    const artist = found.data[0];
+    if (!artist || !isSameName(query, artist.name)) return null;
+    const body = await deezerGet(
+      `${BASE}/artist/${artist.id}/albums?limit=100`,
+      DeezerArtistAlbumsSchema,
+      REVALIDATE.search,
+    );
+    const albums = mapDeezerArtistAlbums(body, artist.name);
+    return albums.length > 0 ? { name: artist.name, albums } : null;
   },
 
   async getAlbum(id: string): Promise<Album> {
