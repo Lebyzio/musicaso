@@ -44,7 +44,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 | UI animation | **motion** (`motion/react`) | micro-interaction, page transition |
 | Validation | **zod** | validate response จาก API ภายนอก + share payload |
 | URL compression | **lz-string** (`compressToEncodedURIComponent`) | |
-| Image export | **`next/og` (`ImageResponse`)** | ใช้ทั้ง OG image และปุ่มดาวน์โหลด PNG |
+| Image export | **`satori` + `@resvg/resvg-wasm`** (`lib/render-image.ts`) | ใช้ทั้ง OG image และการ์ด PNG — ห้ามใช้ `next/og` เพราะภาษาไทยเพี้ยน (ดูหัวข้อ 8) |
 | Client state | `useReducer` + Context (เพิ่ม zustand ได้ถ้าจำเป็นจริง) | draft เก็บ `localStorage` |
 | Video (Phase 6) | **HyperFrames** (`heygen-com/hyperframes`) | render ด้วย CLI บนเครื่อง ไม่ใช่บน Vercel |
 | Test | **Vitest** | unit test สำหรับ codec, scoring, provider mapper |
@@ -232,7 +232,10 @@ lib/
   music/index.ts                    # getProvider(source)
   share/schema.ts  share/codec.ts
   score.ts
-  fonts.ts                          # โหลดฟอนต์สำหรับ ImageResponse
+  fonts.ts                          # ฟอนต์สำหรับ render รูป (Satori + resvg)
+  render-image.ts                   # renderPng(): satori → resvg-wasm
+  accent.ts                         # สีเด่นของปก (jpeg-js) ฝั่ง server
+  card/                             # themes, tracks, filename
 video/                              # Phase 6 — HyperFrames composition template
   template/index.html
   scripts/render.ts
@@ -246,15 +249,26 @@ tests/
 
 ## 8. Image Export
 
-- ใช้ **`ImageResponse` จาก `next/og`** render การ์ดฝั่ง server → ได้ PNG ที่เหมือนกันทุกเครื่อง ไม่มีปัญหา CORS ของ canvas
-- 2 format: `square` 1080×1080, `story` 1080×1920 (+ OG 1200×630)
-- ข้อจำกัดของ Satori: รองรับแค่ flexbox และ CSS subset — ทุก `div` ที่มีลูกหลายตัวต้องมี `display: flex`, ไม่มี grid, ไม่มี Tailwind class (ใช้ inline style หรือ `tw` prop)
+- render การ์ดฝั่ง server → ได้ PNG ที่เหมือนกันทุกเครื่อง ไม่มีปัญหา CORS ของ canvas
+- ⚠️ **ห้ามใช้ `ImageResponse` ของ `next/og`**: Satori ที่ bundle มา (0.29) ทำให้เครื่องหมายตัวที่สองที่ซ้อนกันในภาษาไทยหายไปกับทุกฟอนต์ (ที่ → ที, ชื่อ → ชือ, ปู่ → ปู) ให้ใช้ `renderPng()` / `pngResponse()` ใน `lib/render-image.ts` แทน
+  - ขั้นตอน: `satori` (layout, `embedFont: false` → SVG `<text>`) → `mapFontFamilies()` → `@resvg/resvg-wasm` (shape + วาดตัวอักษรด้วย shaper แบบ HarfBuzz)
+  - Satori ใช้ชื่อฟอนต์ของเรา (`Plex`, `Plex Thai`, `Fraunces`) ส่วน resvg ใช้ชื่อ family ที่อยู่ในไฟล์จริง (`IBM Plex Sans Thai`, `Fraunces SemiBold` …) → map ด้วย `realFamily()` ใน `lib/fonts.ts`
+  - resvg อ่านได้แค่ sfnt → `lib/woff.ts` แตก WOFF ตอนโหลด
+  - Plex ใช้แค่ weight 400 (resvg fallback ระหว่าง subset ไทย/ละตินที่ family เดียวกันโดยไม่สนใจ weight)
+  - root element ต้องมี `boxSizing: "border-box"` (Satori รุ่นใหม่บวก padding เพิ่มเข้าไปจาก `width: 100%`)
+  - **ห้ามใช้ `boxShadow`**: resvg ทำเป็น Gaussian blur ใช้เวลา ~2 วินาทีต่อใบ ให้ใช้ `components/card/cover-art.tsx` (เงาปลอมจากชั้นโปร่งแสง) → render ~0.3 วินาที
+  - ห้ามพิมพ์ glyph ที่ฟอนต์ไม่มี (เช่น ★) เพราะจะเป็นกล่อง ให้วาดเป็น `<svg>` แทน
+- 2 format: `square` 1080×1080, `story` 1080×1920 (+ OG 1200×630) — `GET /r/{payload}/card?format=square|story&theme=sleeve|paper|vivid`, `Cache-Control: public, max-age=86400, s-maxage=604800`
+- ข้อจำกัดของ Satori: รองรับแค่ flexbox และ CSS subset — ทุก `div` ที่มีลูกหลายตัวต้องมี `display: flex`, ไม่มี grid, ไม่มี Tailwind class (ใช้ inline style), `backgroundImage` ห้ามเป็น `undefined`
+- ธีม (`lib/card/themes.ts`): `sleeve` (มืด + เงาเรืองแสงสีปก, default), `paper` (ครีม), `vivid` (พื้นสีปก) — `cardPalette()` รับประกันว่า contrast ของตัวอักษร ≥ 4.5 (มี test); ธีมที่เลือกใน editor ถูกเก็บใน payload `th` (ไม่ใส่ถ้าเป็น default)
+- เพลงบนการ์ด (`lib/card/tracks.ts`): square = 3 เพลงคะแนนสูงสุด, story = ทุกเพลงถ้า ≤ 14 เพลง ไม่งั้นใช้ 10 เพลงเด่นเรียงตามลำดับในอัลบั้ม
+- ปกในการ์ด/OG ดึงผ่าน Data Cache ตามขนาดที่วาดจริง (`lib/cover-image.ts` → data URI)
 - **ฟอนต์ภาษาไทยต้องโหลดเอง** (เช่น Noto Sans Thai / IBM Plex Sans Thai / Anuphan) เป็น `ArrayBuffer` ใน `lib/fonts.ts` ไม่งั้นชื่อเพลงไทยจะเป็นกล่องสี่เหลี่ยม — ทดสอบด้วยอัลบั้มไทยจริงเสมอ
   - ใช้ `loadCardFonts()` + `CARD_FONT.display`/`.body` ใน `lib/fonts.ts`; ไฟล์ `.woff` แบบ static อยู่ใน `assets/fonts/` (commit ไว้) คัดลอกจาก `@fontsource/*` ด้วย `pnpm fonts` — Satori อ่าน woff2/variable font ไม่ได้
-  - ⚠️ ห้ามใส่ `letterSpacing` กับข้อความไทยใน ImageResponse — Satori วางวรรณยุกต์ผิดตำแหน่ง
+  - ⚠️ ห้ามใส่ `letterSpacing` กับข้อความไทยในรูปที่ render — วรรณยุกต์จะหลุดตำแหน่ง
 - OG image ต้องมี URL แบบ absolute: `metadataBase` ใน `app/layout.tsx` อ่านจาก `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` → localhost
 - ปุ่ม Download ฝั่ง client: `fetch(cardUrl)` → blob → `<a download>`; บนมือถือใช้ `navigator.share({ files })` ถ้ารองรับ
-- ธีมการ์ด: ดึงสีหลักจากปกอัลบั้ม (dominant color) เพื่อทำ gradient — คำนวณฝั่ง server ตอน render (เช่นด้วย `sharp` stats หรือ algorithm ง่าย ๆ)
+- สีหลักจากปก: `getAlbumAccent()` ใน `lib/accent.ts` ดึงปกขนาด 64px → decode ด้วย `jpeg-js` (pure JS) → `accentFromPixels()` — ใช้ร่วมกันทั้งหน้าเว็บ (ใส่ inline ตั้งแต่ SSR), OG และการ์ด
 
 ---
 
@@ -321,9 +335,9 @@ tests/
 - [x] Flow "Review it yourself" + เปรียบเทียบกับ `ref`
 
 ### Phase 4 — Image Export
-- [ ] `/r/[payload]/card?format=square|story` ด้วย `ImageResponse` + ฟอนต์ไทย + dominant color
-- [ ] ปุ่มดาวน์โหลด / แชร์ไฟล์บนมือถือ
-- [ ] 2–3 ธีมการ์ด
+- [x] `/r/[payload]/card?format=square|story` + ฟอนต์ไทย + dominant color (satori + resvg-wasm แทน `ImageResponse`)
+- [x] ปุ่มดาวน์โหลด / แชร์ไฟล์บนมือถือ
+- [x] 2–3 ธีมการ์ด
 
 ### Phase 5 — Polish
 - [ ] Animation (page transition, score count-up, track reveal), reduced-motion
