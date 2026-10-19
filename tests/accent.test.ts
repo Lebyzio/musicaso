@@ -27,9 +27,19 @@ describe("coverAtSize", () => {
     expect(coverAtSize(IT, 64)).toBe(IT.replace("1000x1000bb", "64x64bb"));
   });
 
+  it("rounds Cover Art Archive URLs up to a size it has", () => {
+    const caa = "https://coverartarchive.org/release-group/abc/front-1200";
+    expect(coverAtSize(caa, 64)).toBe("https://coverartarchive.org/release-group/abc/front-250");
+    expect(coverAtSize(caa, 400)).toBe("https://coverartarchive.org/release-group/abc/front-500");
+    expect(coverAtSize(caa, 2000)).toBe(caa);
+    expect(coverAtSize("https://coverartarchive.org/release/abc/front", 300)).toBe(
+      "https://coverartarchive.org/release/abc/front-500",
+    );
+  });
+
   it("leaves unknown URLs alone", () => {
-    const caa = "https://coverartarchive.org/release/abc/front";
-    expect(coverAtSize(caa, 64)).toBe(caa);
+    const other = "https://example.com/cover.jpg";
+    expect(coverAtSize(other, 64)).toBe(other);
   });
 });
 

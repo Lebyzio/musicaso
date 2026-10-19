@@ -4,7 +4,7 @@ import { searchAlbums } from "@/lib/music";
 
 const QuerySchema = z.object({
   q: z.string().trim().min(1).max(100),
-  source: z.enum(["dz", "it"]).optional(),
+  source: z.enum(["dz", "it", "mb"]).optional(),
 });
 
 export async function GET(request: Request) {
@@ -14,7 +14,11 @@ export async function GET(request: Request) {
     source: params.get("source") ?? undefined,
   });
   if (!parsed.success) {
-    return jsonError("bad_request", "Provide ?q= (1–100 chars) and optionally ?source=dz|it", 400);
+    return jsonError(
+      "bad_request",
+      "Provide ?q= (1–100 chars) and optionally ?source=dz|it|mb",
+      400,
+    );
   }
 
   try {

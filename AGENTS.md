@@ -79,6 +79,7 @@ pnpm test         # vitest run
 ### 4.1 Deezer API — **Primary** ✅
 - Base: `https://api.deezer.com` — **ไม่ต้องใช้ API key** สำหรับ public catalog
 - Rate limit ~**50 requests / 5 วินาที** ต่อ IP
+- ค้นด้วยชื่อศิลปินพอดี (`isSameName` ใน `lib/music/match.ts`) → `searchArtistAlbums` ดึง `/search/artist?limit=1` + `/artist/{id}/albums?limit=100` (เรียงตาม `fans`) แสดงเป็นแถบ "Albums by …" — album search ให้แค่ 20 ผลปนศิลปินอื่น อัลบั้มดังของศิลปินอาจไม่ติด
 - Endpoints ที่ใช้
   - `GET /search/album?q={query}&limit=20` — ค้นหาอัลบั้ม
   - `GET /album/{id}` — รายละเอียดอัลบั้ม + `tracks.data[]` (ถ้า track > 25 ให้ตาม `tracks.next` หรือเรียก `/album/{id}/tracks?limit=100`)
@@ -96,9 +97,14 @@ pnpm test         # vitest run
 - รองรับ `country=th` สำหรับ catalog ไทย (ให้ลอง `th` ก่อนแล้ว fallback `us`)
 - อัลบั้มที่มีหลายแผ่น: เรียงด้วย `discNumber` แล้ว `trackNumber`
 
-### 4.3 MusicBrainz + Cover Art Archive — Optional (Phase หลัง)
-- ข้อมูลเปิด, ไม่ต้องใช้ key แต่ **ต้องส่ง `User-Agent: musicaso/0.1 ( contact )`** และจำกัด **1 req/วินาที**
-- ใช้เมื่ออยากได้อัลบั้มที่ Deezer/iTunes ไม่มี (indie, release เก่า)
+### 4.3 MusicBrainz + Cover Art Archive — Fallback ลำดับ 3 ✅
+- `lib/music/providers/musicbrainz.ts` — ไม่ต้องใช้ key แต่ **ต้องส่ง `User-Agent: musicaso/0.1 ( https://github.com/Lebyzio/musicaso )`** และจำกัด **1 req/วินาที** (`createThrottle` ต่อ instance; request ที่จบ < 40ms = Data Cache hit คืน slot) — 503 = rate limited → retry 1 ครั้ง
+- ใช้กับอัลบั้มที่ Deezer/iTunes ไม่มี (AOR/indie/release เก่า เช่น Greg Guidry – Over the Line)
+- Search: `GET /ws/2/release-group?query=…&dismax=true` (dismax = ค้นชื่ออัลบั้ม+ศิลปินรวมกันแบบหน้าเว็บ MB; query ธรรมดาค้นแค่ชื่อ) เก็บเฉพาะ Album/EP
+- **album id = release-group MBID**; `getAlbum` browse `/release?release-group=` แล้ว `pickRelease()` เลือก release ตัวแทนแบบ deterministic (Official → จำนวนเพลงที่พบบ่อยสุด → CD/Digital → วันที่เก่าสุด → id) แล้ว lookup `/release/{id}?inc=recordings+artist-credits+release-groups+genres` — ห้ามเปลี่ยนกฎนี้โดยไม่จำเป็น เพราะ `k` ในลิงก์เก่าจะไม่ตรง
+- ปก: `coverartarchive.org/release-group/{id}/front-250|500|1200` (redirect ไป `*.archive.org`, ช้า 4–6 วินาทีตอน cold) — ไม่มีปกถ้าไม่มี release ไหนใน group มี `cover-art-archive.front`; ผลค้นหาอาจ 404 → `AlbumCard` แสดง ♪
+- ไม่มี preview; ความยาวเพลงอาจว่าง (= 0 → weight 1)
+- หน้าเว็บรอสีปกไม่เกิน 1.5 วินาที (`getPageAccent` + `after()` ให้ fetch จบไปลง Data Cache) ส่วนการ์ด/OG ใช้ `getAlbumAccent` รอเต็ม
 
 ### 4.4 ❌ ไม่ใช้ Spotify Web API
 ตั้งแต่ ก.พ. 2026 Spotify บังคับให้เจ้าของแอป Development Mode ต้องมี Premium, จำกัดผู้ใช้, ถอด endpoint/field หลายตัว และกำลังเลิกรองรับ Client Credentials สำหรับ metadata — ไม่เหมาะกับโปรเจกต์ไม่มี backend แบบนี้
@@ -147,7 +153,7 @@ export interface MusicProvider {
 - Cache: ใช้ `fetch(url, { next: { revalidate: 86400 } })` สำหรับ album detail, 3600 สำหรับ search (ค่าอยู่ใน `lib/music/http.ts`) + `Cache-Control: s-maxage` ใน route handler ให้ CDN ช่วยรับโหลด
   - **ตั้งใจไม่เปิด `cacheComponents`**: in-memory cache ของ `"use cache"` ไม่คงอยู่ข้าม request บน Vercel serverless และ `"use cache: remote"` คือ cache store ของ platform (ขัดกับ Non-goals) — ถ้าจะเปลี่ยนให้ถามผู้ใช้ก่อน
 - Error: provider โยน `ProviderError` (`not_found` / `rate_limited` / `upstream` / `invalid_response`) → route map เป็น 404/429/502 ผ่าน `lib/api-response.ts` และ response error ต้อง `no-store`
-- `/api/search` ไม่ระบุ `source` = Deezer ก่อน แล้ว fallback เป็น iTunes เมื่อ Deezer error หรือได้ 0 ผล (response บอก `source` ที่ใช้จริงเพื่อทำ attribution)
+- `/api/search` ไม่ระบุ `source` = Deezer → iTunes → MusicBrainz (ไปตัวถัดไปเมื่อ error หรือได้ 0 ผล) (response บอก `source` ที่ใช้จริงเพื่อทำ attribution)
 - แสดง attribution เล็ก ๆ ("Data from Deezer" / "Apple Music") ในหน้ารีวิวและบนการ์ด
 
 ---
@@ -361,7 +367,7 @@ tests/
 
 ### Phase 7 — Catalog กว้างขึ้น + ภาษาไทย + Top list
 - [x] ค้นด้วยชื่อศิลปิน → แถบ discography จาก Deezer (`/search/artist` → `/artist/{id}/albums`) เหนือผลค้นหา
-- [ ] MusicBrainz provider + Cover Art Archive (fallback Deezer → iTunes → MusicBrainz)
+- [x] MusicBrainz provider + Cover Art Archive (fallback Deezer → iTunes → MusicBrainz)
 - [ ] i18n foundation (cookie `musicaso-lang` + Accept-Language, ปุ่มสลับ EN/ไทย)
 - [ ] UI ภาษาไทยครบทุกหน้า + การ์ด/OG ภาษาไทย (payload `l`)
 - [ ] `/library` รีวิวของฉัน (draft + meta)

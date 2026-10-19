@@ -1,0 +1,600 @@
+{
+  "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+  "barcode": "",
+  "status": "Official",
+  "id": "d13d490b-320c-4ed6-ba25-edea28ff1259",
+  "release-group": {
+    "title": "Over the Line",
+    "first-release-date": "1982",
+    "primary-type": "Album",
+    "artist-credit": [
+      {
+        "joinphrase": "",
+        "artist": {
+          "country": "US",
+          "disambiguation": "",
+          "id": "67740764-e785-4473-9edd-49448eb48dc1",
+          "sort-name": "Guidry, Greg",
+          "type": "Person",
+          "name": "Greg Guidry",
+          "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df"
+        },
+        "name": "Greg Guidry"
+      }
+    ],
+    "secondary-types": [],
+    "disambiguation": "",
+    "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+    "id": "08e3fae7-b9c9-3d70-9657-4b620d547d5d",
+    "secondary-type-ids": [],
+    "genres": [
+      {
+        "name": "pop",
+        "disambiguation": "",
+        "id": "911c7bbb-172d-4df8-9478-dbff4296e791",
+        "count": 1
+      },
+      {
+        "name": "rock",
+        "disambiguation": "",
+        "id": "0e3fc579-2d24-4f20-9dae-736e1ec78798",
+        "count": 1
+      },
+      {
+        "count": 1,
+        "id": "7d0c6a6b-5d56-4b1e-a8c7-e32194f246b9",
+        "name": "soft rock",
+        "disambiguation": ""
+      }
+    ]
+  },
+  "release-events": [
+    {
+      "date": "1987",
+      "area": {
+        "disambiguation": "",
+        "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb",
+        "sort-name": "Sweden",
+        "iso-3166-1-codes": ["SE"],
+        "type-id": null,
+        "name": "Sweden",
+        "type": null
+      }
+    }
+  ],
+  "disambiguation": "",
+  "quality": "normal",
+  "cover-art-archive": {
+    "back": false,
+    "front": false,
+    "artwork": false,
+    "count": 0,
+    "darkened": false
+  },
+  "title": "Over the Line",
+  "text-representation": {
+    "language": "eng",
+    "script": "Latn"
+  },
+  "country": "SE",
+  "genres": [],
+  "date": "1987",
+  "asin": null,
+  "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+  "packaging": "Jewel Case",
+  "artist-credit": [
+    {
+      "artist": {
+        "disambiguation": "",
+        "country": "US",
+        "genres": [
+          {
+            "name": "aor",
+            "disambiguation": "",
+            "id": "aca1caab-09d1-44b5-ae84-590ff1d218fc",
+            "count": 2
+          },
+          {
+            "disambiguation": "",
+            "name": "singer-songwriter",
+            "id": "455f264b-db00-4716-991d-fbd32dc24523",
+            "count": 1
+          },
+          {
+            "count": 1,
+            "id": "1b5e7b16-336b-473e-a364-5120413a9827",
+            "name": "soul",
+            "disambiguation": ""
+          }
+        ],
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "name": "Greg Guidry",
+        "type": "Person",
+        "id": "67740764-e785-4473-9edd-49448eb48dc1",
+        "sort-name": "Guidry, Greg"
+      },
+      "joinphrase": "",
+      "name": "Greg Guidry"
+    }
+  ],
+  "media": [
+    {
+      "track-offset": 0,
+      "title": "",
+      "format": "CD",
+      "tracks": [
+        {
+          "number": "1",
+          "artist-credit": [
+            {
+              "name": "Greg Guidry",
+              "joinphrase": "",
+              "artist": {
+                "sort-name": "Guidry, Greg",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "type": "Person",
+                "name": "Greg Guidry",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "country": "US",
+                "disambiguation": ""
+              }
+            }
+          ],
+          "recording": {
+            "id": "55b301d1-e86f-4e60-8f98-ecb71e8232ad",
+            "genres": [
+              {
+                "name": "pop",
+                "disambiguation": "",
+                "id": "911c7bbb-172d-4df8-9478-dbff4296e791",
+                "count": 1
+              }
+            ],
+            "title": "Goin’ Down",
+            "first-release-date": "1982",
+            "length": 225000,
+            "video": false,
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "joinphrase": "",
+                "artist": {
+                  "disambiguation": "",
+                  "country": "US",
+                  "type": "Person",
+                  "name": "Greg Guidry",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1"
+                }
+              }
+            ],
+            "disambiguation": ""
+          },
+          "length": 220000,
+          "position": 1,
+          "title": "Goin’ Down",
+          "id": "8f568e1d-1820-46f4-b18a-fdd0e2fbb89d"
+        },
+        {
+          "artist-credit": [
+            {
+              "name": "Greg Guidry",
+              "artist": {
+                "disambiguation": "",
+                "country": "US",
+                "type": "Person",
+                "name": "Greg Guidry",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "sort-name": "Guidry, Greg"
+              },
+              "joinphrase": ""
+            }
+          ],
+          "number": "2",
+          "title": "(That’s) How Long",
+          "position": 2,
+          "id": "db426083-63ed-4bfd-aab5-a83fdfaa4981",
+          "recording": {
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "sort-name": "Guidry, Greg",
+                  "type": "Person",
+                  "name": "Greg Guidry",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "country": "US",
+                  "disambiguation": ""
+                },
+                "joinphrase": ""
+              }
+            ],
+            "video": false,
+            "disambiguation": "",
+            "title": "(That’s) How Long",
+            "first-release-date": "1982",
+            "length": 211000,
+            "genres": [],
+            "id": "2e96f4d5-349b-4505-9581-a6d734bdfc22"
+          },
+          "length": 210000
+        },
+        {
+          "artist-credit": [
+            {
+              "name": "Greg Guidry",
+              "joinphrase": "",
+              "artist": {
+                "disambiguation": "",
+                "country": "US",
+                "name": "Greg Guidry",
+                "type": "Person",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "sort-name": "Guidry, Greg",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1"
+              }
+            }
+          ],
+          "number": "3",
+          "title": "Show Me Your Love",
+          "position": 3,
+          "id": "94a7525c-49e5-4e1c-8c91-d807a1d56f83",
+          "recording": {
+            "genres": [],
+            "id": "e997fc50-27ef-4aab-8fe5-e1edab2df463",
+            "disambiguation": "",
+            "video": false,
+            "artist-credit": [
+              {
+                "artist": {
+                  "country": "US",
+                  "disambiguation": "",
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df"
+                },
+                "joinphrase": "",
+                "name": "Greg Guidry"
+              }
+            ],
+            "length": 251000,
+            "title": "Show Me Your Love",
+            "first-release-date": "1982"
+          },
+          "length": 250000
+        },
+        {
+          "number": "4",
+          "artist-credit": [
+            {
+              "joinphrase": "",
+              "artist": {
+                "disambiguation": "",
+                "country": "US",
+                "name": "Greg Guidry",
+                "type": "Person",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "sort-name": "Guidry, Greg"
+              },
+              "name": "Greg Guidry"
+            }
+          ],
+          "length": 175000,
+          "recording": {
+            "genres": [],
+            "id": "f9cf775c-5ec9-4b4d-8190-07b4e49d74b9",
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "disambiguation": "",
+                  "country": "US",
+                  "type": "Person",
+                  "name": "Greg Guidry",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "sort-name": "Guidry, Greg"
+                },
+                "joinphrase": ""
+              }
+            ],
+            "video": false,
+            "disambiguation": "",
+            "first-release-date": "1982",
+            "title": "If Love Doesn’t Find Us",
+            "length": 178000
+          },
+          "id": "8547f354-8e2f-4014-9a5b-db2a6bfaf7ab",
+          "title": "If Love Doesn’t Find Us",
+          "position": 4
+        },
+        {
+          "length": 220000,
+          "recording": {
+            "disambiguation": "",
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "sort-name": "Guidry, Greg",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "country": "US",
+                  "disambiguation": ""
+                },
+                "joinphrase": ""
+              }
+            ],
+            "video": false,
+            "length": 222000,
+            "first-release-date": "1982",
+            "title": "Gotta Have More Love",
+            "genres": [],
+            "id": "d65b3ad6-4bab-4dbd-8b2c-ace7e32f9c59"
+          },
+          "id": "ebea1fd2-6c43-43d2-b3be-e481b2134174",
+          "title": "Gotta Have More Love",
+          "position": 5,
+          "number": "5",
+          "artist-credit": [
+            {
+              "name": "Greg Guidry",
+              "artist": {
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "name": "Greg Guidry",
+                "type": "Person",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "sort-name": "Guidry, Greg",
+                "disambiguation": "",
+                "country": "US"
+              },
+              "joinphrase": ""
+            }
+          ]
+        },
+        {
+          "length": 180000,
+          "recording": {
+            "disambiguation": "",
+            "video": false,
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "disambiguation": "",
+                  "country": "US"
+                },
+                "joinphrase": ""
+              }
+            ],
+            "length": 180000,
+            "title": "Over the Line",
+            "first-release-date": "1982",
+            "genres": [],
+            "id": "2e50319c-185f-489f-a5fa-3de30dbb7e13"
+          },
+          "id": "26583fdc-dd5b-4a22-b820-2c709bc83589",
+          "title": "Over the Line",
+          "position": 6,
+          "number": "6",
+          "artist-credit": [
+            {
+              "joinphrase": "",
+              "artist": {
+                "name": "Greg Guidry",
+                "type": "Person",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "sort-name": "Guidry, Greg",
+                "disambiguation": "",
+                "country": "US"
+              },
+              "name": "Greg Guidry"
+            }
+          ]
+        },
+        {
+          "length": 200000,
+          "recording": {
+            "id": "8be5403d-752c-4a8f-8fbe-e7a8682d1c2a",
+            "genres": [],
+            "first-release-date": "1982",
+            "title": "(I’m) Givin’ It Up",
+            "length": 200000,
+            "video": false,
+            "artist-credit": [
+              {
+                "artist": {
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "sort-name": "Guidry, Greg",
+                  "disambiguation": "",
+                  "country": "US"
+                },
+                "joinphrase": "",
+                "name": "Greg Guidry"
+              }
+            ],
+            "disambiguation": ""
+          },
+          "id": "5efb607e-ea7a-48e2-b54b-80046fcaf236",
+          "position": 7,
+          "title": "(I’m) Givin’ It Up",
+          "number": "7",
+          "artist-credit": [
+            {
+              "joinphrase": "",
+              "artist": {
+                "disambiguation": "",
+                "country": "US",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "type": "Person",
+                "name": "Greg Guidry",
+                "sort-name": "Guidry, Greg",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1"
+              },
+              "name": "Greg Guidry"
+            }
+          ]
+        },
+        {
+          "length": 195000,
+          "recording": {
+            "length": 197000,
+            "first-release-date": "1982",
+            "title": "Are You Ready for Love",
+            "disambiguation": "",
+            "video": false,
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "disambiguation": "",
+                  "country": "US"
+                },
+                "joinphrase": ""
+              }
+            ],
+            "id": "e00d86bf-25b2-4243-8e43-1f821f0e9f40",
+            "genres": []
+          },
+          "id": "36fced5d-f81a-46ee-9139-f5ac1ffd3dc9",
+          "position": 8,
+          "title": "Are You Ready for Love",
+          "number": "8",
+          "artist-credit": [
+            {
+              "joinphrase": "",
+              "artist": {
+                "country": "US",
+                "disambiguation": "",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "sort-name": "Guidry, Greg",
+                "type": "Person",
+                "name": "Greg Guidry",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df"
+              },
+              "name": "Greg Guidry"
+            }
+          ]
+        },
+        {
+          "artist-credit": [
+            {
+              "name": "Greg Guidry",
+              "joinphrase": "",
+              "artist": {
+                "type": "Person",
+                "name": "Greg Guidry",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "sort-name": "Guidry, Greg",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                "disambiguation": "",
+                "country": "US"
+              }
+            }
+          ],
+          "number": "9",
+          "id": "a8078b37-29ba-42bc-b616-6ab180afe154",
+          "title": "Into My Love",
+          "position": 9,
+          "length": 190000,
+          "recording": {
+            "video": false,
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "country": "US",
+                  "disambiguation": ""
+                },
+                "joinphrase": ""
+              }
+            ],
+            "disambiguation": "",
+            "title": "Into My Love",
+            "first-release-date": "1982",
+            "length": 192400,
+            "genres": [],
+            "id": "29b0cc23-712c-4490-a602-7169f9f25b2c"
+          }
+        },
+        {
+          "artist-credit": [
+            {
+              "joinphrase": "",
+              "artist": {
+                "disambiguation": "",
+                "country": "US",
+                "name": "Greg Guidry",
+                "type": "Person",
+                "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                "sort-name": "Guidry, Greg",
+                "id": "67740764-e785-4473-9edd-49448eb48dc1"
+              },
+              "name": "Greg Guidry"
+            }
+          ],
+          "number": "10",
+          "position": 10,
+          "title": "Darlin’ It’s You",
+          "id": "8112c324-21ab-4634-b23b-64473e6cb6c9",
+          "recording": {
+            "video": false,
+            "artist-credit": [
+              {
+                "name": "Greg Guidry",
+                "artist": {
+                  "name": "Greg Guidry",
+                  "type": "Person",
+                  "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+                  "sort-name": "Guidry, Greg",
+                  "id": "67740764-e785-4473-9edd-49448eb48dc1",
+                  "disambiguation": "",
+                  "country": "US"
+                },
+                "joinphrase": ""
+              }
+            ],
+            "disambiguation": "",
+            "first-release-date": "1982",
+            "title": "Darlin’ It’s You",
+            "length": 158000,
+            "genres": [],
+            "id": "646bf8a1-7ce1-4f7b-97f2-34ac44c14e12"
+          },
+          "length": 155000
+        }
+      ],
+      "track-count": 10,
+      "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+      "position": 1,
+      "id": "566841e1-3d29-3f63-b013-4dedaf7fa364"
+    }
+  ]
+}

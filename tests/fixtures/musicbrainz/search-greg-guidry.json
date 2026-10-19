@@ -1,0 +1,1088 @@
+{
+  "created": "2026-10-19T13:17:48.970Z",
+  "count": 904431,
+  "offset": 0,
+  "release-groups": [
+    {
+      "id": "08e3fae7-b9c9-3d70-9657-4b620d547d5d",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 100,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "94900088-7c01-3cfe-9d55-9f4df5a27d0f",
+      "count": 10,
+      "title": "Over the Line",
+      "first-release-date": "1982",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Greg Guidry",
+          "artist": {
+            "id": "67740764-e785-4473-9edd-49448eb48dc1",
+            "name": "Greg Guidry",
+            "sort-name": "Guidry, Greg",
+            "aliases": [
+              {
+                "sort-name": "Guidry, Gregory Mark",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Gregory Mark Guidry",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "3800ca7e-4337-42ae-8260-cabf921ba7bf",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "4f09f2bc-0ab2-432b-8710-8e5cd40cebcf",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "1a21544f-ce89-472a-bea8-42ac4a9a7c1e",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "214758e0-b5cc-4605-9482-f85d5959a967",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "de34b818-0cd3-4c21-a7fd-866aee64e5c6",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "d13d490b-320c-4ed6-ba25-edea28ff1259",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "d6324464-9cd8-41b4-b99e-34fe0ce2efae",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "634aca99-9e44-4b13-8757-c098d0b4bfc5",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "96c51292-37d0-4e71-adc4-17f7e3f03750",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "20e2dc0f-5edd-4990-874d-134791640ed9",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "rock"
+        },
+        {
+          "count": 1,
+          "name": "pop"
+        },
+        {
+          "count": 1,
+          "name": "soft rock"
+        }
+      ]
+    },
+    {
+      "id": "562d5d15-9755-311e-8fcb-376502a69683",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "666e6aa9-a568-35b0-8d34-cf13f1671a7c",
+      "count": 1,
+      "title": "Over the Line",
+      "first-release-date": "1997-07-22",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "The Bellamy Brothers",
+          "artist": {
+            "id": "252b5d32-5bd5-4cae-9d48-6aafa2145c33",
+            "name": "The Bellamy Brothers",
+            "sort-name": "Bellamy Brothers, The",
+            "disambiguation": "US pop & country duo",
+            "aliases": [
+              {
+                "sort-name": "Bellamy Brothers",
+                "name": "Bellamy Borthers",
+                "locale": null,
+                "type": null,
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              },
+              {
+                "sort-name": "Belamy Brothers",
+                "name": "Belamy Brothers",
+                "locale": null,
+                "type": null,
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              },
+              {
+                "sort-name": "Bellamy Brothers",
+                "name": "Bellamy Brothers",
+                "locale": null,
+                "type": null,
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "23250c1d-f8b4-4f08-90ca-adcab42f8fbd",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "country rock"
+        }
+      ]
+    },
+    {
+      "id": "03a800ea-ec25-4559-919c-c0337c30fe5f",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "9191c038-0da2-3466-987c-6a2e65d7e6d0",
+      "count": 1,
+      "title": "Over The Line",
+      "first-release-date": "1994",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "David Deacon And The Word",
+          "artist": {
+            "id": "51870f03-0e1a-4725-832e-5b71949315ad",
+            "name": "David Deacon And The Word",
+            "sort-name": "David Deacon And The Word"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "a08d38e7-ab69-4d44-9d57-3ec436bde3d4",
+          "title": "Over The Line"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "pop"
+        },
+        {
+          "count": 1,
+          "name": "blues"
+        }
+      ]
+    },
+    {
+      "id": "4cb149f5-3ff4-4f08-8906-9dc6504e4d56",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "3f48576d-1606-336e-83dd-74c4ddc60d5a",
+      "count": 1,
+      "title": "Over the Line",
+      "first-release-date": "2019-01-11",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Jeff Scroggins & Colorado",
+          "artist": {
+            "id": "443cd92f-438e-40d1-b05a-85655c876e60",
+            "name": "Jeff Scroggins & Colorado",
+            "sort-name": "Scroggins, Jeff & Colorado",
+            "disambiguation": "US bluegrass"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "ee6376fd-06fb-4b21-babd-d05570b2d763",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "bluegrass"
+        }
+      ]
+    },
+    {
+      "id": "108a00b9-8808-4161-a7c2-57fb26c3aba5",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "de5209d2-7bfb-3ec2-bdd5-1c6dfe6b3999",
+      "count": 1,
+      "title": "Over the Line!",
+      "first-release-date": "2021-07-03",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Over the Line!",
+          "artist": {
+            "id": "1dcd2f0f-13a1-4b70-8871-3e3fd4cebdbf",
+            "name": "Over the Line!",
+            "sort-name": "Over the Line!"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "aad9fef4-c835-41d4-87e3-675448d24b53",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line!",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "metal"
+        }
+      ]
+    },
+    {
+      "id": "1c15ab62-8339-49d8-8e26-c8a2f3462be7",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "55003575-7e0c-3bd3-9783-dd7161c07ead",
+      "count": 1,
+      "title": "Over The Line",
+      "first-release-date": "2008-05-25",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Thorsten Skringer",
+          "artist": {
+            "id": "ffaa96c1-ef71-4fa3-97af-4460b008b415",
+            "name": "Thorsten Skringer",
+            "sort-name": "Skringer, Thorsten"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "26b44e7e-3826-46a8-9801-1553bb2835fd",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over The Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "891f5546-9210-492b-8448-7950e21526a0",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 54,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "bb7ff26d-7e76-4e53-8a76-06826b8c32c1",
+      "count": 1,
+      "title": "Over the Line",
+      "first-release-date": "1980-07-01",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Robert Cassard",
+          "artist": {
+            "id": "86fe1b4c-fdbb-47c4-bc60-17307b124974",
+            "name": "Robert Cassard",
+            "sort-name": "Cassard, Robert",
+            "disambiguation": "American singer-songwriter, guitarist and producer"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "e67c0be1-ed9a-41d9-bf46-f66a8bd1e482",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "39b07bcd-de0e-46a0-8d9f-5e739d12539c",
+      "type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "score": 53,
+      "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "artist-credit-id": "2d6cc20b-a336-348a-b69e-7c53861f97ea",
+      "count": 1,
+      "title": "Over Line",
+      "first-release-date": "2025-10-24",
+      "primary-type": "EP",
+      "artist-credit": [
+        {
+          "name": "Rygby",
+          "artist": {
+            "id": "77f0dd91-f666-4597-9bc5-e5df9c2d0fe1",
+            "name": "Rygby",
+            "sort-name": "Rygby"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "98586890-b328-4282-b981-2cf4e706c4a4",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "e3b70e34-4d6e-4fe8-9388-aa23348f79ac",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 49,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "522229fa-c118-3f36-96b1-83d56867f86e",
+      "count": 1,
+      "title": "Greg",
+      "first-release-date": "2018",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Tonic Sol-Fa",
+          "artist": {
+            "id": "5ed8dd5d-7ae8-4f0b-9b2c-27df885f7c82",
+            "name": "Tonic Sol-Fa",
+            "sort-name": "Tonic Sol-Fa",
+            "disambiguation": "a cappella quartet"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "86cde78c-e8c7-4f66-a5ab-af39478bc0f2",
+          "title": "Greg"
+        }
+      ]
+    },
+    {
+      "id": "9b9fc6c8-45bc-4cc0-b3a9-1cdac01c169d",
+      "type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "score": 49,
+      "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "artist-credit-id": "adf61008-d242-3708-a9e3-505bd8d31bdf",
+      "count": 1,
+      "title": "GREG",
+      "first-release-date": "2024-10-04",
+      "primary-type": "EP",
+      "artist-credit": [
+        {
+          "name": "Leo",
+          "artist": {
+            "id": "d4a10775-aaf8-4d0d-89ea-ddb593150af7",
+            "name": "LEO",
+            "sort-name": "LEO",
+            "disambiguation": "VIXX",
+            "aliases": [
+              {
+                "sort-name": "레오",
+                "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+                "name": "LEO",
+                "locale": "ko_KR",
+                "type": "Artist name",
+                "primary": null,
+                "begin-date": "2012-05-24",
+                "end-date": null
+              },
+              {
+                "sort-name": "정택운",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "정택운",
+                "locale": "ko",
+                "type": "Legal name",
+                "primary": true,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "4eb2c017-2b42-4eb6-9d5a-0e5e165f085d",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "GREG",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "459e2afa-4c94-4eb6-b520-9b9a161d296a",
+      "type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "score": 49,
+      "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "artist-credit-id": "19382e10-aa75-3b5d-9df6-f48024fdb71b",
+      "count": 1,
+      "title": "Greg",
+      "first-release-date": "2023-10-05",
+      "primary-type": "Single",
+      "artist-credit": [
+        {
+          "name": "Lugo",
+          "artist": {
+            "id": "36f169a6-5e4d-4df5-85a7-fa7effe49b85",
+            "name": "Lugo",
+            "sort-name": "Lugo",
+            "disambiguation": "American singer-songwriter",
+            "aliases": [
+              {
+                "sort-name": "Lugo, Edwin Anthony Walker",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Edwin Anthony Lugo Walker",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              },
+              {
+                "sort-name": "Lugo, Edwin",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Edwin Lugo",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "19fff627-c4af-480f-9656-df02d8a860e6",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "rock"
+        },
+        {
+          "count": 1,
+          "name": "pop"
+        },
+        {
+          "count": 1,
+          "name": "jazz"
+        },
+        {
+          "count": 1,
+          "name": "latin"
+        },
+        {
+          "count": 1,
+          "name": "r&b"
+        }
+      ]
+    },
+    {
+      "id": "c98c0cf9-d39e-4771-b5aa-b16022308d02",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 49,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "9910ee27-54db-496d-ad7f-d427279ceb3a",
+      "count": 2,
+      "title": "Greg",
+      "first-release-date": "2025-07-18",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Visual Learner",
+          "artist": {
+            "id": "39f27ec4-e46c-4551-bab1-89399e8778bc",
+            "name": "Visual Learner",
+            "sort-name": "Visual Learner"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "437a3360-6fd1-498e-ad45-da52ac243375",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg",
+          "status": "Official"
+        },
+        {
+          "id": "d7386b91-c561-480a-85e0-6af54c17f42f",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "900334fc-3a24-470b-ae14-e4aa1d01110e",
+      "type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "score": 49,
+      "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "artist-credit-id": "4acf34d6-94ac-33bb-9b79-4b378e093758",
+      "count": 1,
+      "title": "Greg",
+      "first-release-date": "2018-05-18",
+      "primary-type": "Single",
+      "artist-credit": [
+        {
+          "name": "Danny Gonzalez",
+          "artist": {
+            "id": "42f99a11-a88c-4bf0-9f52-c00567b427ad",
+            "name": "Danny Gonzalez",
+            "sort-name": "Gonzalez, Danny",
+            "disambiguation": "Youtuber",
+            "aliases": [
+              {
+                "sort-name": "Flames, Ned",
+                "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+                "name": "Ned Flames",
+                "locale": null,
+                "type": "Artist name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              },
+              {
+                "sort-name": "Fox Szn",
+                "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+                "name": "Fox Szn",
+                "locale": null,
+                "type": "Artist name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "d72923b2-8b25-49ba-b11d-0550954e0b4a",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "76904a3b-bf2c-3682-8aaa-b8e327121e78",
+      "type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "score": 48,
+      "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "artist-credit-id": "5c693d09-d651-3f8a-8f58-558c47524b41",
+      "count": 1,
+      "title": "Step Over the Line",
+      "first-release-date": "2004",
+      "primary-type": "Single",
+      "artist-credit": [
+        {
+          "name": "Words to a Film Score",
+          "artist": {
+            "id": "caa392bf-b912-4ff2-9f42-30a34e1b18ce",
+            "name": "Words to a Film Score",
+            "sort-name": "Words to a Film Score"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "30cbd147-7285-48da-bad2-46bfc6417908",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Step Over the Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "e9076078-82e2-49ce-bd79-6c8782ac2876",
+      "score": 45,
+      "artist-credit-id": "94900088-7c01-3cfe-9d55-9f4df5a27d0f",
+      "count": 1,
+      "title": "Soul'd Out",
+      "first-release-date": "2000-12-10",
+      "artist-credit": [
+        {
+          "name": "Greg Guidry",
+          "artist": {
+            "id": "67740764-e785-4473-9edd-49448eb48dc1",
+            "name": "Greg Guidry",
+            "sort-name": "Guidry, Greg",
+            "aliases": [
+              {
+                "sort-name": "Guidry, Gregory Mark",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Gregory Mark Guidry",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "b732e9b7-7442-4c47-965c-c43800e609de",
+          "title": "Soul'd Out"
+        }
+      ]
+    },
+    {
+      "id": "1019beb5-edbd-4cf8-bb27-81b16818cbdb",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 45,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "94900088-7c01-3cfe-9d55-9f4df5a27d0f",
+      "count": 1,
+      "title": "Heart to Heart",
+      "first-release-date": "2017-02-24",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Greg Guidry",
+          "artist": {
+            "id": "67740764-e785-4473-9edd-49448eb48dc1",
+            "name": "Greg Guidry",
+            "sort-name": "Guidry, Greg",
+            "aliases": [
+              {
+                "sort-name": "Guidry, Gregory Mark",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Gregory Mark Guidry",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "6020456c-cd15-4c5a-8cc5-71730debdfd8",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Heart to Heart",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "pop"
+        }
+      ]
+    },
+    {
+      "id": "d3336e6a-ac1a-4104-9220-ae31cca0ac1f",
+      "score": 44,
+      "artist-credit-id": "ea06c631-b62e-3bfe-9f24-d6c0aab7eaa9",
+      "count": 1,
+      "title": "Greg The Nerd",
+      "first-release-date": "2009",
+      "artist-credit": [
+        {
+          "name": "Frat Dad",
+          "artist": {
+            "id": "9619faf8-364e-4b40-9a94-b159a6ad8a00",
+            "name": "Frat Dad",
+            "sort-name": "Frat Dad"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "d1ce82cb-ebc3-4347-86ce-79a269e32df9",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg The Nerd",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "1df9df33-1f6a-4387-82ee-8f794e514f23",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 44,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "35c68818-98f6-441c-991e-2ecf9f87b478",
+      "count": 1,
+      "title": "The Man Greg",
+      "first-release-date": "1974-04-04",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Fred",
+          "artist": {
+            "id": "369a8cc7-fbf0-4558-943f-b42b0a1862ef",
+            "name": "Fred",
+            "sort-name": "Fred",
+            "disambiguation": "The man greg"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "a81d345d-76cf-4467-b91d-671edb467abb",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "The Man Greg",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "29d4c4e5-2dbb-424f-b196-a0662e85d756",
+      "type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "score": 43,
+      "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+      "artist-credit-id": "03468276-7d5c-3f9f-a438-d1a9a81d925c",
+      "count": 1,
+      "title": "One Step Over the Line",
+      "first-release-date": "2018-11-02",
+      "primary-type": "Single",
+      "artist-credit": [
+        {
+          "name": "Sodom",
+          "artist": {
+            "id": "2251718f-7b5c-4a92-9267-895125c594d3",
+            "name": "Sodom",
+            "sort-name": "Sodom",
+            "disambiguation": "German thrash metal band"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "06971efc-0979-4468-a001-2231f74671b1",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Step Over the Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "3977b0b4-dbbd-43c7-ad38-3f9c56663306",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 43,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "05ad79a7-7efe-3919-9ce8-0d3abaa20c1e",
+      "count": 1,
+      "title": "Over the Line of Meridian",
+      "first-release-date": "2018-07-26",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "All the Fury",
+          "artist": {
+            "id": "7666de02-0f8c-4f18-b882-ed16da483c71",
+            "name": "All the Fury",
+            "sort-name": "All the Fury",
+            "disambiguation": "Slovakian Melodic Death Metal band"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "ba55a093-745b-45c5-b39f-a3304f51afbd",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Over the Line of Meridian",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "ca4f4a4d-b37b-4091-b94e-5eaf57a89b6f",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 43,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "36833d1f-9c2b-3a84-9026-733f1a541361",
+      "count": 3,
+      "title": "One Step Over the Line",
+      "first-release-date": "2016-05-25",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "First Signal",
+          "artist": {
+            "id": "e3ef4ae3-2c3c-49b6-b8b7-161df5d0dba3",
+            "name": "First Signal",
+            "sort-name": "First Signal",
+            "disambiguation": "Canadian hard rock group"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "5ab492b2-26d0-4c05-887b-e89302ed250e",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Step over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "828ec44e-f1a4-40c0-878f-0c48bb830482",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Step Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "ac7fc585-24d7-4af2-894e-d38c347061fb",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Step Over the Line",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "rock"
+        },
+        {
+          "count": 1,
+          "name": "aor"
+        }
+      ]
+    },
+    {
+      "id": "272b53ec-cd46-4237-83b9-d20c9dd43115",
+      "type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "score": 43,
+      "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+      "artist-credit-id": "b2721246-2094-43b9-abd5-d3c8b8e483a8",
+      "count": 1,
+      "title": "tripping over the foul line",
+      "first-release-date": "2024-10-18",
+      "primary-type": "EP",
+      "artist-credit": [
+        {
+          "name": "Thoughts on Bowling",
+          "artist": {
+            "id": "db77689f-9df7-4b47-b24c-2a317a56d2a0",
+            "name": "Thoughts on Bowling",
+            "sort-name": "Thoughts on Bowling"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "cea76f66-1383-4e1e-8299-ee4a0da7863d",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "tripping over the foul line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "de239172-d9f7-3d85-8b3e-76c27b9eed28",
+      "type-id": "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1",
+      "score": 43,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "eacba20f-4640-3435-b5b2-4244eb977b60",
+      "count": 2,
+      "title": "One Toke Over the Line",
+      "first-release-date": "2001",
+      "primary-type": "Album",
+      "secondary-types": ["Compilation"],
+      "secondary-type-ids": ["dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"],
+      "artist-credit": [
+        {
+          "name": "Brewer & Shipley",
+          "artist": {
+            "id": "a6fc09b9-74b7-48c1-9cc6-7889ec902abc",
+            "name": "Brewer & Shipley",
+            "sort-name": "Brewer & Shipley",
+            "aliases": [
+              {
+                "sort-name": "Brewer And Shipley",
+                "name": "Brewer And Shipley",
+                "locale": null,
+                "type": null,
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "4546b3a8-5a75-4ddc-9936-e92101d210b8",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Toke Over the Line",
+          "status": "Official"
+        },
+        {
+          "id": "ad009b6d-40da-4ed8-94f5-0683164a3923",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "One Toke Over the Line",
+          "status": "Official"
+        }
+      ]
+    },
+    {
+      "id": "6eb368d9-2a66-39b8-b4a3-0fe6f3dfa450",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 42,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "4a80c402-12a4-3a6e-9988-bfe244673649",
+      "count": 1,
+      "title": "The Next Valley Over",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Greg Pier",
+          "artist": {
+            "id": "be7b27b3-8549-41c5-963a-2351357c7218",
+            "name": "Greg Pier",
+            "sort-name": "Pier, Greg"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "cd8b49c6-9271-4c85-a2c1-1d014747a396",
+          "status-id": "518ffc83-5cde-34df-8627-81bff5093d92",
+          "title": "The Next Valley Over",
+          "status": "Promotion"
+        }
+      ]
+    },
+    {
+      "id": "93803880-d58a-3f74-81e1-5274ec1f861c",
+      "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "score": 42,
+      "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+      "artist-credit-id": "a544815c-eb5f-3d34-b528-baf9270b4477",
+      "count": 5,
+      "title": "Greg Lake",
+      "first-release-date": "1981",
+      "primary-type": "Album",
+      "artist-credit": [
+        {
+          "name": "Greg Lake",
+          "artist": {
+            "id": "6e2fdea5-8960-46ec-8a05-41b7eec3b2a9",
+            "name": "Greg Lake",
+            "sort-name": "Lake, Greg",
+            "aliases": [
+              {
+                "sort-name": "グレッグ･レイク",
+                "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+                "name": "グレッグ･レイク",
+                "locale": "ja",
+                "type": "Artist name",
+                "primary": true,
+                "begin-date": null,
+                "end-date": null
+              },
+              {
+                "sort-name": "Lake, Gregory Stuart",
+                "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+                "name": "Gregory Stuart Lake",
+                "locale": null,
+                "type": "Legal name",
+                "primary": null,
+                "begin-date": null,
+                "end-date": null
+              }
+            ]
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "36c45ad3-9f47-4cff-88cc-61c7709f0b91",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg Lake",
+          "status": "Official"
+        },
+        {
+          "id": "ae8a6316-6dde-4f30-b3ca-1b87cbe9905d",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg Lake",
+          "status": "Official"
+        },
+        {
+          "id": "aec97ea7-37eb-46eb-a38a-5bd867dc10f4",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg Lake",
+          "status": "Official"
+        },
+        {
+          "id": "4a57f3ba-86d5-44ae-af66-ac475387cbde",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg Lake",
+          "status": "Official"
+        },
+        {
+          "id": "fc1c4316-fee5-4162-af53-fdd87d3e4404",
+          "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+          "title": "Greg Lake",
+          "status": "Official"
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "rock"
+        },
+        {
+          "count": 1,
+          "name": "hard rock"
+        }
+      ]
+    }
+  ]
+}

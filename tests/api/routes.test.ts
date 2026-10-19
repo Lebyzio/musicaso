@@ -27,7 +27,7 @@ describe("GET /api/search", () => {
     ["missing q", "/api/search"],
     ["blank q", "/api/search?q=%20%20"],
     ["too long", `/api/search?q=${"a".repeat(101)}`],
-    ["unknown source", "/api/search?q=x&source=mb"],
+    ["unknown source", "/api/search?q=x&source=sp"],
   ])("400 for %s", async (_, path) => {
     const fetch = mockFetch([]);
     const res = await search(req(path));

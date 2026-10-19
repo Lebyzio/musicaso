@@ -18,7 +18,7 @@ const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 const SUGGESTIONS = ["In Rainbows", "Blonde", "คราม", "Abbey Road", "Bodyslam"];
 /** Order of the "Try …" links; the source that answered is left out. */
-const SOURCES: Source[] = ["dz", "it"];
+const SOURCES: Source[] = ["dz", "it", "mb"];
 
 const ERROR_MESSAGE: Partial<Record<ApiErrorCode | "network", string>> = {
   rate_limited: "The music catalogue is busy right now — give it a few seconds.",

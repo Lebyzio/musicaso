@@ -2,9 +2,13 @@ import { cache } from "react";
 import { type ProviderErrorCode, ProviderError } from "./errors";
 import { type ArtistAlbums, deezer } from "./providers/deezer";
 import { itunes } from "./providers/itunes";
+import { musicbrainz } from "./providers/musicbrainz";
 import type { Album, AlbumSummary, MusicProvider } from "./types";
 
-const providers = { dz: deezer, it: itunes } satisfies Record<string, MusicProvider>;
+const providers = { dz: deezer, it: itunes, mb: musicbrainz } satisfies Record<
+  string,
+  MusicProvider
+>;
 
 export type ActiveSourceId = keyof typeof providers;
 
@@ -55,9 +59,13 @@ export function withArtist(
   return { source, results: results.filter((a) => !shown.has(`${a.source}:${a.id}`)), artist };
 }
 
+/** Order tried when no source is chosen: biggest catalogue first, MusicBrainz for the long tail. */
+const FALLBACK_ORDER = ["it", "mb"] as const satisfies readonly ActiveSourceId[];
+
 /**
- * Search one source, or — when none is given — Deezer first and Apple Music when Deezer fails
- * or finds nothing. The result says which source actually answered (for attribution).
+ * Search one source, or — when none is given — Deezer first, then Apple Music, then MusicBrainz,
+ * moving on when a source fails or finds nothing. The result says which source actually answered
+ * (for attribution).
  */
 export async function searchAlbums(query: string, source?: ActiveSourceId): Promise<SearchResult> {
   if (source === "dz") {
@@ -66,26 +74,39 @@ export async function searchAlbums(query: string, source?: ActiveSourceId): Prom
   }
   if (source) return { source, results: await providers[source].searchAlbums(query) };
 
-  let primaryError: unknown;
+  let firstError: unknown;
+  // The first source that answered, even with nothing — an empty result beats a fallback's error.
+  let answered: ActiveSourceId | undefined;
+
   const artist = findArtist(query);
   try {
     const results = await deezer.searchAlbums(query);
-    if (results.length > 0) return withArtist("dz", results, await artist);
+    const found = await artist;
+    if (results.length > 0 || found) return withArtist("dz", results, found);
+    answered = "dz";
   } catch (err) {
-    primaryError = err;
+    firstError = err;
   }
 
-  try {
-    return { source: "it", results: await itunes.searchAlbums(query) };
-  } catch (err) {
-    // Deezer answered (with nothing) — an empty result beats surfacing the fallback's error.
-    if (primaryError === undefined) return { source: "dz", results: [] };
-    throw primaryError instanceof ProviderError ? primaryError : err;
+  for (const next of FALLBACK_ORDER) {
+    try {
+      const results = await providers[next].searchAlbums(query);
+      if (results.length > 0) return { source: next, results };
+      answered ??= next;
+    } catch (err) {
+      firstError ??= err;
+    }
   }
+
+  if (answered) return { source: answered, results: [] };
+  throw firstError instanceof ProviderError
+    ? firstError
+    : new ProviderError("upstream", "Search failed", { cause: firstError });
 }
 
 export { ProviderError, PROVIDER_ERROR_STATUS } from "./errors";
 export { deezer } from "./providers/deezer";
 export { itunes } from "./providers/itunes";
+export { musicbrainz } from "./providers/musicbrainz";
 export type { ArtistAlbums } from "./providers/deezer";
 export * from "./types";

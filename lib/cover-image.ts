@@ -14,7 +14,8 @@ export async function coverDataUri(coverUrl: string, px: number): Promise<string
   if (!isAllowedImageUrl(url)) return null;
   try {
     const res = await fetch(url, {
-      signal: AbortSignal.timeout(5000),
+      // Cover Art Archive covers come from archive.org and can be slow when cold.
+      signal: AbortSignal.timeout(10_000),
       next: { revalidate: 86400 },
     });
     const type = res.headers.get("content-type")?.split(";")[0] ?? "";

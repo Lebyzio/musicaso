@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AlbumLoadError } from "@/components/review/album-load-error";
 import { BrokenLink } from "@/components/share/broken-link";
 import { SharedReview } from "@/components/share/shared-review";
-import { getAlbumAccent } from "@/lib/accent";
+import { getPageAccent } from "@/lib/accent";
 import { isCardTheme } from "@/lib/card/themes";
 import { loadAlbum } from "@/lib/music";
 import type { Album } from "@/lib/music/types";
@@ -53,7 +53,7 @@ export default async function SharedReviewPage({ params }: PageProps<"/r/[payloa
   }
 
   const view = reviewView(result.album, decoded.payload);
-  const accent = await getAlbumAccent(result.album.coverUrl);
+  const accent = await getPageAccent(result.album.coverUrl);
   const canonical = encodePayload(decoded.payload);
   return (
     <SharedReview

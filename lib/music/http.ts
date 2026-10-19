@@ -13,12 +13,16 @@ const TIMEOUT_MS = 8000;
  * GET a JSON endpoint. Throws ProviderError on network/HTTP failure or a non-JSON body.
  * `revalidate: false` bypasses the Data Cache (for short-lived data such as signed preview URLs).
  */
-export async function fetchJson(url: string, revalidate: number | false): Promise<unknown> {
+export async function fetchJson(
+  url: string,
+  revalidate: number | false,
+  headers?: Record<string, string>,
+): Promise<unknown> {
   const host = new URL(url).host;
   let res: Response;
   try {
     res = await fetch(url, {
-      headers: { accept: "application/json" },
+      headers: { accept: "application/json", ...headers },
       signal: AbortSignal.timeout(TIMEOUT_MS),
       ...(revalidate === false ? { cache: "no-store" } : { next: { revalidate } }),
     });
@@ -26,7 +30,8 @@ export async function fetchJson(url: string, revalidate: number | false): Promis
     throw new ProviderError("upstream", `Request to ${host} failed`, { cause });
   }
 
-  if (res.status === 429 || res.status === 403) {
+  // MusicBrainz answers 503 when a client goes over its rate limit.
+  if (res.status === 429 || res.status === 403 || res.status === 503) {
     throw new ProviderError("rate_limited", `Rate limited by ${host}`);
   }
   if (res.status === 404) throw new ProviderError("not_found", `Not found on ${host}`);

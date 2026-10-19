@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition } from "react";
+import { useState, ViewTransition } from "react";
 import { coverTransitionName } from "@/lib/music/cover";
 import type { AlbumSummary, RecordType } from "@/lib/music/types";
 
@@ -17,6 +19,8 @@ export function AlbumCard({
   album: AlbumSummary;
   priority?: boolean;
 }) {
+  // MusicBrainz covers are guessed per release group and can be missing (404).
+  const [broken, setBroken] = useState(false);
   const badge = album.recordType ? RECORD_TYPE_LABEL[album.recordType] : undefined;
   const meta = [
     album.year,
@@ -31,12 +35,13 @@ export function AlbumCard({
       {/* Morphs into the album page header cover on navigation. */}
       <ViewTransition name={coverTransitionName(album)} share="morph" default="none">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-ink-800 shadow-lg ring-1 shadow-black/40 ring-white/5">
-          {album.coverThumbUrl ? (
+          {album.coverThumbUrl && !broken ? (
             <Image
               src={album.coverThumbUrl}
               alt=""
               fill
               loading={priority ? "eager" : "lazy"}
+              onError={() => setBroken(true)}
               sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
               className="object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.04] group-focus-visible:scale-[1.04]"
             />

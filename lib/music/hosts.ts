@@ -8,6 +8,9 @@ export const IMAGE_HOSTS = [
   "e-cdns-images.dzcdn.net",
   "*.mzstatic.com",
   "coverartarchive.org",
+  // Cover Art Archive redirects to the Internet Archive (archive.org → ia*/dn*.archive.org).
+  "archive.org",
+  "*.archive.org",
 ] as const;
 
 function hostMatches(hostname: string, pattern: string): boolean {

@@ -4,6 +4,7 @@ import dzSearch from "../fixtures/deezer/search-album.json";
 import quota from "../fixtures/deezer/error-quota.json";
 import empty from "../fixtures/itunes/empty.json";
 import itSearch from "../fixtures/itunes/search-bodyslam-th.json";
+import mbSearch from "../fixtures/musicbrainz/search-greg-guidry.json";
 import { fetchedUrls, mockFetch } from "../helpers/mock-fetch";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -49,6 +50,17 @@ describe("searchAlbums", () => {
       { match: "itunes.apple.com", status: 500, body: {} },
     ]);
     await expect(searchAlbums("x")).rejects.toMatchObject({ code: "rate_limited" });
+  });
+
+  it("falls back to MusicBrainz when Deezer and Apple Music find nothing", async () => {
+    mockFetch([
+      { match: "api.deezer.com", body: { data: [], total: 0 } },
+      { match: "itunes.apple.com", body: empty },
+      { match: "musicbrainz.org", body: mbSearch },
+    ]);
+    const res = await searchAlbums("greg guidry over the line");
+    expect(res.source).toBe("mb");
+    expect(res.results[0]).toMatchObject({ artist: "Greg Guidry", title: "Over the Line" });
   });
 
   it("only queries the requested source", async () => {

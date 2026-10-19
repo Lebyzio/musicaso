@@ -1,0 +1,496 @@
+{
+  "releases": [
+    {
+      "packaging-id": null,
+      "packaging": null,
+      "date": "2000",
+      "asin": null,
+      "media": [
+        {
+          "format": "CD",
+          "track-count": 10,
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "position": 1,
+          "title": "",
+          "id": "98bbed41-60d4-3546-a011-7ce4d3b89d84"
+        }
+      ],
+      "id": "1a21544f-ce89-472a-bea8-42ac4a9a7c1e",
+      "release-events": [
+        {
+          "area": {
+            "id": "489ce91b-6658-3307-9877-795b68554c98",
+            "sort-name": "United States",
+            "iso-3166-1-codes": ["US"],
+            "type-id": null,
+            "type": null,
+            "name": "United States",
+            "disambiguation": ""
+          },
+          "date": "2000"
+        }
+      ],
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "status": "Official",
+      "barcode": null,
+      "quality": "normal",
+      "title": "Over the Line",
+      "cover-art-archive": {
+        "darkened": false,
+        "count": 1,
+        "front": true,
+        "artwork": true,
+        "back": false
+      },
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "country": "US",
+      "disambiguation": ""
+    },
+    {
+      "asin": "B00006C1UC",
+      "date": "2002-09-19",
+      "packaging": "Jewel Case",
+      "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+      "media": [
+        {
+          "track-count": 10,
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "format": "CD",
+          "id": "8a8a80b0-e723-30d2-a494-73718e57a714",
+          "position": 1,
+          "title": ""
+        }
+      ],
+      "status": "Official",
+      "barcode": "4547366006865",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "release-events": [
+        {
+          "date": "2002-09-19",
+          "area": {
+            "sort-name": "Japan",
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "iso-3166-1-codes": ["JP"],
+            "type-id": null,
+            "type": null,
+            "name": "Japan",
+            "disambiguation": ""
+          }
+        }
+      ],
+      "id": "20e2dc0f-5edd-4990-874d-134791640ed9",
+      "disambiguation": "",
+      "country": "JP",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "title": "Over the Line",
+      "quality": "normal",
+      "cover-art-archive": {
+        "darkened": false,
+        "count": 0,
+        "artwork": false,
+        "front": false,
+        "back": false
+      }
+    },
+    {
+      "id": "214758e0-b5cc-4605-9482-f85d5959a967",
+      "release-events": [
+        {
+          "area": {
+            "name": "Japan",
+            "type": null,
+            "type-id": null,
+            "iso-3166-1-codes": ["JP"],
+            "sort-name": "Japan",
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "disambiguation": ""
+          },
+          "date": "1991-10-25"
+        }
+      ],
+      "status": "Official",
+      "barcode": "4988009614120",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "title": "Over the Line",
+      "quality": "normal",
+      "cover-art-archive": {
+        "count": 0,
+        "darkened": false,
+        "back": false,
+        "artwork": false,
+        "front": false
+      },
+      "country": "JP",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "disambiguation": "",
+      "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+      "packaging": "Jewel Case",
+      "asin": "B0000264EW",
+      "date": "1991-10-25",
+      "media": [
+        {
+          "format": "CD",
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "track-count": 10,
+          "title": "",
+          "position": 1,
+          "id": "4b6e1fb3-6fa0-384f-a10d-42593b46b81b"
+        }
+      ]
+    },
+    {
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "country": "JP",
+      "title": "Over the Line",
+      "quality": "normal",
+      "cover-art-archive": {
+        "count": 1,
+        "darkened": false,
+        "back": false,
+        "artwork": true,
+        "front": true
+      },
+      "disambiguation": "",
+      "release-events": [
+        {
+          "area": {
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "sort-name": "Japan",
+            "iso-3166-1-codes": ["JP"],
+            "type-id": null,
+            "type": null,
+            "name": "Japan",
+            "disambiguation": ""
+          },
+          "date": "2016-08-17"
+        }
+      ],
+      "id": "3800ca7e-4337-42ae-8260-cabf921ba7bf",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "barcode": "4547366264050",
+      "status": "Official",
+      "media": [
+        {
+          "format": "CD",
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "track-count": 10,
+          "title": "",
+          "position": 1,
+          "id": "dd3be9d0-9a18-39f0-a9a5-13b2510f2864"
+        }
+      ],
+      "packaging": "Jewel Case",
+      "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+      "date": "2016-08-17",
+      "asin": "B01G7L2B6Q"
+    },
+    {
+      "quality": "normal",
+      "title": "Over the Line",
+      "cover-art-archive": {
+        "count": 0,
+        "darkened": false,
+        "back": false,
+        "front": false,
+        "artwork": false
+      },
+      "text-representation": {
+        "language": "eng",
+        "script": "Latn"
+      },
+      "country": "JP",
+      "disambiguation": "",
+      "id": "4f09f2bc-0ab2-432b-8710-8e5cd40cebcf",
+      "release-events": [
+        {
+          "area": {
+            "disambiguation": "",
+            "type": null,
+            "name": "Japan",
+            "type-id": null,
+            "iso-3166-1-codes": ["JP"],
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "sort-name": "Japan"
+          },
+          "date": "2005-09-21"
+        }
+      ],
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "status": "Official",
+      "barcode": "4571191053992",
+      "media": [
+        {
+          "format": "CD",
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "track-count": 10,
+          "position": 1,
+          "title": "",
+          "id": "0e01d118-4aa5-3029-8234-70f050ec3b26"
+        }
+      ],
+      "packaging-id": "f7101ce3-0384-39ce-9fde-fbbd0044d35f",
+      "packaging": "Cardboard/Paper Sleeve",
+      "date": "2005-09-21",
+      "asin": "B000A3H6G8"
+    },
+    {
+      "title": "Over the Line",
+      "cover-art-archive": {
+        "front": false,
+        "artwork": false,
+        "back": false,
+        "darkened": false,
+        "count": 0
+      },
+      "quality": "normal",
+      "country": "JP",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "disambiguation": "",
+      "id": "634aca99-9e44-4b13-8757-c098d0b4bfc5",
+      "release-events": [
+        {
+          "date": "1982",
+          "area": {
+            "iso-3166-1-codes": ["JP"],
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "sort-name": "Japan",
+            "type": null,
+            "name": "Japan",
+            "type-id": null,
+            "disambiguation": ""
+          }
+        }
+      ],
+      "barcode": "",
+      "status": "Official",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "media": [
+        {
+          "format": "12\" Vinyl",
+          "track-count": 10,
+          "format-id": "3e9080b0-5e6c-34ab-bd15-f526b6306a64",
+          "position": 1,
+          "title": "",
+          "id": "1b4960d9-33d3-3da6-981b-9a93c3264c81"
+        }
+      ],
+      "packaging-id": "f7101ce3-0384-39ce-9fde-fbbd0044d35f",
+      "packaging": "Cardboard/Paper Sleeve",
+      "asin": null,
+      "date": "1982"
+    },
+    {
+      "id": "96c51292-37d0-4e71-adc4-17f7e3f03750",
+      "release-events": [
+        {
+          "area": {
+            "iso-3166-1-codes": ["US"],
+            "sort-name": "United States",
+            "id": "489ce91b-6658-3307-9877-795b68554c98",
+            "type": null,
+            "name": "United States",
+            "type-id": null,
+            "disambiguation": ""
+          },
+          "date": "1982"
+        }
+      ],
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "status": "Official",
+      "barcode": "074643773515",
+      "quality": "normal",
+      "cover-art-archive": {
+        "front": false,
+        "artwork": false,
+        "back": false,
+        "darkened": false,
+        "count": 0
+      },
+      "title": "Over the Line",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "country": "US",
+      "disambiguation": "",
+      "packaging-id": "f7101ce3-0384-39ce-9fde-fbbd0044d35f",
+      "packaging": "Cardboard/Paper Sleeve",
+      "date": "1982",
+      "asin": null,
+      "media": [
+        {
+          "position": 1,
+          "title": "",
+          "id": "0f193830-5a3e-3fd6-b917-34c8c959d070",
+          "format": "12\" Vinyl",
+          "track-count": 10,
+          "format-id": "3e9080b0-5e6c-34ab-bd15-f526b6306a64"
+        }
+      ]
+    },
+    {
+      "title": "Over the Line",
+      "quality": "normal",
+      "cover-art-archive": {
+        "front": false,
+        "artwork": false,
+        "back": false,
+        "darkened": false,
+        "count": 0
+      },
+      "country": "SE",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "disambiguation": "",
+      "id": "d13d490b-320c-4ed6-ba25-edea28ff1259",
+      "release-events": [
+        {
+          "date": "1987",
+          "area": {
+            "disambiguation": "",
+            "type-id": null,
+            "name": "Sweden",
+            "type": null,
+            "sort-name": "Sweden",
+            "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb",
+            "iso-3166-1-codes": ["SE"]
+          }
+        }
+      ],
+      "status": "Official",
+      "barcode": "",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "media": [
+        {
+          "format": "CD",
+          "track-count": 10,
+          "format-id": "9712d52a-4509-3d4b-a1a2-67c88c643e31",
+          "position": 1,
+          "title": "",
+          "id": "566841e1-3d29-3f63-b013-4dedaf7fa364"
+        }
+      ],
+      "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+      "packaging": "Jewel Case",
+      "asin": null,
+      "date": "1987"
+    },
+    {
+      "media": [
+        {
+          "position": 1,
+          "title": "",
+          "id": "4b7d1a79-de91-32b3-8e64-bbe1a837b861",
+          "format": "12\" Vinyl",
+          "format-id": "3e9080b0-5e6c-34ab-bd15-f526b6306a64",
+          "track-count": 10
+        }
+      ],
+      "date": "1983",
+      "asin": null,
+      "packaging": "Cardboard/Paper Sleeve",
+      "packaging-id": "f7101ce3-0384-39ce-9fde-fbbd0044d35f",
+      "disambiguation": "",
+      "text-representation": {
+        "script": "Latn",
+        "language": "eng"
+      },
+      "country": "JP",
+      "quality": "normal",
+      "title": "Over the Line",
+      "cover-art-archive": {
+        "count": 0,
+        "darkened": false,
+        "back": false,
+        "front": false,
+        "artwork": false
+      },
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "status": "Official",
+      "barcode": "",
+      "release-events": [
+        {
+          "date": "1983",
+          "area": {
+            "disambiguation": "",
+            "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+            "sort-name": "Japan",
+            "iso-3166-1-codes": ["JP"],
+            "type-id": null,
+            "type": null,
+            "name": "Japan"
+          }
+        }
+      ],
+      "id": "d6324464-9cd8-41b4-b99e-34fe0ce2efae"
+    },
+    {
+      "asin": null,
+      "date": "1987",
+      "packaging-id": "f7101ce3-0384-39ce-9fde-fbbd0044d35f",
+      "packaging": "Cardboard/Paper Sleeve",
+      "media": [
+        {
+          "id": "29123cbd-8d04-3a24-ab74-1251498db4b8",
+          "title": "",
+          "position": 1,
+          "track-count": 10,
+          "format-id": "3e9080b0-5e6c-34ab-bd15-f526b6306a64",
+          "format": "12\" Vinyl"
+        }
+      ],
+      "status": "Official",
+      "barcode": "",
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "id": "de34b818-0cd3-4c21-a7fd-866aee64e5c6",
+      "release-events": [
+        {
+          "date": "1987",
+          "area": {
+            "disambiguation": "",
+            "name": "Sweden",
+            "type": null,
+            "type-id": null,
+            "iso-3166-1-codes": ["SE"],
+            "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb",
+            "sort-name": "Sweden"
+          }
+        }
+      ],
+      "disambiguation": "",
+      "cover-art-archive": {
+        "darkened": false,
+        "count": 0,
+        "artwork": false,
+        "front": false,
+        "back": false
+      },
+      "quality": "normal",
+      "title": "Over the Line",
+      "country": "SE",
+      "text-representation": {
+        "language": "eng",
+        "script": "Latn"
+      }
+    }
+  ],
+  "release-offset": 0,
+  "release-count": 10
+}
