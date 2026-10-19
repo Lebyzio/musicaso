@@ -282,9 +282,9 @@ tests/
 อัปเดต checkbox เมื่อทำเสร็จ ทำทีละ Phase และให้ผู้ใช้ review ก่อนขึ้น Phase ถัดไป
 
 ### Phase 0 — Setup
-- [ ] `create-next-app` (TS, App Router, Tailwind, ESLint, pnpm) ใน repo `musicaso`
-- [ ] เพิ่ม scripts `typecheck`, `test`; ติดตั้ง vitest, zod, lz-string, motion
-- [ ] ตั้ง design tokens + ฟอนต์ (รวมฟอนต์ไทย) + layout หลัก
+- [x] `create-next-app` (TS, App Router, Tailwind, ESLint, pnpm) ใน repo `musicaso`
+- [x] เพิ่ม scripts `typecheck`, `test`; ติดตั้ง vitest, zod, lz-string, motion
+- [x] ตั้ง design tokens + ฟอนต์ (รวมฟอนต์ไทย) + layout หลัก
 
 ### Phase 1 — Data Layer
 - [ ] types กลาง + Deezer provider + iTunes provider (zod schema + mapper + tests ด้วย fixture JSON)
